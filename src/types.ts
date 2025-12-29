@@ -3,8 +3,8 @@ type qrMasks = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export type qrSpecs = {
     eccLevel: 'L' | 'M' | 'Q' | 'H',
-    version: qrVersions,
-    maskPattern: qrMasks,
+    version: qrVersions | null, // Null means auto
+    maskPattern: qrMasks | null, // Null means auto
     preferrECI: boolean,
     preferrBOM: boolean
 }
