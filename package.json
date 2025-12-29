@@ -1,0 +1,24 @@
+{
+  "name": "@chrismoloci/qr-lib",
+  "version": "0.0.1",
+  "description": "One of the most customizable QR Code Generators",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "dev": "tsup --watch --sourcemap --format cjs,esm --dts",
+    "build": "tsup --format cjs,esm --dts"
+  },
+  "author": "chrismoloci",
+  "license": "MIT",
+  "dependencies": {
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  }
+}
