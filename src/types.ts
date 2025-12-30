@@ -11,3 +11,5 @@ export type qrSpecs = {
     preferrECI: boolean,
     preferrBOM: boolean
 }
+
+// TODO Add types for datesets to get rid of TS errors

@@ -4,9 +4,12 @@ import { qrVersions } from "../types";
 
 function generateECCStream(encodedData: Array<string>, qrVersion: qrVersions, eccLevelCode: ECCLevelCode) {
     const eccLevel = Object.entries(ECC_LEVEL_CODES).find(([key, value]) => value === eccLevelCode)?.[0];
+    const groupingObj = qrDataCapacityBits[qrVersion][eccLevel!].blocks;
+    const dataCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevel].data * 8;
+    const eccCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevel].ecc * 8;
 
     // -- 1. Restructure data stream with padding, and empty ECC bytes as an array --
-    const normalizedDataStream = normalizeDataStream(encodedData, qrVersion, eccLevel!);
+    const normalizedDataStream = normalizeDataStream(encodedData, dataCodewordBufferSize);
     console.log("Normalized Data Stream for ECC Generation:", normalizedDataStream);
 
     // -- 2. Convert data stream to integers --
@@ -14,10 +17,12 @@ function generateECCStream(encodedData: Array<string>, qrVersion: qrVersions, ec
     console.log("Data Stream as Integers for ECC Generation:", dataStreamIntegers);
 
     // -- 3. Split data into blocks and groups if applicable --
-    const groupedData: Array<Array<Array<number>>> = groupDataAndBlocks(dataStreamIntegers, qrVersion, eccLevel!);
+    const groupedData: Array<Array<Array<number>>> = groupDataAndBlocks(dataStreamIntegers, groupingObj);
     console.log("Grouped Data for ECC Generation:", groupedData);
 
-    // -- 4. Padd ECC 0 bytes for each block --
+    // -- 4. Pad ECC 0 bytes for each block --
+    const paddedGroupedData = padECCZeroBytesToBlocks(groupedData, groupingObj, eccCodewordBufferSize);
+    console.log("Padded Grouped Data for ECC Generation:", paddedGroupedData);
 
     // -- 5. Compute ECC for each block in each group --
 
@@ -26,14 +31,10 @@ function generateECCStream(encodedData: Array<string>, qrVersion: qrVersions, ec
     // -- 7. Return ECC Stream as array of strings --
 }
 
-function normalizeDataStream(encodedData: Array<string>, qrVersion: qrVersions, eccLevel: string): Array<string> {
-    // Normalize data stream to join different size codewords
+function normalizeDataStream(encodedData: Array<string>, dataCodewordBufferSize: number): Array<string> {
+    // Normalize data stream into a stringto join different size codewords
     let encodedDataString: string = encodedData.join('');
     console.log("Encoded Data String:", encodedDataString);
-
-    // Calculate the data code word capacity for the specific QR Code version and ECC level
-    const dataCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevel].data * 8;
-    console.log("Data Codewords Capacity (in bytes):", dataCodewordBufferSize);
 
     // Calculate the remaining codeword bits available
     let remaingBufferSize: number = dataCodewordBufferSize - encodedDataString.length;
@@ -85,9 +86,7 @@ function normalizeDataStream(encodedData: Array<string>, qrVersion: qrVersions, 
     return normalizedDataArray;
 }
 
-function groupDataAndBlocks(dataStream: Array<number>, qrVersion: qrVersions, eccLevel: string) {
-    const groupingObj = qrDataCapacityBits[qrVersion][eccLevel].blocks;
-
+function groupDataAndBlocks(dataStream: Array<number>, groupingObj: Object) {
     // Create the unnormalized groups with data from all blocks in each group
     const group1 = dataStream.slice(0, (groupingObj.g1.numBlocks * groupingObj.g1.dataCodewordsPerBlock));
     const group2 = dataStream.slice((groupingObj.g1.numBlocks * groupingObj.g1.dataCodewordsPerBlock), ((groupingObj.g1.numBlocks * groupingObj.g1.dataCodewordsPerBlock)) + ((groupingObj.g2.numBlocks * groupingObj.g2.dataCodewordsPerBlock)));
@@ -122,6 +121,26 @@ function groupDataAndBlocks(dataStream: Array<number>, qrVersion: qrVersions, ec
 
     // Return the grouped data
     return groupedData
+}
+
+// Function to pad zero bytes for ECC codewords in each block
+function padECCZeroBytesToBlocks(groupedData: Array<Array<Array<number>>>, groupingObj: Object, eccCodewordBufferSize: number): Array<Array<Array<number>>> {
+    const paddedGroupedData: Array<Array<Array<number>>> = groupedData.map((group, groupIndex) => {
+        const numOfBlocks = groupingObj[`g${groupIndex + 1}`].numBlocks;
+        if (group instanceof Array && numOfBlocks > 0) {
+            return group.map((block, blockIndex) => {
+                if (block instanceof Array && blockIndex + 1 <= numOfBlocks) {
+                    console.log("Adding ECC Padding to Block:", blockIndex + 1, "of Group:", groupIndex + 1);
+                    // Pad ECC bytes as 0 for ecc codeword amount
+                    return [...block, ...new Array(eccCodewordBufferSize / 8).fill(0)]; // Pad ECC bytes as 0
+                }
+                return []; // Return empty array as fallback
+            });
+        } 
+        return []; // Return empty array as fallback
+    });
+
+    return paddedGroupedData; // Return the padded grouped data
 }
 
 export default generateECCStream;
