@@ -15,6 +15,10 @@ function encodeBinary(data: string): Array<string> {
         // Get the code point of the character (hex)
         const cp = element.codePointAt(0);
 
+        if (cp === undefined) {
+            throw new Error("Invalid character in data for binary encoding.");
+        }
+
         // Check if the codepoint is greater than the Latin-1 range (0xFF or 256)
         if (cp > 0xFF) {
             isLatin1 = false;
