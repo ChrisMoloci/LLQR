@@ -1,8 +1,10 @@
 import { DATA_ENCODING_MODES, DataEncodingMode } from "../const";
+import encodeNumeric from "./encoders/encodeNumeric";
 
 function autoEncodeData(data: string, encodingMode: DataEncodingMode) {
     switch (encodingMode) {
         case DATA_ENCODING_MODES.NUMERIC:
+            return encodeNumeric(data);
             break;
         case DATA_ENCODING_MODES.ALPHANUMERIC:
             break;

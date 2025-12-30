@@ -13,6 +13,8 @@ function generateFullQR(data: string, specs: qrSpecs = DEFAULT_QR_SPECS) {
     // Encode Data to Binary
     const encodedData = autoEncodeData(data, mode);
 
+    console.log("Encoded Data:", encodedData);
+
     // Determine the Min Version of the QR Code
 
     // Generate Error Correction Codewords
