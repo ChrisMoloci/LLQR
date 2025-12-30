@@ -3,7 +3,7 @@ import encodeAlphanumeric from "./encoders/encodeAlphanumeric";
 import encodeBinary from "./encoders/encodeBinary";
 import encodeNumeric from "./encoders/encodeNumeric";
 
-function autoEncodeData(data: string, encodingMode: DataEncodingMode) {
+function autoEncodeData(data: string, encodingMode: DataEncodingMode): Array<string> | undefined {
     switch (encodingMode) {
         case DATA_ENCODING_MODES.NUMERIC:
             return encodeNumeric(data);
