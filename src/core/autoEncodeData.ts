@@ -1,5 +1,6 @@
 import { DATA_ENCODING_MODES, DataEncodingMode } from "../const";
 import encodeAlphanumeric from "./encoders/encodeAlphanumeric";
+import encodeBinary from "./encoders/encodeBinary";
 import encodeNumeric from "./encoders/encodeNumeric";
 
 function autoEncodeData(data: string, encodingMode: DataEncodingMode) {
@@ -8,9 +9,8 @@ function autoEncodeData(data: string, encodingMode: DataEncodingMode) {
             return encodeNumeric(data);
         case DATA_ENCODING_MODES.ALPHANUMERIC:
             return encodeAlphanumeric(data);
-            break;
         case DATA_ENCODING_MODES.BYTE:
-            break;
+            return encodeBinary(data);
         case DATA_ENCODING_MODES.KANJI:
             // TODO: Implement Kanji encoding
             break;
