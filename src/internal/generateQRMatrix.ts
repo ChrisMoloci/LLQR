@@ -4,6 +4,7 @@ import autoEncodeData from "../core/autoEncodeData";
 import determineMode from "../core/determineEncodingMode";
 import determineMinQRVersion from "../core/determineMinQRVersion";
 import prepareDatastream from "../core/prepareDatastream";
+import generateECCStream from "../core/generateECCStream";
 
 function generateQRMatrix(data: string, specs: qrSpecs = DEFAULT_QR_SPECS){
     console.log("Generating QR Code with specs:", specs);
@@ -31,6 +32,7 @@ function generateQRMatrix(data: string, specs: qrSpecs = DEFAULT_QR_SPECS){
     console.log("Prepared Data Stream:", preparedDataStream);
     
     // Generate Error Correction Codewords
+    generateECCStream(preparedDataStream, minVersion, specs.eccLevel);
 }
 
 export default generateQRMatrix;
