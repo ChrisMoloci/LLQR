@@ -1,7 +1,4 @@
-import { DataEncodingMode, DEFAULT_QR_SPECS } from "../const";
-import autoEncodeData from "../core/autoEncodeData";
-import determineMode from "../core/determineEncodingMode";
-import determineMinQRVersion from "../core/determineMinQRVersion";
+import { DEFAULT_QR_SPECS } from "../const";
 import { qrSpecs } from "../types";
 import generateQRMatrix from "./generateQRMatrix";
 
