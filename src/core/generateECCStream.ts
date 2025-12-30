@@ -1,12 +1,14 @@
 import { ECC_LEVEL_CODES, ECCLevelCode } from "../const";
 import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { qrVersions } from "../types";
+import { gfMultiply, gfXor } from "./GF256_Arithmetic";
 
 function generateECCStream(encodedData: Array<string>, qrVersion: qrVersions, eccLevelCode: ECCLevelCode) {
     const eccLevel = Object.entries(ECC_LEVEL_CODES).find(([key, value]) => value === eccLevelCode)?.[0];
     const groupingObj = qrDataCapacityBits[qrVersion][eccLevel!].blocks;
     const dataCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevel].data * 8;
     const eccCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevel].ecc * 8;
+    const generatorPolynomial: Array<number> = qrDataCapacityBits[qrVersion][eccLevel].generator;
 
     // -- 1. Restructure data stream with padding, and empty ECC bytes as an array --
     const normalizedDataStream = normalizeDataStream(encodedData, dataCodewordBufferSize);
@@ -25,6 +27,8 @@ function generateECCStream(encodedData: Array<string>, qrVersion: qrVersions, ec
     console.log("Padded Grouped Data for ECC Generation:", paddedGroupedData);
 
     // -- 5. Compute ECC for each block in each group --
+    const eccGroupedData = computeECC(paddedGroupedData, groupingObj, generatorPolynomial);
+    console.log("Computed ECC Grouped Data:", eccGroupedData);
 
     // -- 6. Interleave Stream
 
@@ -141,6 +145,53 @@ function padECCZeroBytesToBlocks(groupedData: Array<Array<Array<number>>>, group
     });
 
     return paddedGroupedData; // Return the padded grouped data
+}
+
+function computeECC(groupedData: Array<Array<Array<number>>>, groupingObj: Object, generatorPolynomial: Array<number>): Array<Array<Array<number>>> {
+    const eccGroupedData: Array<Array<Array<number>>> = groupedData.map((group, groupIndex) => {
+        const numOfBlocks = groupingObj[`g${groupIndex + 1}`].numBlocks;
+        if (group instanceof Array && groupIndex + 1 <= numOfBlocks) {
+            return group.map((block, blockIndex) => {
+                if (block instanceof Array && blockIndex + 1 <= numOfBlocks) {
+                    const blockDataCodewordBufferSize = groupingObj[`g${groupIndex + 1}`].dataCodewordsPerBlock;
+                    /**
+                     * Why we need to copy the intial data and create a copy of the whole block:
+                     * As we perform the ECC on the entire block, the data portion of it will be altered and evantually become 0.
+                     * In order to retain the original data codewords and also compute the ECC codewords correctly, we must create a copy
+                     * of the data we can compute the codewords on, and then just extract to ECC portion from it and add it to the original
+                     * data codewords array.
+                     * 
+                     * As we calculate ECC, the values of the codewords do not instantly become 0, rather they are altered throughout the algorithm
+                     * meaning that we cannot just replace the old value once a calculation is done, the codeword must remain altered until the end.
+                     * 
+                     * That is why we only add the original codewords back after the error correction has been fully calculated.
+                     * 
+                     */
+                    const initialDataBlock = block.slice(0, blockDataCodewordBufferSize); // Get only the data codewords for ECC calculation
+                    const currentBlock = [...block]; // Copy the entire block including ECC padding to perform ECC calculation
+
+                    for (let codewordIndex = 0; codewordIndex < blockDataCodewordBufferSize; codewordIndex++) {
+                        const currentCodeword: number = currentBlock[codewordIndex]!;
+
+                        if (currentCodeword !== 0) {
+                            // For each codeword in the block, multiply the generator polynomial by the codeword and XOR it with the padded data
+                            for (let polynomialIndex = 0; polynomialIndex < generatorPolynomial.length; polynomialIndex++) {
+                                currentBlock[codewordIndex + polynomialIndex] = gfXor(currentBlock[codewordIndex + polynomialIndex], gfMultiply(generatorPolynomial[polynomialIndex], currentCodeword));
+                            }
+                        }
+                    }
+                    const eccCodewords = currentBlock.slice(blockDataCodewordBufferSize); // Extract the ECC codewords from the ECCed block
+                    const completeBlock = [...initialDataBlock, ...eccCodewords]; // Combine the initial data codewords with the computed ECC codewords
+                    return completeBlock; // Return the block with computed ECC
+                }
+                return []; // Return empty array as fallback
+            });
+        }
+        return []; // Return empty array as fallback
+    });
+
+    // Return the ECCed grouped data
+    return eccGroupedData;
 }
 
 export default generateECCStream;
