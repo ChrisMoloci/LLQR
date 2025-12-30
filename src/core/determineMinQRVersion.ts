@@ -3,7 +3,7 @@ import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
 import { qrVersions } from "../types";
 
-export default function determineMinQRVersion(encodedData: Array<string>, eccLevel: ECCLevelCode, mode: DataEncodingMode): qrVersions {
+export default function determineMinQRVersion(encodedData: Array<string>, eccLevel: ECCLevelCode, mode: DataEncodingMode): {charCountIndicatorLength: number, version: qrVersions} {
     // Determine length of data
     let length = encodedData.reduce((length, el) => length + el.length, 0);
 
@@ -53,7 +53,7 @@ export default function determineMinQRVersion(encodedData: Array<string>, eccLev
     // bestVersion = 3;
     // currentCharCountIndicatorLength = getCharCountIndicatorLength(mode, bestVersion);
 
-    return bestVersion as qrVersions;
+    return {charCountIndicatorLength: currentCharCountIndicatorLength, version: bestVersion as qrVersions};
 }
 
 // Helper function for determinVersion()
