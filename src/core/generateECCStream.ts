@@ -3,7 +3,7 @@ import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { qrVersions } from "../types";
 import { gfMultiply, gfXor } from "./GF256_Arithmetic";
 
-function generateECCStream(encodedData: Array<string>, qrVersion: qrVersions, eccLevelCode: ECCLevelCode) {
+function generateECCStream(encodedData: Array<string>, qrVersion: qrVersions, eccLevelCode: ECCLevelCode): Array<string> {
     const eccLevel = Object.entries(ECC_LEVEL_CODES).find(([key, value]) => value === eccLevelCode)?.[0];
     const groupingObj = qrDataCapacityBits[qrVersion][eccLevel!];
     const dataCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevel].data * 8;
@@ -34,7 +34,12 @@ function generateECCStream(encodedData: Array<string>, qrVersion: qrVersions, ec
     const interleavedDataStream = interleaveData(eccGroupedData, groupingObj);
     console.log("Final Interleaved Data and ECC Stream:", interleavedDataStream);
 
+    // -- 7. Convert interleaved number array to array of binary values --
+    const finalDataStream: Array<string> = interleavedDataStream.map(byte => byte.toString(2).padStart(8, '0'));
+    console.log("Final Data and ECC Stream as binary strings:", finalDataStream);
+
     // -- 7. Return ECC Stream as array of strings --
+    return finalDataStream;
 }
 
 function normalizeDataStream(encodedData: Array<string>, dataCodewordBufferSize: number): Array<string> {
