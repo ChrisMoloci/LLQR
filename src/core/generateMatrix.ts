@@ -20,15 +20,17 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     qrMatrixCanvas = addFinderPatterns(qrMatrixCanvas, size);
     console.log("QR Matrix Canvas after adding Finder Patterns:", qrMatrixCanvas);
 
-    // Add Timing Patterns
+    // -- 3. Add Timing Patterns
     qrMatrixCanvas = addTimingPatterns(qrMatrixCanvas, size);
     console.log("QR Matrix Canvas after adding Timing Patterns:", qrMatrixCanvas);
 
-    // Add Alignment Patterns
+    // -- 4. Add Alignment Patterns
     qrMatrixCanvas = addAlignmentPatterns(qrMatrixCanvas, version, size);
     console.log("QR Matrix Canvas after adding Alignment Patterns:", qrMatrixCanvas);
 
-    // Add dark module
+    // -- 5. Add Dark Module
+    qrMatrixCanvas = addDarkModule(qrMatrixCanvas, size);
+    console.log("QR Matrix Canvas after adding Dark Module:", qrMatrixCanvas);
 
     // Reserve format information
 
@@ -169,6 +171,14 @@ function addAlignmentPatterns(qrMatrixCanvas: QRMatrixCanvas, version: number, s
             }
         }
     }
+
+    // Return the updated QR matrix canvas
+    return qrMatrixCanvas;
+}
+
+function addDarkModule(qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatrixCanvas {
+    qrMatrixCanvas.matrix[size - 8]![8]! = 1; // Dark module in the center
+    qrMatrixCanvas.reservedMatrix[size - 8]![8]! = true; // Reserve dark module
 
     // Return the updated QR matrix canvas
     return qrMatrixCanvas;
