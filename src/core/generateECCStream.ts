@@ -5,7 +5,7 @@ import { gfMultiply, gfXor } from "./GF256_Arithmetic";
 
 function generateECCStream(encodedData: Array<string>, qrVersion: qrVersions, eccLevelCode: ECCLevelCode) {
     const eccLevel = Object.entries(ECC_LEVEL_CODES).find(([key, value]) => value === eccLevelCode)?.[0];
-    const groupingObj = qrDataCapacityBits[qrVersion][eccLevel!].blocks;
+    const groupingObj = qrDataCapacityBits[qrVersion][eccLevel!];
     const dataCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevel].data * 8;
     const eccCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevel].ecc * 8;
     const generatorPolynomial: Array<number> = qrDataCapacityBits[qrVersion][eccLevel].generator;
@@ -31,6 +31,8 @@ function generateECCStream(encodedData: Array<string>, qrVersion: qrVersions, ec
     console.log("Computed ECC Grouped Data:", eccGroupedData);
 
     // -- 6. Interleave Stream
+    const interleavedDataStream = interleaveData(eccGroupedData, groupingObj);
+    console.log("Final Interleaved Data and ECC Stream:", interleavedDataStream);
 
     // -- 7. Return ECC Stream as array of strings --
 }
@@ -92,8 +94,8 @@ function normalizeDataStream(encodedData: Array<string>, dataCodewordBufferSize:
 
 function groupDataAndBlocks(dataStream: Array<number>, groupingObj: Object) {
     // Create the unnormalized groups with data from all blocks in each group
-    const group1 = dataStream.slice(0, (groupingObj.g1.numBlocks * groupingObj.g1.dataCodewordsPerBlock));
-    const group2 = dataStream.slice((groupingObj.g1.numBlocks * groupingObj.g1.dataCodewordsPerBlock), ((groupingObj.g1.numBlocks * groupingObj.g1.dataCodewordsPerBlock)) + ((groupingObj.g2.numBlocks * groupingObj.g2.dataCodewordsPerBlock)));
+    const group1 = dataStream.slice(0, (groupingObj.blocks.g1.numBlocks * groupingObj.blocks.g1.dataCodewordsPerBlock));
+    const group2 = dataStream.slice((groupingObj.blocks.g1.numBlocks * groupingObj.blocks.g1.dataCodewordsPerBlock), ((groupingObj.blocks.g1.numBlocks * groupingObj.blocks.g1.dataCodewordsPerBlock)) + ((groupingObj.blocks.g2.numBlocks * groupingObj.blocks.g2.dataCodewordsPerBlock)));
 
     // Create group matrix of blocks
     const groupedData: Array<Array<Array<number>>> = [[], []]; // Array to hold two groups
@@ -103,11 +105,11 @@ function groupDataAndBlocks(dataStream: Array<number>, groupingObj: Object) {
         switch (group) {
             case groupedData[0]: // Group 1
                 // Create blocks for group 1
-                groupedData[0] = createBlocksForGroup(group1, groupingObj.g1.numBlocks, groupingObj.g1.dataCodewordsPerBlock);
+                groupedData[0] = createBlocksForGroup(group1, groupingObj.blocks.g1.numBlocks, groupingObj.blocks.g1.dataCodewordsPerBlock);
                 break;
             case groupedData[1]: // Group 2
                 // Create blocks for group 2
-                groupedData[1] = createBlocksForGroup(group2, groupingObj.g2.numBlocks, groupingObj.g2.dataCodewordsPerBlock);  
+                groupedData[1] = createBlocksForGroup(group2, groupingObj.blocks.g2.numBlocks, groupingObj.blocks.g2.dataCodewordsPerBlock);  
                 break;
         }
     }
@@ -130,7 +132,7 @@ function groupDataAndBlocks(dataStream: Array<number>, groupingObj: Object) {
 // Function to pad zero bytes for ECC codewords in each block
 function padECCZeroBytesToBlocks(groupedData: Array<Array<Array<number>>>, groupingObj: Object, eccCodewordBufferSize: number): Array<Array<Array<number>>> {
     const paddedGroupedData: Array<Array<Array<number>>> = groupedData.map((group, groupIndex) => {
-        const numOfBlocks = groupingObj[`g${groupIndex + 1}`].numBlocks;
+        const numOfBlocks = groupingObj.blocks[`g${groupIndex + 1}`].numBlocks;
         if (group instanceof Array && numOfBlocks > 0) {
             return group.map((block, blockIndex) => {
                 if (block instanceof Array && blockIndex + 1 <= numOfBlocks) {
@@ -149,11 +151,11 @@ function padECCZeroBytesToBlocks(groupedData: Array<Array<Array<number>>>, group
 
 function computeECC(groupedData: Array<Array<Array<number>>>, groupingObj: Object, generatorPolynomial: Array<number>): Array<Array<Array<number>>> {
     const eccGroupedData: Array<Array<Array<number>>> = groupedData.map((group, groupIndex) => {
-        const numOfBlocks = groupingObj[`g${groupIndex + 1}`].numBlocks;
+        const numOfBlocks = groupingObj.blocks[`g${groupIndex + 1}`].numBlocks;
         if (group instanceof Array && groupIndex + 1 <= numOfBlocks) {
             return group.map((block, blockIndex) => {
                 if (block instanceof Array && blockIndex + 1 <= numOfBlocks) {
-                    const blockDataCodewordBufferSize = groupingObj[`g${groupIndex + 1}`].dataCodewordsPerBlock;
+                    const blockDataCodewordBufferSize = groupingObj.blocks[`g${groupIndex + 1}`].dataCodewordsPerBlock;
                     /**
                      * Why we need to copy the intial data and create a copy of the whole block:
                      * As we perform the ECC on the entire block, the data portion of it will be altered and evantually become 0.
@@ -192,6 +194,96 @@ function computeECC(groupedData: Array<Array<Array<number>>>, groupingObj: Objec
 
     // Return the ECCed grouped data
     return eccGroupedData;
+}
+
+function interleaveData(groupedData: Array<Array<Array<number>>>, groupingObj: Object): Array<number> {
+    if (!groupedData) throw new Error("No grouped data provided for interleaving.");
+
+    // Splite data and ecc and add them to a single array
+    const dataCodewords: Array<number> = [];
+    const eccCodewords: Array<number> = [];
+    const interleavedData: Array<number> = [];
+
+    // Get various buffer sizes for each groups blocks
+    const g1DataCodewordBufferSize = groupingObj.blocks.g1.dataCodewordsPerBlock; // Data portion
+    const g2DataCodewordBufferSize = groupingObj.blocks.g2.dataCodewordsPerBlock; // Data portion
+    const eccCodewordBufferSize = groupingObj.ecc; // ECC portion (same for all blocks)
+    const g1CodewordBufferSize = g1DataCodewordBufferSize + eccCodewordBufferSize; // Data + ECC
+    const g2CodewordBufferSize = g2DataCodewordBufferSize + eccCodewordBufferSize; // Data + ECC
+
+    console.log(g1DataCodewordBufferSize, g2DataCodewordBufferSize);
+    console.log(g1CodewordBufferSize, g2CodewordBufferSize);
+
+    // Stores whether each group has data blocks or not
+    const hasG1 = Array.isArray(groupedData[0][0]) && groupedData[0].length > 0;
+    const hasG2 = Array.isArray(groupedData[1][0]) && groupedData[1].length > 0;
+
+    // Determine the highest data buffer size
+    const highestDataBufferSize = Math.max(
+        hasG1 ? g1DataCodewordBufferSize : 0, 
+        hasG2 ? g2DataCodewordBufferSize : 0
+    );
+
+    /**
+     * Note: It is important that data and ECC get interleaved independantly
+     * While ECC buffer sizes are always identical, the buffer sizes for the data
+     * can vary between the blocks in each group. For example, group 1 might have 31
+     * data codewords per block, while group can 2 have just 30 data codewords per block.
+     * If we were to interleave data and ECC together, we would end up with misaligned ECC 
+     * codewords becuase we would start placing ECC codewords from group 2 into the data portion
+     * instead of ECC portion.
+     */
+
+    // -- 1. Loop through each data codeword and interleave
+    for (let i = 0; i < highestDataBufferSize; i++) {
+        if (hasG1) {
+            for (let block of groupedData[0]) {
+                if (i < block.length) {
+                    // Add data from all blocks in group 1
+                    dataCodewords.push(block[i]!);
+                }
+            }
+        }
+
+        if (hasG2) {
+            for (let block of groupedData[1]) {
+                // Add data from all blocks in group 2
+                if (i < block.length) {
+                    dataCodewords.push(block[i]!);
+                }
+            }
+        }
+    }
+
+    // -- 2. Loop through each ECC codeword and interleave
+    for (let i = 0; i < eccCodewordBufferSize; i++) {
+        if (hasG1) {
+            for (let block of groupedData[0]) {
+                // Add ECC from all blocks in group 1
+                if (i < block.length) {
+                    eccCodewords.push(block[i + g1DataCodewordBufferSize]!);
+                }
+            }  
+        }
+
+        if (hasG2) {
+            for (let block of groupedData[1]) {
+                // Add ECC from all blocks in group 2
+                if (i < block.length) {
+                    eccCodewords.push(block[i + g2DataCodewordBufferSize]!);
+                }
+            }
+        }
+    }
+
+    console.log("Codeword interleaved data stream:", dataCodewords);
+    console.log("Codeword interleaved ECC stream:", eccCodewords);
+
+    // -- 3. Combine the interleaved data and ECC streams
+    interleavedData.push(...dataCodewords, ...eccCodewords);
+
+    // Return final interleaved data stream
+    return interleavedData;
 }
 
 export default generateECCStream;
