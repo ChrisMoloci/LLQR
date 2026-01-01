@@ -33,6 +33,9 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     console.log("QR Matrix Canvas after adding Dark Module:", qrMatrixCanvas);
 
     // Reserve format information
+    // Note: Only reserving, not adding since we haven't applied any masking
+    qrMatrixCanvas = reserveFormatInformation(qrMatrixCanvas, size);
+    console.log("QR Matrix Canvas after reserving Format Information:", qrMatrixCanvas);
 
     // Add version information if version >= 7
 
@@ -179,6 +182,22 @@ function addAlignmentPatterns(qrMatrixCanvas: QRMatrixCanvas, version: number, s
 function addDarkModule(qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatrixCanvas {
     qrMatrixCanvas.matrix[size - 8]![8]! = 1; // Dark module in the center
     qrMatrixCanvas.reservedMatrix[size - 8]![8]! = true; // Reserve dark module
+
+    // Return the updated QR matrix canvas
+    return qrMatrixCanvas;
+}
+
+function reserveFormatInformation(qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatrixCanvas {
+    for (let i = 0; i < 8; i++) {
+        // Top-left format information area
+        qrMatrixCanvas.reservedMatrix[8]![i]! = true; // Top-left horizontal
+        qrMatrixCanvas.reservedMatrix[i]![8]! = true; // Top-left vertical
+    }
+    for (let i = size - 8; i < size; i++) {
+        // Top-right format information area
+        qrMatrixCanvas.reservedMatrix[8]![i]! = true; // Top-right horizontal
+        qrMatrixCanvas.reservedMatrix[i]![8]! = true; // Bottom-left vertical
+    }
 
     // Return the updated QR matrix canvas
     return qrMatrixCanvas;
