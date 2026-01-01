@@ -45,7 +45,7 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     console.log("QR Matrix Canvas after adding Data Bits:", qrMatrixCanvas);
 
     // -- 9. Mask the matrix with every possible mask pattern if maskPattern is null
-    const maskedMatrices: Array<QRMatrixCanvas> = maskAllMatrices(qrMatrixCanvas, size);
+    const maskedMatrices: Array<Array<Array<number>>> = maskAllMatrices(qrMatrixCanvas, size);
     console.log("All Masked QR Matrices:", maskedMatrices);
 
     // Add format information to all the masked matrices
@@ -305,8 +305,8 @@ function addDataToMatrix(qrMatrixCanvas: QRMatrixCanvas, dataStream: Array<strin
     return qrMatrixCanvas;
 }
 
-function maskAllMatrices(qrMatrixCanvas: QRMatrixCanvas, size: number): Array<QRMatrixCanvas> {
-    const maskedMatrices: Array<QRMatrixCanvas> = [];
+function maskAllMatrices(qrMatrixCanvas: QRMatrixCanvas, size: number): Array<Array<Array<number>>> {
+    const maskedMatrices: Array<Array<Array<number>>> = [];
 
     maskedMatrices.push(maskQR(mask0, qrMatrixCanvas, size));
     maskedMatrices.push(maskQR(mask1, qrMatrixCanvas, size));

@@ -3,7 +3,7 @@ import { QRMatrixCanvas } from "../types";
 // Mask Functions union type
 export type MaskFunctions = typeof mask0 | typeof mask1 | typeof mask2 | typeof mask3 | typeof mask4 | typeof mask5 | typeof mask6 | typeof mask7;
 
-export default function maskQR(maskFunction: MaskFunctions, qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatrixCanvas {
+export default function maskQR(maskFunction: MaskFunctions, qrMatrixCanvas: QRMatrixCanvas, size: number): Array<Array<number>> {
     for (let col = size - 1; col >= 0; col--) {
         if (col === 6) col--;
 
@@ -14,7 +14,7 @@ export default function maskQR(maskFunction: MaskFunctions, qrMatrixCanvas: QRMa
         }
     }
 
-    return qrMatrixCanvas;
+    return qrMatrixCanvas.matrix;
 }
 
 export function mask0(matrix: Array<Array<number>>, row: number, col: number): number {
