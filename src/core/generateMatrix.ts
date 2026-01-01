@@ -1,10 +1,7 @@
 import { MaskPatternCode } from "../const";
 import { alignmentPatternLocations } from "../datasets/alignmentPatternLocations";
-
-interface QRMatrixCanvas {
-    matrix: Array<Array<number>>,
-    reservedMatrix: Array<Array<boolean>>
-} // Stores the QR matrix and reserved areas that data should not be placed into in matrix
+import { QRMatrixCanvas } from "../types";
+import { mask0, maskQR } from "./maskingFunctions";
 
 function generateMatrix(dataStream: Array<string>, version: number, eccLevel: string, maskPattern: MaskPatternCode | null = null) {
     // const matrix: Array<Array<number>> = []; // Will store the finalized matrix
@@ -45,7 +42,7 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     qrMatrixCanvas = addDataToMatrix(qrMatrixCanvas, dataStream, size);
     console.log("QR Matrix Canvas after adding Data Bits:", qrMatrixCanvas);
 
-    // Mask the matrix with every possible mask pattern if maskPattern is null
+    // Mask the matrix with every  possible mask pattern if maskPattern is null
 
     // Add format information to all the masked matrices
 
