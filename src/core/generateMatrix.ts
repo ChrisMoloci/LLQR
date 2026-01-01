@@ -38,6 +38,8 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     console.log("QR Matrix Canvas after reserving Format Information:", qrMatrixCanvas);
 
     // Add version information if version >= 7
+    qrMatrixCanvas = addVersionInformation(qrMatrixCanvas, version, size);
+    console.log("QR Matrix Canvas after adding Version Information:", qrMatrixCanvas);
 
     // Place data bits into the matrix, skipping reserved areas
 
@@ -197,6 +199,63 @@ function reserveFormatInformation(qrMatrixCanvas: QRMatrixCanvas, size: number):
         // Top-right format information area
         qrMatrixCanvas.reservedMatrix[8]![i]! = true; // Top-right horizontal
         qrMatrixCanvas.reservedMatrix[i]![8]! = true; // Bottom-left vertical
+    }
+
+    // Return the updated QR matrix canvas
+    return qrMatrixCanvas;
+}
+
+function addVersionInformation(qrMatrixCanvas: QRMatrixCanvas, version: number, size: number): QRMatrixCanvas {
+    version = 7; // Temporary hardcode for testing
+
+    // -- 1. Compute the version information (With ECC) - With (18,6) Golay Code
+
+    // Get the version number in binary representation (6 bits long)
+    const binaryVersion = version.toString(2).padStart(6, '0');
+
+    // Shift left by 12 to make space for ECC bits (the leading 0s are technically already there since JS used 32-bit integers)
+    const paddedVersionNumber = version << 12;
+    // Get the binary representation of the padded(bit-shifted) version number (used for padding the generator polynomial)
+    const paddedVersionNumberBinary = paddedVersionNumber.toString(2);
+
+    // Generator polynomial as an integer as a binary literal
+    const generatorPolynomial: number = 0b1111100100101;
+    // Store the binary literal of the generator polynomial in an array (used for padding the generator polynomial)
+    const generatorPolynomialBinary: string = generatorPolynomial.toString(2);
+
+    // Pad the generator polynomial (on the end) to be the same length as the padded version number binary representation
+    const paddedGeneratorPolynomial = generatorPolynomial << (paddedVersionNumberBinary.length - generatorPolynomialBinary.length);
+
+    // Perform (18, 6) Golay Code division using XOR to get ECC bits
+    const eccVersion: number = paddedVersionNumber ^ paddedGeneratorPolynomial;
+
+    // Convert to a binary string and pad to 12 bits long
+    const eccVersionInformationStream = eccVersion.toString(2).padStart(12, '0'); // Get ECC bits as 12-bit binary string
+
+    console.log("ECC Version Information Stream (12 bits):", eccVersionInformationStream);
+
+    // Add original 6-bit version number to the beginning of the ECC stream and convert to a reversed number array (start from LSB)
+    const completeVersionInformationStream: number[] = (binaryVersion + eccVersionInformationStream).split('').map(bit => parseInt(bit)).reverse();
+    console.log("Complete Version Information Stream (18 bits):", completeVersionInformationStream.join(''));
+
+    // TODO: Consider if using a lookup table is more efficient
+
+    // -- 2. Place version information into the matrix
+    let bitIndex = 0; // Stores the current bit index in the version information stream
+    for (let i = 0; i < 6; i++) {
+        for (let j = 0; j < 3; j++) {
+            // Bottom-left (above finder pattern)
+            qrMatrixCanvas.matrix[(size - 11) + j]![i]! = 
+                completeVersionInformationStream[bitIndex]; // Place the bit
+            qrMatrixCanvas.reservedMatrix[(size - 11) + j]![i]! = true; // Reserve the area
+
+            // Top-right (next to finder pattern)
+            qrMatrixCanvas.matrix[i]![(size - 11) + j]! = 
+                completeVersionInformationStream[bitIndex];
+            qrMatrixCanvas.reservedMatrix[i]![(size - 11) + j]! = true; // Reserve the area
+            
+            bitIndex++; // Increment bit index
+        }
     }
 
     // Return the updated QR matrix canvas
