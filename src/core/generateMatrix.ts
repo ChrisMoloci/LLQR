@@ -38,7 +38,7 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     console.log("QR Matrix Canvas after reserving Format Information:", qrMatrixCanvas);
 
     // Add version information if version >= 7
-    qrMatrixCanvas = addVersionInformation(qrMatrixCanvas, version, size);
+    if (version >= 7) qrMatrixCanvas = addVersionInformation(qrMatrixCanvas, version, size);
     console.log("QR Matrix Canvas after adding Version Information:", qrMatrixCanvas);
 
     // Place data bits into the matrix, skipping reserved areas
@@ -206,8 +206,6 @@ function reserveFormatInformation(qrMatrixCanvas: QRMatrixCanvas, size: number):
 }
 
 function addVersionInformation(qrMatrixCanvas: QRMatrixCanvas, version: number, size: number): QRMatrixCanvas {
-    version = 7; // Temporary hardcode for testing
-
     // -- 1. Compute the version information (With ECC) - With (18,6) Golay Code
 
     // Get the version number in binary representation (6 bits long)
