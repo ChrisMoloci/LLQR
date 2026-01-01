@@ -1,9 +1,11 @@
 import { MaskPatternCode } from "../const";
 import { alignmentPatternLocations } from "../datasets/alignmentPatternLocations";
 import { QRMatrixCanvas } from "../types";
-import { mask0, maskQR } from "./maskingFunctions";
+import maskQR from "./maskingFunctions"; 
+import { mask0, mask1, mask2, mask3, mask4, mask5, mask6, mask7 } from "./maskingFunctions";
 
 function generateMatrix(dataStream: Array<string>, version: number, eccLevel: string, maskPattern: MaskPatternCode | null = null) {
+    // dataStream = [];
     // const matrix: Array<Array<number>> = []; // Will store the finalized matrix
     // const reservedAreas: Array<Array<boolean>> = []; // Stores the areas that data should not be placed into
 
@@ -29,20 +31,22 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     qrMatrixCanvas = addDarkModule(qrMatrixCanvas, size);
     console.log("QR Matrix Canvas after adding Dark Module:", qrMatrixCanvas);
 
-    // Reserve format information
+    // -- 6. Reserve format information
     // Note: Only reserving, not adding since we haven't applied any masking
     qrMatrixCanvas = reserveFormatInformation(qrMatrixCanvas, size);
     console.log("QR Matrix Canvas after reserving Format Information:", qrMatrixCanvas);
 
-    // Add version information if version >= 7
+    // -- 7. Add version information if version >= 7
     if (version >= 7) qrMatrixCanvas = addVersionInformation(qrMatrixCanvas, version, size);
     console.log("QR Matrix Canvas after adding Version Information:", qrMatrixCanvas);
 
-    // Place data bits into the matrix, skipping reserved areas
+    // -- 8. Place data bits into the matrix, skipping reserved areas
     qrMatrixCanvas = addDataToMatrix(qrMatrixCanvas, dataStream, size);
     console.log("QR Matrix Canvas after adding Data Bits:", qrMatrixCanvas);
 
-    // Mask the matrix with every  possible mask pattern if maskPattern is null
+    // -- 9. Mask the matrix with every possible mask pattern if maskPattern is null
+    const maskedMatrices: Array<QRMatrixCanvas> = maskAllMatrices(qrMatrixCanvas, size);
+    console.log("All Masked QR Matrices:", maskedMatrices);
 
     // Add format information to all the masked matrices
 
@@ -299,6 +303,21 @@ function addDataToMatrix(qrMatrixCanvas: QRMatrixCanvas, dataStream: Array<strin
 
     // Return the updated QR matrix canvas
     return qrMatrixCanvas;
+}
+
+function maskAllMatrices(qrMatrixCanvas: QRMatrixCanvas, size: number): Array<QRMatrixCanvas> {
+    const maskedMatrices: Array<QRMatrixCanvas> = [];
+
+    maskedMatrices.push(maskQR(mask0, qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(mask1, qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(mask2, qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(mask3, qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(mask4, qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(mask5, qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(mask6, qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(mask7, qrMatrixCanvas, size));
+
+    return maskedMatrices;
 }
 
 export default generateMatrix;
