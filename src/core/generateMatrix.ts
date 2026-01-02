@@ -176,7 +176,7 @@ function addAlignmentPatterns(qrMatrixCanvas: QRMatrixCanvas, version: number, s
                 (centerX > size - 10 && centerY < 9)) {            // Top-right finder
                     // TODO: Verify necessity of this check
                     console.log(`Skipping alignment pattern at (${centerX}, ${centerY}) due to overlap with finder pattern.`);
-                    break;
+                    continue;
             }
 
             // Place the 5x5 alignment pattern centered at (centerX, centerY)
