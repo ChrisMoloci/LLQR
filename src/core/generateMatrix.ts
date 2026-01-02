@@ -33,6 +33,7 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     // -- 4. Add Alignment Patterns --
     qrMatrixCanvas = addAlignmentPatterns(qrMatrixCanvas, version, size);
     console.log("QR Matrix Canvas after adding Alignment Patterns:", qrMatrixCanvas);
+    // TODO: FIX MISSING ALLIGNMENT PATTERNS
 
     // -- 5. Add Dark Module --
     qrMatrixCanvas = addDarkModule(qrMatrixCanvas, size);
@@ -62,11 +63,8 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     console.log("Finalized QR Matrices with Format Information:", finalizedMatrices);
 
     // -- 11. Determine optimal mask pattern and use that as the final matrix --
-    let optimalMatrix: Array<Array<number>> = determineOptimalMaskPattern(maskedMatrices);
-    // console.log("Optimal QR Matrix selected:", optimalMatrix);
-
-    optimalMatrix = maskedMatrices[0]!.matrix; // TODO: Remove when determineOptimalMaskPattern is implemented
-    console.log("Optimal QR Matrix selected (temporary):", optimalMatrix);
+    const optimalMatrix: Array<Array<number>> = determineOptimalMaskPattern(maskedMatrices);
+    console.log("Optimal QR Matrix selected:", optimalMatrix);
 
     // -- 12. Return the finalized matrix --
     return optimalMatrix;
@@ -420,13 +418,15 @@ function determineOptimalMaskPattern(maskedQRMatrices: Array<MaskedQRMatrix>): A
         penaltyScore += evaluateFinderPatternSimilarities(maskedQRMatrix);
 
         // -- 4. Evaluate if more modules are dark than light
+        penaltyScore += evaluateDarkModuleRatio(maskedQRMatrix);
 
+        // Store the penalty score in the masked matrix for reference
         maskedQRMatrix.penaltyScore = penaltyScore;
         console.log(`Mask Pattern ${maskedQRMatrix.maskPattern} has penalty score:`, penaltyScore);
     }
     
     // Return the most optimally masked matrix
-    return [[]]
+    return maskedQRMatrices.reduce((prev, current) => (prev.penaltyScore! < current.penaltyScore! ? prev : current)).matrix;
 }
 
 function evaluateConsecutiveModules(maskedQRMatrix: MaskedQRMatrix): number {
@@ -493,19 +493,13 @@ function evaluate2x2Blocks(maskedQRMatrix: MaskedQRMatrix): number {
     let penaltyScore = 0;
     for (let i = 0; i < maskedQRMatrix.matrix.length - 1; i++) {
         for (let j = 0; j < maskedQRMatrix.matrix.length - 1; j++) {
+            // Store the four modules in the 2x2 block
             const moduleA = maskedQRMatrix.matrix[i]![j]!;
             const moduleB = maskedQRMatrix.matrix[i + 1]![j]!;
             const moduleC = maskedQRMatrix.matrix[i]![j + 1]!;
             const moduleD = maskedQRMatrix.matrix[i + 1]![j + 1]!;
-            // const block = [
-            //     maskedQRMatrix.matrix[i]![j]!,
-            //     maskedQRMatrix.matrix[i + 1]![j]!,
-            //     maskedQRMatrix.matrix[i]![j + 1]!,
-            //     maskedQRMatrix.matrix[i + 1]![j + 1]!
-            // ];
-            // if (block.every(module => module === 1) || block.every(module => module === 0)) {
-            //     penaltyScore += 3;
-            // }
+
+            // Check if all four modules are the same color
             if ((moduleA === moduleB) && (moduleA === moduleC) && (moduleA === moduleD)) {
                 penaltyScore += 3;
             }
@@ -532,10 +526,10 @@ function evaluateFinderPatternSimilarities(maskedQRMatrix: MaskedQRMatrix): numb
             const rowSliceNum = parseInt(rowSlice, 2);
 
             if (rowSliceNum === pattern2) {
-                console.log("Found pattern in row at (", i, ",", j, ") for pattern 2");
+                // console.log("Found pattern in row at (", i, ",", j, ") for pattern 2");
                 penaltyScore += 40;
             } else if (rowSliceNum  === pattern1) {
-                console.log("Found pattern in row at (", i, ",", j, ") for pattern 1, value:", (rowSliceNum).toString(2).padStart(11, '0'), " number: ", rowSliceNum);
+                // console.log("Found pattern in row at (", i, ",", j, ") for pattern 1, value:", (rowSliceNum).toString(2).padStart(11, '0'), " number: ", rowSliceNum);
                 penaltyScore += 40;
             }
 
@@ -543,10 +537,10 @@ function evaluateFinderPatternSimilarities(maskedQRMatrix: MaskedQRMatrix): numb
             const colSlice = maskedQRMatrix.matrix.slice(j, j + 11).map(row => row[i]!).join('');
             const colSliceNum = parseInt(colSlice, 2);
             if (colSliceNum === pattern2) {
-                console.log("Found pattern in col at (", i, ",", j, ") for pattern 2");
+                // console.log("Found pattern in col at (", i, ",", j, ") for pattern 2");
                 penaltyScore += 40;
             } else if (colSliceNum  === pattern1) {
-                console.log("Found pattern in col at (", i, ",", j, ") for pattern 1, value:", (colSliceNum).toString(2).padStart(11, '0'), " number: ", colSliceNum);
+                // console.log("Found pattern in col at (", i, ",", j, ") for pattern 1, value:", (colSliceNum).toString(2).padStart(11, '0'), " number: ", colSliceNum);
                 penaltyScore += 40;
             }
         }
@@ -555,6 +549,38 @@ function evaluateFinderPatternSimilarities(maskedQRMatrix: MaskedQRMatrix): numb
     console.log("Penalty score after evaluating finder pattern similarities:", penaltyScore);
 
     return penaltyScore;
+}
+
+function evaluateDarkModuleRatio(maskedQRMatrix: MaskedQRMatrix): number {
+    let darkModuleCount = 0; // Stores the amount of dark modules in the matrix
+    let lightModuleCount = 0; // Stores the amount of light modules in the matrix
+
+    // Count dark and light modules
+    for (let i = 0; i < maskedQRMatrix.matrix.length; i++) {
+        for (let j = 0; j < maskedQRMatrix.matrix.length; j++) {
+            if (maskedQRMatrix.matrix[i]![j]! === 1) {
+                darkModuleCount++;
+            } else {
+                lightModuleCount++;
+            }
+        }
+    }
+
+    // Calculate the percentage of dark modules
+    const totalModules = darkModuleCount + lightModuleCount;
+    const darkModulePercentage = (darkModuleCount / totalModules) * 100;
+
+    // Determine prev and next multiple of 5
+    const prevMultipleOf5 = Math.floor(darkModulePercentage / 5) * 5;
+    const nextMultipleOf5 = Math.ceil(darkModulePercentage / 5) * 5;
+
+    // Subtract 50, get absolute value, divide by 5, multiple by 10
+    const prevPenalty = Math.abs(prevMultipleOf5 - 50) / 5 * 10;
+    const nextPenalty = Math.abs(nextMultipleOf5 - 50) / 5 * 10;
+
+    console.log("Penalty score after evaluating dark module ratio:", Math.min(prevPenalty, nextPenalty));
+
+    return Math.min(prevPenalty, nextPenalty); // Return the lower penalty score
 }
 
 export default generateMatrix;
