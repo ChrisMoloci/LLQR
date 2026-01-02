@@ -410,12 +410,14 @@ function determineOptimalMaskPattern(maskedQRMatrices: Array<MaskedQRMatrix>): A
         penaltyScore += evaluateConsecutiveModules(maskedQRMatrix);
 
         // -- 2. Evaluate 2x2 Blocks
+        penaltyScore += evaluate2x2Blocks(maskedQRMatrix);
 
         // -- 3. Evaluate Finder Pattern Similarities
 
         // -- 4. Evaluate if more modules are dark than light
 
         maskedQRMatrix.penaltyScore = penaltyScore;
+        console.log(`Mask Pattern ${maskedQRMatrix.maskPattern} has penalty score:`, penaltyScore);
     }
     
     // Return the most optimally masked matrix
@@ -478,6 +480,34 @@ function evaluateConsecutiveModules(maskedQRMatrix: MaskedQRMatrix): number {
     }
 
     console.log("Penalty score after evaluating consecutive modules:", penaltyScore);
+
+    return penaltyScore;
+}
+
+function evaluate2x2Blocks(maskedQRMatrix: MaskedQRMatrix): number {
+    let penaltyScore = 0;
+    for (let i = 0; i < maskedQRMatrix.matrix.length - 1; i++) {
+        for (let j = 0; j < maskedQRMatrix.matrix.length - 1; j++) {
+            const moduleA = maskedQRMatrix.matrix[i]![j]!;
+            const moduleB = maskedQRMatrix.matrix[i + 1]![j]!;
+            const moduleC = maskedQRMatrix.matrix[i]![j + 1]!;
+            const moduleD = maskedQRMatrix.matrix[i + 1]![j + 1]!;
+            // const block = [
+            //     maskedQRMatrix.matrix[i]![j]!,
+            //     maskedQRMatrix.matrix[i + 1]![j]!,
+            //     maskedQRMatrix.matrix[i]![j + 1]!,
+            //     maskedQRMatrix.matrix[i + 1]![j + 1]!
+            // ];
+            // if (block.every(module => module === 1) || block.every(module => module === 0)) {
+            //     penaltyScore += 3;
+            // }
+            if ((moduleA === moduleB) && (moduleA === moduleC) && (moduleA === moduleD)) {
+                penaltyScore += 3;
+            }
+        }
+    }
+
+    console.log("Penalty score after evaluating 2x2 blocks:", penaltyScore);
 
     return penaltyScore;
 }
