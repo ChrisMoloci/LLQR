@@ -1,7 +1,7 @@
 import { MASK_PATTERN_CODES, MaskPatternCode } from "../const";
 import { alignmentPatternLocations } from "../datasets/alignmentPatternLocations";
 import { QRMatrixCanvas } from "../types";
-import maskQR from "./maskingFunctions"; 
+import maskQR, { MASK_PATTERN_FUNCTIONS } from "./maskingFunctions"; 
 import { mask0, mask1, mask2, mask3, mask4, mask5, mask6, mask7 } from "./maskingFunctions";
 import { getBitLength } from "./utils";
 
@@ -317,14 +317,14 @@ function addDataToMatrix(qrMatrixCanvas: QRMatrixCanvas, dataStream: Array<strin
 function maskAllMatrices(qrMatrixCanvas: QRMatrixCanvas, size: number): Array<Array<Array<number>>> {
     const maskedMatrices: Array<Array<Array<number>>> = [];
 
-    maskedMatrices.push(maskQR(mask0, qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(mask1, qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(mask2, qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(mask3, qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(mask4, qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(mask5, qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(mask6, qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(mask7, qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[0]], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[1]], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[2]], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[3]], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[4]], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[5]], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[6]], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[7]], qrMatrixCanvas, size));
 
     return maskedMatrices;
 }
@@ -394,6 +394,10 @@ function addFormatInformationToMatrix(matrix: Array<Array<number>>, eccLevel: st
 
     // Return the updated matrix
     return matrix;
+}
+
+function determineOptimalMaskPattern(maskedMatrices: Array<Array<Array<number>>>): Array<Array<number>> {
+
 }
 
 export default generateMatrix;
