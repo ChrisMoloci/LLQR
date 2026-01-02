@@ -5,6 +5,12 @@ import maskQR, { MASK_PATTERN_FUNCTIONS } from "./maskingFunctions";
 import { mask0, mask1, mask2, mask3, mask4, mask5, mask6, mask7 } from "./maskingFunctions";
 import { getBitLength } from "./utils";
 
+export interface MaskedQRMatrix {
+    matrix: Array<Array<number>>,
+    maskPattern: MaskPatternCode,
+    penaltyScore?: number,
+}
+
 function generateMatrix(dataStream: Array<string>, version: number, eccLevel: string, maskPattern: MaskPatternCode | null = null) {
     // dataStream = [];
     // const matrix: Array<Array<number>> = []; // Will store the finalized matrix
@@ -46,16 +52,13 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     console.log("QR Matrix Canvas after adding Data Bits:", qrMatrixCanvas);
 
     // -- 9. Mask the matrix with every possible mask pattern if maskPattern is null --
-    const maskedMatrices: Array<Array<Array<number>>> = maskAllMatrices(qrMatrixCanvas, size);
+    const maskedMatrices: Array<MaskedQRMatrix> = maskAllMatrices(qrMatrixCanvas, size);
     console.log("All Masked QR Matrices:", maskedMatrices);
 
     // -- 10. Add format information to all the masked matrices --
     const finalizedMatrices: Array<Array<Array<number>>> = 
-        maskedMatrices.map((matrix, index) => 
-            addFormatInformationToMatrix(matrix, eccLevel, 
-                (MASK_PATTERN_CODES[index as keyof typeof MASK_PATTERN_CODES]), 
-                size
-            ));
+        maskedMatrices.map((maskedMatrix, index) => 
+            addFormatInformationToMatrix(maskedMatrix, eccLevel, size));
     console.log("Finalized QR Matrices with Format Information:", finalizedMatrices);
 
     // -- 11. Determine optimal mask pattern and use that as the final matrix --
@@ -314,29 +317,29 @@ function addDataToMatrix(qrMatrixCanvas: QRMatrixCanvas, dataStream: Array<strin
     return qrMatrixCanvas;
 }
 
-function maskAllMatrices(qrMatrixCanvas: QRMatrixCanvas, size: number): Array<Array<Array<number>>> {
-    const maskedMatrices: Array<Array<Array<number>>> = [];
+function maskAllMatrices(qrMatrixCanvas: QRMatrixCanvas, size: number): Array<MaskedQRMatrix> {
+    const maskedMatrices: Array<MaskedQRMatrix> = [];
 
-    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[0]], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[1]], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[2]], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[3]], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[4]], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[5]], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[6]], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_FUNCTIONS[MASK_PATTERN_CODES[7]], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[0], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[1], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[2], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[3], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[4], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[5], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[6], qrMatrixCanvas, size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[7], qrMatrixCanvas, size));
 
     return maskedMatrices;
 }
 
-function addFormatInformationToMatrix(matrix: Array<Array<number>>, eccLevel: string, maskPattern: MaskPatternCode, size: number): Array<Array<number>> {
+function addFormatInformationToMatrix(maskedQRMatrix: MaskedQRMatrix, eccLevel: string, size: number): MaskedQRMatrix {
     // Debug values (REMOVE IN PRODUCTION)
     // eccLevel = "01";
     // maskPattern = "100";
     // Expected value based on debug values: 110011000101111
 
     // -- 1. Generate the 15-bit format information string with ECC
-    const formatInformationString: string = eccLevel + maskPattern;
+    const formatInformationString: string = eccLevel + maskedQRMatrix.maskPattern;
     let formatInformationNumber: number = parseInt(formatInformationString, 2) << 10;
 
     const generatorPolynomial: number = 0b10100110111;
@@ -386,17 +389,17 @@ function addFormatInformationToMatrix(matrix: Array<Array<number>>, eccLevel: st
     // Add the format information bits to the matrix
     for (let i = 0; i < 15; i++) {
         const [row, col] = formatPositions[i]; // Get the position for the current bit
-        matrix[row]![col]! = completeFormatInformationStream[i]!; // Place the bit in the matrix
+        maskedQRMatrix.matrix[row]![col]! = completeFormatInformationStream[i]!; // Place the bit in the matrix
 
         const [mirroredRow, mirroredCol] = formatPositions[i + 15]; // Get the mirrored position
-        matrix[mirroredRow]![mirroredCol]! = completeFormatInformationStream[i]!; // Place the bit in the mirrored position
+        maskedQRMatrix.matrix[mirroredRow]![mirroredCol]! = completeFormatInformationStream[i]!; // Place the bit in the mirrored position
     }
 
     // Return the updated matrix
-    return matrix;
+    return maskedQRMatrix;
 }
 
-function determineOptimalMaskPattern(maskedMatrices: Array<Array<Array<number>>>): Array<Array<number>> {
+function determineOptimalMaskPattern(maskedMatrices: Array<Array<Array<number>>>): MaskedQRPenaltyEvaluation {
 
 }
 
