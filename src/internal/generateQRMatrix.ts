@@ -7,7 +7,7 @@ import prepareDatastream from "../core/prepareDatastream";
 import generateECCStream from "../core/generateECCStream";
 import generateMatrix from "../core/generateMatrix";
 
-function generateQRMatrix(data: string, specs: qrSpecs = DEFAULT_QR_SPECS): Array<Array<string>> {
+function generateQRMatrix(data: string, specs: qrSpecs = DEFAULT_QR_SPECS): Array<Array<number>> {
     console.log("Generating QR Code with specs:", specs);
 
     // Determine Mode
@@ -37,10 +37,10 @@ function generateQRMatrix(data: string, specs: qrSpecs = DEFAULT_QR_SPECS): Arra
     console.log("Generated ECC Stream:", eccStream);
 
     // Generate the matrix using the ecc data stream
-    const matrix = generateMatrix(eccStream, minVersion, specs.eccLevel);
+    const matrix: Array<Array<number>> = generateMatrix(eccStream, minVersion, specs.eccLevel);
     console.log("Generated QR Matrix:", matrix);
 
-    return new Array<Array<string>>();
+    return matrix;
 }
 
 export default generateQRMatrix;

@@ -11,7 +11,7 @@ export interface MaskedQRMatrix {
     penaltyScore?: number,
 }
 
-function generateMatrix(dataStream: Array<string>, version: number, eccLevel: string, maskPattern: MaskPatternCode | null = null) {
+function generateMatrix(dataStream: Array<string>, version: number, eccLevel: string, maskPattern: MaskPatternCode | null = null): Array<Array<number>> {
     // dataStream = [];
     // const matrix: Array<Array<number>> = []; // Will store the finalized matrix
     // const reservedAreas: Array<Array<boolean>> = []; // Stores the areas that data should not be placed into
@@ -62,10 +62,14 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     console.log("Finalized QR Matrices with Format Information:", finalizedMatrices);
 
     // -- 11. Determine optimal mask pattern and use that as the final matrix --
-    const optimalMatrix: Array<Array<number>> = determineOptimalMaskPattern(maskedMatrices);
-    console.log("Optimal QR Matrix selected:", optimalMatrix);
+    let optimalMatrix: Array<Array<number>> = determineOptimalMaskPattern(maskedMatrices);
+    // console.log("Optimal QR Matrix selected:", optimalMatrix);
+
+    optimalMatrix = maskedMatrices[0]!.matrix; // TODO: Remove when determineOptimalMaskPattern is implemented
+    console.log("Optimal QR Matrix selected (temporary):", optimalMatrix);
 
     // -- 12. Return the finalized matrix --
+    return optimalMatrix;
 }
 
 function initializeMatrices(size: number): QRMatrixCanvas {
@@ -413,6 +417,7 @@ function determineOptimalMaskPattern(maskedQRMatrices: Array<MaskedQRMatrix>): A
         penaltyScore += evaluate2x2Blocks(maskedQRMatrix);
 
         // -- 3. Evaluate Finder Pattern Similarities
+        penaltyScore += evaluateFinderPatternSimilarities(maskedQRMatrix);
 
         // -- 4. Evaluate if more modules are dark than light
 
@@ -508,6 +513,46 @@ function evaluate2x2Blocks(maskedQRMatrix: MaskedQRMatrix): number {
     }
 
     console.log("Penalty score after evaluating 2x2 blocks:", penaltyScore);
+
+    return penaltyScore;
+}
+
+function evaluateFinderPatternSimilarities(maskedQRMatrix: MaskedQRMatrix): number {
+    let penaltyScore = 0;
+
+    // Represent the patterns as binary literals (a.k.a. in js a number) for easier comparison
+    const pattern1 = 0b00001011101;
+    const pattern2 = 0b10111010000;
+
+    // Check rows and columns for the patterns
+    for (let i = 0; i < maskedQRMatrix.matrix.length; i++) {
+        for (let j = 0; j <= maskedQRMatrix.matrix.length - 11; j++) {
+            // -- 1. Rows --
+            const rowSlice = maskedQRMatrix.matrix[i]!.slice(j, j + 11).join('');
+            const rowSliceNum = parseInt(rowSlice, 2);
+
+            if (rowSliceNum === pattern2) {
+                console.log("Found pattern in row at (", i, ",", j, ") for pattern 2");
+                penaltyScore += 40;
+            } else if (rowSliceNum  === pattern1) {
+                console.log("Found pattern in row at (", i, ",", j, ") for pattern 1, value:", (rowSliceNum).toString(2).padStart(11, '0'), " number: ", rowSliceNum);
+                penaltyScore += 40;
+            }
+
+            // -- 2. Columns --
+            const colSlice = maskedQRMatrix.matrix.slice(j, j + 11).map(row => row[i]!).join('');
+            const colSliceNum = parseInt(colSlice, 2);
+            if (colSliceNum === pattern2) {
+                console.log("Found pattern in col at (", i, ",", j, ") for pattern 2");
+                penaltyScore += 40;
+            } else if (colSliceNum  === pattern1) {
+                console.log("Found pattern in col at (", i, ",", j, ") for pattern 1, value:", (colSliceNum).toString(2).padStart(11, '0'), " number: ", colSliceNum);
+                penaltyScore += 40;
+            }
+        }
+    }
+
+    console.log("Penalty score after evaluating finder pattern similarities:", penaltyScore);
 
     return penaltyScore;
 }

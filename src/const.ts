@@ -50,7 +50,7 @@ export type QRDefault = typeof QR_DEFAULTS[keyof typeof QR_DEFAULTS];
 
 // A Preconfigured default QR Spec it the developer doesn't provide one
 export const DEFAULT_QR_SPECS: qrSpecs = {
-    eccLevel: QR_DEFAULTS.ECC_LEVEL,
+    eccLevel: ECC_LEVEL_CODES.Q, // TODO: Change back to default
     version: QR_DEFAULTS.VERSION,
     forceByteEncoding: QR_DEFAULTS.FORCE_BYTE_ENCODING,
     maskPattern: QR_DEFAULTS.MASK_PATTERN,
