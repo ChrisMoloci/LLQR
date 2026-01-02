@@ -1,7 +1,7 @@
 import { MASK_PATTERN_CODES, MaskPatternCode } from "../const";
 import { alignmentPatternLocations } from "../datasets/alignmentPatternLocations";
 import { QRMatrixCanvas } from "../types";
-import maskQR, { MASK_PATTERN_FUNCTIONS } from "./maskingFunctions"; 
+import maskQR from "./maskingFunctions"; 
 import { mask0, mask1, mask2, mask3, mask4, mask5, mask6, mask7 } from "./maskingFunctions";
 import { getBitLength } from "./utils";
 
@@ -56,12 +56,14 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     console.log("All Masked QR Matrices:", maskedMatrices);
 
     // -- 10. Add format information to all the masked matrices --
-    const finalizedMatrices: Array<Array<Array<number>>> = 
-        maskedMatrices.map((maskedMatrix, index) => 
+    const finalizedMatrices: Array<MaskedQRMatrix> = 
+        maskedMatrices.map((maskedMatrix) => 
             addFormatInformationToMatrix(maskedMatrix, eccLevel, size));
     console.log("Finalized QR Matrices with Format Information:", finalizedMatrices);
 
     // -- 11. Determine optimal mask pattern and use that as the final matrix --
+    const optimalMatrix: Array<Array<number>> = determineOptimalMaskPattern(maskedMatrices);
+    console.log("Optimal QR Matrix selected:", optimalMatrix);
 
     // -- 12. Return the finalized matrix --
 }
@@ -261,12 +263,12 @@ function addVersionInformation(qrMatrixCanvas: QRMatrixCanvas, version: number, 
         for (let j = 0; j < 3; j++) {
             // Bottom-left (above finder pattern)
             qrMatrixCanvas.matrix[(size - 11) + j]![i]! = 
-                completeVersionInformationStream[bitIndex]; // Place the bit
+                completeVersionInformationStream[bitIndex]!; // Place the bit
             qrMatrixCanvas.reservedMatrix[(size - 11) + j]![i]! = true; // Reserve the area
 
             // Top-right (next to finder pattern)
             qrMatrixCanvas.matrix[i]![(size - 11) + j]! = 
-                completeVersionInformationStream[bitIndex];
+                completeVersionInformationStream[bitIndex]!;
             qrMatrixCanvas.reservedMatrix[i]![(size - 11) + j]! = true; // Reserve the area
             
             bitIndex++; // Increment bit index
@@ -320,14 +322,15 @@ function addDataToMatrix(qrMatrixCanvas: QRMatrixCanvas, dataStream: Array<strin
 function maskAllMatrices(qrMatrixCanvas: QRMatrixCanvas, size: number): Array<MaskedQRMatrix> {
     const maskedMatrices: Array<MaskedQRMatrix> = [];
 
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[0], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[1], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[2], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[3], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[4], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[5], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[6], qrMatrixCanvas, size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[7], qrMatrixCanvas, size));
+    // Important to clone the qrMatrixCanvas for each mask passing the ref
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[0], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[1], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[2], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[3], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[4], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[5], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[6], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[7], structuredClone(qrMatrixCanvas), size));
 
     return maskedMatrices;
 }
@@ -377,7 +380,7 @@ function addFormatInformationToMatrix(maskedQRMatrix: MaskedQRMatrix, eccLevel: 
     // -- 2. Place format information into the matrix
     
     // Stores the locations of the format information bits in the matrix
-    const formatPositions = [
+    const formatPositions: Array<[number, number]> = [
         [8, 0], [8, 1], [8, 2], [8, 3], [8, 4], [8, 5],
         [8, 7], [8, 8], [7, 8], [5, 8], [4, 8], [3, 8], [2, 8], [1, 8], [0, 8],
         // Mirrored format positions
@@ -388,10 +391,10 @@ function addFormatInformationToMatrix(maskedQRMatrix: MaskedQRMatrix, eccLevel: 
 
     // Add the format information bits to the matrix
     for (let i = 0; i < 15; i++) {
-        const [row, col] = formatPositions[i]; // Get the position for the current bit
+        const [row, col] = formatPositions[i]!; // Get the position for the current bit
         maskedQRMatrix.matrix[row]![col]! = completeFormatInformationStream[i]!; // Place the bit in the matrix
 
-        const [mirroredRow, mirroredCol] = formatPositions[i + 15]; // Get the mirrored position
+        const [mirroredRow, mirroredCol] = formatPositions[i + 15]!; // Get the mirrored position
         maskedQRMatrix.matrix[mirroredRow]![mirroredCol]! = completeFormatInformationStream[i]!; // Place the bit in the mirrored position
     }
 
@@ -399,8 +402,84 @@ function addFormatInformationToMatrix(maskedQRMatrix: MaskedQRMatrix, eccLevel: 
     return maskedQRMatrix;
 }
 
-function determineOptimalMaskPattern(maskedMatrices: Array<Array<Array<number>>>): MaskedQRPenaltyEvaluation {
+function determineOptimalMaskPattern(maskedQRMatrices: Array<MaskedQRMatrix>): Array<Array<number>> {
+    for (const maskedQRMatrix of maskedQRMatrices) {
+        let penaltyScore = 0;
 
+        // -- 1. Evaluate consecutive modules in Rows or Columns of 5
+        penaltyScore += evaluateConsecutiveModules(maskedQRMatrix);
+
+        // -- 2. Evaluate 2x2 Blocks
+
+        // -- 3. Evaluate Finder Pattern Similarities
+
+        // -- 4. Evaluate if more modules are dark than light
+
+        maskedQRMatrix.penaltyScore = penaltyScore;
+    }
+    
+    // Return the most optimally masked matrix
+    return [[]]
+}
+
+function evaluateConsecutiveModules(maskedQRMatrix: MaskedQRMatrix): number {
+    // TODO: Should the consecutive row and column counts start at 1 instead of 0?
+    let penaltyScore = 0;
+    for (let i = 0; i < maskedQRMatrix.matrix.length; i++) {
+        let consecutiveRowModules: number = 1;
+        let currentRowColor: number = maskedQRMatrix.matrix[i]![0]!; // Initialize with first module
+
+        let consecutiveColModules: number = 1;
+        let currentColColor: number = maskedQRMatrix.matrix[0]![i]!; // Initialize with first module
+        for (let j = 1; j < maskedQRMatrix.matrix.length; j++) {
+            // Horizantally i = row, j = col
+            // Vertically i = col, j = row
+
+            // Horizontal check
+            if (maskedQRMatrix.matrix[i]![j]! === currentRowColor) {
+                consecutiveRowModules++;
+            } else {
+                if (consecutiveRowModules >= 5) {
+                    /**
+                     * If we have 5, we add 3, if its higher than 5, we add 1 more 
+                     * for each additional module
+                     */
+                    // console.log("Found", consecutiveRowModules, "consecutive modules in row", i);
+                    penaltyScore += (consecutiveRowModules - 5) + 3;
+                }
+                currentRowColor = maskedQRMatrix.matrix[i]![j]!;
+                consecutiveRowModules = 1;
+            }
+
+            // Vertical check
+            if (maskedQRMatrix.matrix[j]![i]! === currentColColor) {
+                consecutiveColModules++;
+            } else {
+                if (consecutiveColModules >= 5) {
+                    /**
+                     * If we have 5, we add 3, if its higher than 5, we add 1 more 
+                     * for each additional module
+                     */
+                    // console.log("Found", consecutiveColModules, "consecutive modules in column", i);
+                    penaltyScore += (consecutiveColModules - 5) + 3;
+                }
+                currentColColor = maskedQRMatrix.matrix[j]![i]!;
+                consecutiveColModules = 1;
+            }
+        }
+        if (consecutiveRowModules >= 5) {
+            // Check again at the end of the row in case the row ends with consecutive modules
+            penaltyScore += (consecutiveRowModules - 5) + 3;
+        }
+        if (consecutiveColModules >= 5) {
+            // Check again at the end of the column in case the column ends with consecutive modules
+            penaltyScore += (consecutiveColModules - 5) + 3;
+        }
+    }
+
+    console.log("Penalty score after evaluating consecutive modules:", penaltyScore);
+
+    return penaltyScore;
 }
 
 export default generateMatrix;

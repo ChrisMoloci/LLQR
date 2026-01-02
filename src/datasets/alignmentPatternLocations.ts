@@ -1,151 +1,151 @@
-export const alignmentPatternLocations = {
-  "2": [
+export const alignmentPatternLocations: Record<number, number[]> = {
+  2: [
     6,
     18
   ],
-  "3": [
+  3: [
     6,
     22
   ],
-  "4": [
+  4: [
     6,
     26
   ],
-  "5": [
+  5: [
     6,
     30
   ],
-  "6": [
+  6: [
     6,
     34
   ],
-  "7": [
+  7: [
     6,
     22,
     38
   ],
-  "8": [
+  8: [
     6,
     24,
     42
   ],
-  "9": [
+  9: [
     6,
     26,
     46
   ],
-  "10": [
+  10: [
     6,
     28,
     50
   ],
-  "11": [
+  11: [
     6,
     30,
     54
   ],
-  "12": [
+  12: [
     6,
     32,
     58
   ],
-  "13": [
+  13: [
     6,
     34,
     62
   ],
-  "14": [
+  14: [
     6,
     26,
     46,
     66
   ],
-  "15": [
+  15: [
     6,
     26,
     48,
     70
   ],
-  "16": [
+  16: [
     6,
     26,
     50,
     74
   ],
-  "17": [
+  17: [
     6,
     30,
     54,
     78
   ],
-  "18": [
+  18: [
     6,
     30,
     56,
     82
   ],
-  "19": [
+  19: [
     6,
     30,
     58,
     86
   ],
-  "20": [
+  20: [
     6,
     34,
     62,
     90
   ],
-  "21": [
+  21: [
     6,
     28,
     50,
     72,
     94
   ],
-  "22": [
+  22: [
     6,
     26,
     50,
     74,
     98
   ],
-  "23": [
+  23: [
     6,
     30,
     54,
     78,
     102
   ],
-  "24": [
+  24: [
     6,
     28,
     54,
     80,
     106
   ],
-  "25": [
+  25: [
     6,
     32,
     58,
     84,
     110
   ],
-  "26": [
+  26: [
     6,
     30,
     58,
     86,
     114
   ],
-  "27": [
+  27: [
     6,
     34,
     62,
     90,
     118
   ],
-  "28": [
+  28: [
     6,
     26,
     50,
@@ -153,7 +153,7 @@ export const alignmentPatternLocations = {
     98,
     122
   ],
-  "29": [
+  29: [
     6,
     30,
     54,
@@ -161,7 +161,7 @@ export const alignmentPatternLocations = {
     102,
     126
   ],
-  "30": [
+  30: [
     6,
     26,
     52,
@@ -169,7 +169,7 @@ export const alignmentPatternLocations = {
     104,
     130
   ],
-  "31": [
+  31: [
     6,
     30,
     56,
@@ -177,7 +177,7 @@ export const alignmentPatternLocations = {
     108,
     134
   ],
-  "32": [
+  32: [
     6,
     34,
     60,
@@ -185,7 +185,7 @@ export const alignmentPatternLocations = {
     112,
     138
   ],
-  "33": [
+  33: [
     6,
     30,
     58,
@@ -193,7 +193,7 @@ export const alignmentPatternLocations = {
     114,
     142
   ],
-  "34": [
+  34: [
     6,
     34,
     62,
@@ -201,7 +201,7 @@ export const alignmentPatternLocations = {
     118,
     146
   ],
-  "35": [
+  35: [
     6,
     30,
     54,
@@ -210,7 +210,7 @@ export const alignmentPatternLocations = {
     126,
     150
   ],
-  "36": [
+  36: [
     6,
     24,
     50,
@@ -219,7 +219,7 @@ export const alignmentPatternLocations = {
     128,
     154
   ],
-  "37": [
+  37: [
     6,
     28,
     54,
@@ -228,7 +228,7 @@ export const alignmentPatternLocations = {
     132,
     158
   ],
-  "38": [
+  38: [
     6,
     32,
     58,
@@ -237,7 +237,7 @@ export const alignmentPatternLocations = {
     136,
     162
   ],
-  "39": [
+  39: [
     6,
     26,
     54,
@@ -246,7 +246,7 @@ export const alignmentPatternLocations = {
     138,
     166
   ],
-  "40": [
+  40: [
     6,
     30,
     58,
