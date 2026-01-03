@@ -1,5 +1,5 @@
 import { mask0, mask1, mask2, mask3, mask4, mask5, mask6, mask7 } from "./core/maskingFunctions";
-import { qrSpecs } from "./types";
+import { ImageSpecs, QRELEMENTSHAPES, qrSpecs } from "./types";
 
 // Encoding Mode Indicators
 export const DATA_ENCODING_MODES = {
@@ -36,9 +36,9 @@ export const MASK_PATTERN_CODES = {
 
 export type MaskPatternCode = typeof MASK_PATTERN_CODES[keyof typeof MASK_PATTERN_CODES];
 
-// Used for default specs QR Specs
+// Used for default QR Specs
 export const QR_DEFAULTS = {
-    ECC_LEVEL: ECC_LEVEL_CODES.M,
+    ECC_LEVEL: ECC_LEVEL_CODES.Q,
     VERSION: null,
     FORCE_BYTE_ENCODING: false as const,
     MASK_PATTERN: null,
@@ -48,7 +48,7 @@ export const QR_DEFAULTS = {
 
 export type QRDefault = typeof QR_DEFAULTS[keyof typeof QR_DEFAULTS];
 
-// A Preconfigured default QR Spec it the developer doesn't provide one
+// A Preconfigured default QR Spec if the developer doesn't provide one
 export const DEFAULT_QR_SPECS: qrSpecs = {
     eccLevel: QR_DEFAULTS.ECC_LEVEL,
     version: QR_DEFAULTS.VERSION,
@@ -57,6 +57,42 @@ export const DEFAULT_QR_SPECS: qrSpecs = {
     preferrECI: QR_DEFAULTS.PREFERR_ECI,
     preferrBOM: QR_DEFAULTS.PREFERR_BOM
 };
+
+// Used for default Image Specs
+export const IMAGE_DEFAULTS = {
+    BACKGROUND_COLOR: "#FFFFFF",
+    MODULE_COLOR: "#000000",
+    FINDER_PATTERN_OUTLINE_COLOR: "#000000",
+    FINDER_PATTERN_INNER_COLOR: "#000000",
+    ALIGNMENT_PATTERN_OUTLINE_COLOR: "#000000",
+    ALIGNMENT_PATTERN_INNER_COLOR: "#000000",
+    GRID_STROKE_COLOR: "#000000",
+
+    MODULE_SHAPE: QRELEMENTSHAPES.SQUARE,
+    FINDER_PATTERN_OUTLINE_SHAPE: QRELEMENTSHAPES.SQUARE,
+    FINDER_PATTERN_INNER_SHAPE: QRELEMENTSHAPES.SQUARE,
+
+    ROUNDNESS: 0, // 0-1 for rounded shapes
+    GRID_STROKE_WIDTH: 0 // 0-1 for percent
+} as const;
+
+// A Preconfigured default Image Spec if the developer doesn't provide one
+export const DEFAULT_IMAGE_SPECS: ImageSpecs = {
+    backgroundColor: IMAGE_DEFAULTS.BACKGROUND_COLOR,
+    moduleColor: IMAGE_DEFAULTS.MODULE_COLOR,
+    finderPatternOutlineColor: IMAGE_DEFAULTS.FINDER_PATTERN_OUTLINE_COLOR,
+    finderPatternInnerColor: IMAGE_DEFAULTS.FINDER_PATTERN_INNER_COLOR,
+    alignmentPatternOutlineColor: IMAGE_DEFAULTS.ALIGNMENT_PATTERN_OUTLINE_COLOR,
+    alignmentPatternInnerColor: IMAGE_DEFAULTS.ALIGNMENT_PATTERN_INNER_COLOR,
+    gridStrokeColor: IMAGE_DEFAULTS.GRID_STROKE_COLOR,
+
+    moduleShape: IMAGE_DEFAULTS.MODULE_SHAPE,
+    finderPatternOutlineShape: IMAGE_DEFAULTS.FINDER_PATTERN_OUTLINE_SHAPE,
+    finderPatternInnerShape: IMAGE_DEFAULTS.FINDER_PATTERN_INNER_SHAPE,
+
+    roundness: IMAGE_DEFAULTS.ROUNDNESS,
+    gridStrokeWidth: IMAGE_DEFAULTS.GRID_STROKE_WIDTH
+}
 
 // Create a mapping of mask pattern codes to their functions
 export const MASK_PATTERN_FUNCTIONS = {
