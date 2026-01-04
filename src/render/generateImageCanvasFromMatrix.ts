@@ -5,9 +5,10 @@ function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, imageSpecs:
     // -- 1. Initial Calculations --
     const size = matrix.length;
     const moduleSize = Math.floor(pixelSize / (size + 8)); // 8 for quiet zone (4 per side)
-    const safeAreaPixelSize = moduleSize * (size + 8); // Total size including quiet zone
+    const safeAreaPixelSize = moduleSize * 4; // Total size including quiet zone
     const radius = Math.ceil(imageSpecs.roundness * (moduleSize / 2)); // Calculate radius based on module size
     pixelSize = (size * moduleSize) + (safeAreaPixelSize * 2); // Recalculate canvas size based on new module size
+    console.log("Module Size:", moduleSize, "Radius:", radius, "Pixel Size:", pixelSize);
 
     // -- 2. Initialize the main canvas (includes quiet zone) --
     const mainCanvas = document.createElement("canvas");
@@ -33,15 +34,18 @@ function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, imageSpecs:
     matrixCtx.fillStyle = imageSpecs.backgroundColor; // Set background color
     matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height); // Fill entire canvas
     
-    // -- 3. Render Finder Patterns --
+    // -- 4. Render Finder Patterns --
     matrixCanvas = renderFinderPatterns(matrix, matrixCtx, size, moduleSize, imageSpecs, radius);
-    // console.log(matrixCanvas)
+    console.log(matrixCanvas)
 
     // Render Alignment Patterns
 
     // Render Modules
 
     // Render Grid
+
+    // -- 3. Add the matrix canvas to the main canvas with quiet zone offset --
+    mainCtx.drawImage(matrixCanvas, safeAreaPixelSize / 2, safeAreaPixelSize / 2);
 
     // Return the canvas
     return mainCanvas;
