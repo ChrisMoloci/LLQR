@@ -1,9 +1,12 @@
 import { DEFAULT_IMAGE_SPECS } from "../const";
+import { alignmentPatternLocations } from "../datasets/alignmentPatternLocations";
 import { ImageSpecs, QRELEMENTSHAPES } from "../types";
 
 function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, imageSpecs: ImageSpecs = DEFAULT_IMAGE_SPECS, pixelSize: number): HTMLCanvasElement {
     // -- 1. Initial Calculations --
     const size = matrix.length;
+    const version = (size - 21) / 4 + 1; // Compute the version (for convenience so it doesn't have to be passed in)
+    console.log("Generating Image for QR Version:", version, "Matrix Size:", size);
     const moduleSize = Math.floor(pixelSize / (size + 8)); // 8 for quiet zone (4 per side)
     const safeAreaPixelSize = moduleSize * 4; // Total size including quiet zone
     const radius = Math.ceil(imageSpecs.roundness * (moduleSize / 2)); // Calculate radius based on module size
@@ -39,6 +42,7 @@ function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, imageSpecs:
     console.log(matrixCanvas)
 
     // Render Alignment Patterns
+    console.log(isReserved(0, 0, size, version));
 
     // Render Modules
 
@@ -201,6 +205,50 @@ function drawCircleModule(ctx: CanvasRenderingContext2D, x: number, y: number, r
     ctx.fill();
 
     return ctx.canvas;
+}
+
+// Checks if an area is reserved (that means that that part was already drawn)
+function isReserved(x: number, y: number, size: number, version: number): boolean {
+    const finderPatterns = [
+        { x: 0, y: 0, x2: 6, y2: 6 }, // Top Left
+        { x: size - 7, y: 0, x2: size - 1, y2: 6 }, // Top Right
+        { x: 0, y: size - 7, x2: 6, y2: size - 1 } // Bottom Left
+    ];
+
+    // Check finder patterns
+    if (finderPatterns.some(finderPattern => {
+        return x >= finderPattern.x && x <= finderPattern.x2 && 
+            y >= finderPattern.y && y <= finderPattern.y2
+    })) {
+        return true;
+    }
+    
+    const alignmentPatterns = alignmentPatternLocations[version]?.flatMap(coord1 => {
+        return alignmentPatternLocations[version]!
+            .filter(coord2 =>
+                !(
+                    (coord1 < 9 && coord2 < 9) || // Top-left finder
+                    (coord1 > size - 10 && coord2 < 9) || // Top-right finder
+                    (coord1 < 9 && coord2 > size - 10) // Bottom-left finder  
+                )
+            )
+            .map(coord2 => {
+                return { x: coord1 - 2, y: coord2 - 2, x2: coord1 + 2, y2: coord2 + 2 };
+            });
+    });
+
+    console.log("Alignment Patterns:", alignmentPatterns);
+
+    // Check alignment patterns
+    if (alignmentPatterns && alignmentPatterns.some(alignmentPattern => {
+        return x >= alignmentPattern.x && x <= alignmentPattern.x2 &&
+            y >= alignmentPattern.y && y <= alignmentPattern.y2
+    })) {
+        return true;
+    }
+
+    // If neither finder nor alignment patterns are matched, return false
+    return false;
 }
 
 export default generateImageCanvasFromMatrix;
