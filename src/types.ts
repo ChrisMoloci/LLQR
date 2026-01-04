@@ -31,18 +31,22 @@ export type ImageSpecs = {
     // Colors
     backgroundColor: string,
     moduleColor: string,
-    finderPatternOutlineColor: string,
-    finderPatternInnerBackgroundColor: string,
-    finderPatternInnerColor: string,
-    alignmentPatternOutlineColor: string, // Maybe
-    alignmentPatternInnerColor: string, // Maybe
+    finderPatternOutlineColor: [string, string, string],
+    finderPatternInnerBackgroundColor: [string, string, string],
+    finderPatternInnerColor: [string, string, string],
+    alignmentPatternOutlineColor: [string, string, string], // Maybe
+    alignmentPatternInnerBackgroundColor: [string, string, string], // Maybe
+    alignmentPatternInnerColor: [string, string, string], // Maybe
     gridStrokeColor: string,
 
     // Shapes
     moduleShape: QRElementShape,
-    finderPatternOutlineShape: QRElementShape,
-    finderPatternInnerBackgroundShape: QRElementShape,
-    finderPatternInnerShape: QRElementShape,
+    finderPatternOutlineShapes: [QRElementShape, QRElementShape, QRElementShape],
+    finderPatternInnerBackgroundShapes: [QRElementShape, QRElementShape, QRElementShape],
+    finderPatternInnerShapes: [QRElementShape, QRElementShape, QRElementShape],
+    alignmentPatternOutlineShapes: [QRElementShape, QRElementShape, QRElementShape], // Maybe
+    alignmentPatternInnerBackgroundShapes: [QRElementShape, QRElementShape, QRElementShape], // Maybe
+    alignmentPatternInnerShapes: [QRElementShape, QRElementShape, QRElementShape], // Maybe
 
     // General
     roundness: number, // 0-1 for rounded shapes

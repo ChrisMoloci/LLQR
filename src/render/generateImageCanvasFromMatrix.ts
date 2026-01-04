@@ -60,33 +60,31 @@ function renderFinderPatterns(matrix: Array<Array<number>>, matrixCtx: CanvasRen
     const backgroundColor = imageSpecs.backgroundColor;
     const innerColor = imageSpecs.finderPatternInnerColor;
 
-    // Set the CTX fill color to outline color
-    matrixCtx.fillStyle = outlineColor;
+    for (let i = 0; i < 3; i++) {
+        const finderPatternLocation = finderPatternLocations[i]!;
 
-    // Draw the outline and background
-    switch (imageSpecs.finderPatternOutlineShape) {
-        case QRELEMENTSHAPES.SQUARE:
-            for (const finderPatternLocation of finderPatternLocations) {
+        // Set the CTX fill color to outline color
+        matrixCtx.fillStyle = outlineColor[i];
+
+        // Draw the outline and background
+        switch (imageSpecs.finderPatternOutlineShapes[i]) {
+            case QRELEMENTSHAPES.SQUARE:
                 drawSquareModule(
                     matrixCtx, 
                     finderPatternLocation.x * moduleSize,
                     finderPatternLocation.y * moduleSize,
                     moduleSize * 7
                 );
-            }
-            break;
-        case QRELEMENTSHAPES.CIRCLE:
-            for (const finderPatternLocation of finderPatternLocations) {
+                break;
+            case QRELEMENTSHAPES.CIRCLE:
                 drawCircleModule(
                     matrixCtx, 
                     finderPatternLocation.x * moduleSize,
                     finderPatternLocation.y * moduleSize,
                     moduleSize * 7 / 2,
                 );
-            }
-            break;
-        case QRELEMENTSHAPES.ROUNDED:
-            for (const finderPatternLocation of finderPatternLocations) {
+                break;
+            case QRELEMENTSHAPES.ROUNDED:
                 drawRoundedModule(
                     matrixCtx, 
                     finderPatternLocation.x * moduleSize,
@@ -94,81 +92,68 @@ function renderFinderPatterns(matrix: Array<Array<number>>, matrixCtx: CanvasRen
                     moduleSize * 7,
                     radius
                 );
-            }
-            break;
-    }
+                break;
+        }
 
-    // Draw finder pattern inner background
-    matrixCtx.fillStyle = imageSpecs.finderPatternInnerBackgroundColor;
-    switch (imageSpecs.finderPatternInnerBackgroundShape) {
-        case QRELEMENTSHAPES.SQUARE:
-                
-            for (const finderPatternLocation of finderPatternLocations) {
+        // Draw finder pattern inner background
+        matrixCtx.fillStyle = imageSpecs.finderPatternInnerBackgroundColor[i];
+        switch (imageSpecs.finderPatternInnerBackgroundShapes[i]) {
+            case QRELEMENTSHAPES.SQUARE:
                 drawSquareModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + moduleSize,
                     (finderPatternLocation.y * moduleSize) + moduleSize,
                     moduleSize * 5
-                );
-            }
-            break;
-        case QRELEMENTSHAPES.CIRCLE:
-            for (const finderPatternLocation of finderPatternLocations) {
+                );;
+                break;
+            case QRELEMENTSHAPES.CIRCLE:
                 drawCircleModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + moduleSize,
                     (finderPatternLocation.y * moduleSize) + moduleSize,
                     moduleSize * 5 / 2,
-                )
-            }
-            break;
-        case QRELEMENTSHAPES.ROUNDED:
-            for (const finderPatternLocation of finderPatternLocations) {
+                );
+                break;
+            case QRELEMENTSHAPES.ROUNDED:
                 drawRoundedModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + moduleSize,
                     (finderPatternLocation.y * moduleSize) + moduleSize,
                     moduleSize * 5,
                     radius
-                )
-            }
-            break;
-    }
+                );
+                break;
+        }
 
-    // Draw the inner area of the finder patterns
-    matrixCtx.fillStyle = innerColor;
-    switch (imageSpecs.finderPatternInnerShape) {
-        case QRELEMENTSHAPES.SQUARE:
-            for (const finderPatternLocation of finderPatternLocations) {
+        // Draw the inner area of the finder patterns
+        matrixCtx.fillStyle = innerColor[i];
+        switch (imageSpecs.finderPatternInnerShapes[i]) {
+            case QRELEMENTSHAPES.SQUARE:
                 drawSquareModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + (2 * moduleSize),
                     (finderPatternLocation.y * moduleSize) + (2 * moduleSize),
                     moduleSize * 3
-                )
-            }
-            break;
-        case QRELEMENTSHAPES.CIRCLE:
-            for (const finderPatternLocation of finderPatternLocations) {
+                );
+                break;
+            case QRELEMENTSHAPES.CIRCLE:
                 drawCircleModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + (2 * moduleSize),
                     (finderPatternLocation.y * moduleSize) + (2 * moduleSize),
                     (moduleSize * 3) / 2,
-                )
-            }
-            break;
-        case QRELEMENTSHAPES.ROUNDED:
-            for (const finderPatternLocation of finderPatternLocations) {
+                );
+                break;
+            case QRELEMENTSHAPES.ROUNDED:
                 drawRoundedModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + (2 * moduleSize),
                     (finderPatternLocation.y * moduleSize) + (2 * moduleSize),
                     moduleSize * 3,
                     radius
-                )
-            }
-            break;
+                );
+                break;
+        }
     }
 
     return matrixCtx.canvas;
