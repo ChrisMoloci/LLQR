@@ -67,17 +67,43 @@ function renderFinderPatterns(matrix: Array<Array<number>>, matrixCtx: CanvasRen
     switch (imageSpecs.finderPatternOutlineShape) {
         case QRELEMENTSHAPES.SQUARE:
             for (const finderPatternLocation of finderPatternLocations) {
-                // Draw the outer finder pattern
-                matrixCtx.fillStyle = outlineColor; // Set to outline color
                 drawSquareModule(
                     matrixCtx, 
                     finderPatternLocation.x * moduleSize,
                     finderPatternLocation.y * moduleSize,
                     moduleSize * 7
                 );
+            }
+            break;
+        case QRELEMENTSHAPES.CIRCLE:
+            for (const finderPatternLocation of finderPatternLocations) {
+                drawCircleModule(
+                    matrixCtx, 
+                    finderPatternLocation.x * moduleSize,
+                    finderPatternLocation.y * moduleSize,
+                    moduleSize * 7 / 2,
+                );
+            }
+            break;
+        case QRELEMENTSHAPES.ROUNDED:
+            for (const finderPatternLocation of finderPatternLocations) {
+                drawRoundedModule(
+                    matrixCtx, 
+                    finderPatternLocation.x * moduleSize,
+                    finderPatternLocation.y * moduleSize,
+                    moduleSize * 7,
+                    radius
+                );
+            }
+            break;
+    }
 
-                // Draw the finder patter inner background
-                matrixCtx.fillStyle = backgroundColor; // Set to background color
+    // Draw finder pattern inner background
+    matrixCtx.fillStyle = imageSpecs.finderPatternInnerBackgroundColor;
+    switch (imageSpecs.finderPatternInnerBackgroundShape) {
+        case QRELEMENTSHAPES.SQUARE:
+                
+            for (const finderPatternLocation of finderPatternLocations) {
                 drawSquareModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + moduleSize,
@@ -88,46 +114,23 @@ function renderFinderPatterns(matrix: Array<Array<number>>, matrixCtx: CanvasRen
             break;
         case QRELEMENTSHAPES.CIRCLE:
             for (const finderPatternLocation of finderPatternLocations) {
-                // Draw the outer finder pattern
-                matrixCtx.fillStyle = outlineColor; // Set to outline color
-                drawCircleModule(
-                    matrixCtx, 
-                    finderPatternLocation.x * moduleSize,
-                    finderPatternLocation.y * moduleSize,
-                    moduleSize * 7 / 2,
-                );
-
-                // Draw the finder patter inner background
-                matrixCtx.fillStyle = backgroundColor; // Set to background color
                 drawCircleModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + moduleSize,
                     (finderPatternLocation.y * moduleSize) + moduleSize,
                     moduleSize * 5 / 2,
-                );
+                )
             }
             break;
         case QRELEMENTSHAPES.ROUNDED:
             for (const finderPatternLocation of finderPatternLocations) {
-                // Draw the outer finder pattern
-                matrixCtx.fillStyle = outlineColor; // Set to outline color
-                drawRoundedModule(
-                    matrixCtx, 
-                    finderPatternLocation.x * moduleSize,
-                    finderPatternLocation.y * moduleSize,
-                    moduleSize * 7,
-                    radius
-                );
-
-                // Draw the finder patter inner background
-                matrixCtx.fillStyle = backgroundColor; // Set to background color
                 drawRoundedModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + moduleSize,
                     (finderPatternLocation.y * moduleSize) + moduleSize,
                     moduleSize * 5,
                     radius
-                );
+                )
             }
             break;
     }

@@ -32,6 +32,7 @@ export type ImageSpecs = {
     backgroundColor: string,
     moduleColor: string,
     finderPatternOutlineColor: string,
+    finderPatternInnerBackgroundColor: string,
     finderPatternInnerColor: string,
     alignmentPatternOutlineColor: string, // Maybe
     alignmentPatternInnerColor: string, // Maybe
@@ -40,6 +41,7 @@ export type ImageSpecs = {
     // Shapes
     moduleShape: QRElementShape,
     finderPatternOutlineShape: QRElementShape,
+    finderPatternInnerBackgroundShape: QRElementShape,
     finderPatternInnerShape: QRElementShape,
 
     // General
