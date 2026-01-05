@@ -207,23 +207,23 @@ function drawCircleModule(ctx: CanvasRenderingContext2D, x: number, y: number, r
     return ctx.canvas;
 }
 
+let finderPatterns: { x: number, y: number, x2: number, y2: number }[]
+let alignmentPatterns : { x: number, y: number, x2: number, y2: number }[];
+
 // Checks if an area is reserved (that means that that part was already drawn)
 function isReserved(x: number, y: number, size: number, version: number): boolean {
-    const finderPatterns = [
-        { x: 0, y: 0, x2: 6, y2: 6 }, // Top Left
-        { x: size - 7, y: 0, x2: size - 1, y2: 6 }, // Top Right
-        { x: 0, y: size - 7, x2: 6, y2: size - 1 } // Bottom Left
-    ];
-
-    // Check finder patterns
-    if (finderPatterns.some(finderPattern => {
-        return x >= finderPattern.x && x <= finderPattern.x2 && 
-            y >= finderPattern.y && y <= finderPattern.y2
-    })) {
-        return true;
+    if (!finderPatterns) {
+        // Only compute once
+        finderPatterns = [
+            { x: 0, y: 0, x2: 6, y2: 6 }, // Top Left
+            { x: size - 7, y: 0, x2: size - 1, y2: 6 }, // Top Right
+            { x: 0, y: size - 7, x2: 6, y2: size - 1 } // Bottom Left
+        ];
+        console.log("Computed Finder Patterns:", finderPatterns);
     }
-    
-    const alignmentPatterns = alignmentPatternLocations[version]?.flatMap(coord1 => {
+    if (!alignmentPatterns) {
+        // Only compute once
+        alignmentPatterns = alignmentPatternLocations[version]?.flatMap(coord1 => {
         return alignmentPatternLocations[version]!
             .filter(coord2 =>
                 !(
@@ -235,9 +235,17 @@ function isReserved(x: number, y: number, size: number, version: number): boolea
             .map(coord2 => {
                 return { x: coord1 - 2, y: coord2 - 2, x2: coord1 + 2, y2: coord2 + 2 };
             });
-    });
+        });
+        console.log("Computed Alignment Patterns:", alignmentPatterns);
+    }
 
-    console.log("Alignment Patterns:", alignmentPatterns);
+    // Check finder patterns
+    if (finderPatterns.some(finderPattern => {
+        return x >= finderPattern.x && x <= finderPattern.x2 && 
+            y >= finderPattern.y && y <= finderPattern.y2
+    })) {
+        return true;
+    }
 
     // Check alignment patterns
     if (alignmentPatterns && alignmentPatterns.some(alignmentPattern => {
