@@ -34,9 +34,9 @@ export type ImageSpecs = {
     finderPatternOutlineColor: [string, string, string],
     finderPatternInnerBackgroundColor: [string, string, string],
     finderPatternInnerColor: [string, string, string],
-    alignmentPatternOutlineColor: [string, string, string], // Maybe
-    alignmentPatternInnerBackgroundColor: [string, string, string], // Maybe
-    alignmentPatternInnerColor: [string, string, string], // Maybe
+    alignmentPatternOutlineColor: string, // Maybe
+    alignmentPatternInnerBackgroundColor: string, // Maybe
+    alignmentPatternInnerColor: string, // Maybe
     gridStrokeColor: string,
 
     // Shapes
@@ -44,9 +44,9 @@ export type ImageSpecs = {
     finderPatternOutlineShapes: [QRElementShape, QRElementShape, QRElementShape],
     finderPatternInnerBackgroundShapes: [QRElementShape, QRElementShape, QRElementShape],
     finderPatternInnerShapes: [QRElementShape, QRElementShape, QRElementShape],
-    alignmentPatternOutlineShapes: [QRElementShape, QRElementShape, QRElementShape], // Maybe
-    alignmentPatternInnerBackgroundShapes: [QRElementShape, QRElementShape, QRElementShape], // Maybe
-    alignmentPatternInnerShapes: [QRElementShape, QRElementShape, QRElementShape], // Maybe
+    alignmentPatternOutlineShapes: QRElementShape, // Maybe
+    alignmentPatternInnerBackgroundShapes: QRElementShape, // Maybe
+    alignmentPatternInnerShapes: QRElementShape, // Maybe
 
     // General
     roundness: number, // 0-1 for rounded shapes

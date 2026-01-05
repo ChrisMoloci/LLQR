@@ -2,6 +2,9 @@ import { DEFAULT_IMAGE_SPECS } from "../const";
 import { alignmentPatternLocations } from "../datasets/alignmentPatternLocations";
 import { ImageSpecs, QRELEMENTSHAPES } from "../types";
 
+let finderPatterns: { x: number, y: number, x2: number, y2: number }[]
+let alignmentPatterns : { x: number, y: number, x2: number, y2: number }[];
+
 function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, imageSpecs: ImageSpecs = DEFAULT_IMAGE_SPECS, pixelSize: number): HTMLCanvasElement {
     // -- 1. Initial Calculations --
     const size = matrix.length;
@@ -42,6 +45,7 @@ function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, imageSpecs:
     console.log(matrixCanvas)
 
     // Render Alignment Patterns
+    matrixCanvas = renderAlignmentPatterns(matrix, matrixCtx, size, moduleSize, imageSpecs, radius, version);
     console.log(isReserved(0, 0, size, version));
 
     // Render Modules
@@ -57,11 +61,10 @@ function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, imageSpecs:
 
 function renderFinderPatterns(matrix: Array<Array<number>>, matrixCtx: CanvasRenderingContext2D, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number): HTMLCanvasElement {
     // Compute the finder pattern locations
-    const finderPatternLocations = [
-        { x: 0, y: 0 }, // Top Left
-        { x: size - 7, y: 0 }, // Top Right
-        { x: 0, y: size - 7 } // Bottom Left
-    ]
+    if (!finderPatterns) {
+        finderPatterns = computeFinderPatternsLocations(size);
+        console.log("Computed Finder Patterns:", finderPatterns);
+    }
 
     // Get the colors
     const outlineColor = imageSpecs.finderPatternOutlineColor;
@@ -69,7 +72,7 @@ function renderFinderPatterns(matrix: Array<Array<number>>, matrixCtx: CanvasRen
     const innerColor = imageSpecs.finderPatternInnerColor;
 
     for (let i = 0; i < 3; i++) {
-        const finderPatternLocation = finderPatternLocations[i]!;
+        const finderPatternLocation = finderPatterns[i]!;
 
         // Set the CTX fill color to outline color
         matrixCtx.fillStyle = outlineColor[i];
@@ -167,7 +170,7 @@ function renderFinderPatterns(matrix: Array<Array<number>>, matrixCtx: CanvasRen
     return matrixCtx.canvas;
 }
 
-function renderAlignmentPatterns() {
+function renderAlignmentPatterns(matrix: Array<Array<number>>, matrixCtx: CanvasRenderingContext2D, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number, version: number): HTMLCanvasElement {
     if (!finderPatterns) {
         finderPatterns = computeFinderPatternsLocations(size);
         console.log("Computed Finder Patterns:", finderPatterns);
@@ -177,6 +180,106 @@ function renderAlignmentPatterns() {
         alignmentPatterns = computeAlignmentPatternsLocations(size, version);
         console.log("Computed Alignment Patterns:", alignmentPatterns);
     }
+
+    // Colors
+    const outlineColor = imageSpecs.alignmentPatternOutlineColor;
+    const backgroundColor = imageSpecs.alignmentPatternInnerBackgroundColor;
+    const innerColor = imageSpecs.alignmentPatternInnerColor;
+
+    // Insert each alignment pattern
+    for (const alignmentPatternLocation of alignmentPatterns) {
+        // Draw the outline
+        matrixCtx.fillStyle = outlineColor; // Set to outline color
+        switch (imageSpecs.alignmentPatternOutlineShapes) {
+            case QRELEMENTSHAPES.SQUARE:
+                drawSquareModule(
+                    matrixCtx, 
+                    alignmentPatternLocation.x * moduleSize,
+                    alignmentPatternLocation.y * moduleSize,
+                    moduleSize * 5
+                );
+                break;
+            case QRELEMENTSHAPES.CIRCLE:
+                drawCircleModule(
+                    matrixCtx, 
+                    alignmentPatternLocation.x * moduleSize,
+                    alignmentPatternLocation.y * moduleSize,
+                    moduleSize * 5 / 2,
+                );
+                break;
+            case QRELEMENTSHAPES.ROUNDED:
+                drawRoundedModule(
+                    matrixCtx, 
+                    alignmentPatternLocation.x * moduleSize,
+                    alignmentPatternLocation.y * moduleSize,
+                    moduleSize * 5,
+                    radius
+                );
+                break;
+        }
+
+        // Draw the inner background
+        matrixCtx.fillStyle = backgroundColor; // Set to background color
+        switch (imageSpecs.alignmentPatternInnerBackgroundShapes) {
+            case QRELEMENTSHAPES.SQUARE:
+                drawSquareModule(
+                    matrixCtx, 
+                    (alignmentPatternLocation.x * moduleSize) + moduleSize,
+                    (alignmentPatternLocation.y * moduleSize) + moduleSize,
+                    moduleSize * 3
+                );;
+                break;
+            case QRELEMENTSHAPES.CIRCLE:
+                drawCircleModule(
+                    matrixCtx, 
+                    (alignmentPatternLocation.x * moduleSize) + moduleSize,
+                    (alignmentPatternLocation.y * moduleSize) + moduleSize,
+                    moduleSize * 3 / 2,
+                );
+                break;
+            case QRELEMENTSHAPES.ROUNDED:
+                drawRoundedModule(
+                    matrixCtx, 
+                    (alignmentPatternLocation.x * moduleSize) + moduleSize,
+                    (alignmentPatternLocation.y * moduleSize) + moduleSize,
+                    moduleSize * 3,
+                    radius
+                );
+                break;
+        }
+
+        // Draw the inner area
+        matrixCtx.fillStyle = innerColor; // Set to inner color
+        switch (imageSpecs.alignmentPatternInnerShapes) {
+            case QRELEMENTSHAPES.SQUARE:
+                drawSquareModule(
+                    matrixCtx, 
+                    (alignmentPatternLocation.x * moduleSize) + (2 * moduleSize),
+                    (alignmentPatternLocation.y * moduleSize) + (2 * moduleSize),
+                    moduleSize * 1
+                );
+                break;
+            case QRELEMENTSHAPES.CIRCLE:
+                drawCircleModule(
+                    matrixCtx, 
+                    (alignmentPatternLocation.x * moduleSize) + (2 * moduleSize),
+                    (alignmentPatternLocation.y * moduleSize) + (2 * moduleSize),
+                    (moduleSize * 1) / 2,
+                );
+                break;
+            case QRELEMENTSHAPES.ROUNDED:
+                drawRoundedModule(
+                    matrixCtx, 
+                    (alignmentPatternLocation.x * moduleSize) + (2 * moduleSize),
+                    (alignmentPatternLocation.y * moduleSize) + (2 * moduleSize),
+                    moduleSize * 1,
+                    radius
+                );
+                break;
+        }
+    }
+
+    return matrixCtx.canvas;
 }
 
 // Drawing Helper Functions
@@ -218,9 +321,6 @@ function drawCircleModule(ctx: CanvasRenderingContext2D, x: number, y: number, r
 
     return ctx.canvas;
 }
-
-let finderPatterns: { x: number, y: number, x2: number, y2: number }[]
-let alignmentPatterns : { x: number, y: number, x2: number, y2: number }[];
 
 // Checks if an area is reserved (that means that that part was already drawn)
 function isReserved(x: number, y: number, size: number, version: number): boolean {
