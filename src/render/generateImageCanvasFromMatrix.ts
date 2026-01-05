@@ -468,7 +468,7 @@ function computeFinderPatternsLocations(size: number): { x: number, y: number, x
 }
 
 function computeAlignmentPatternsLocations(size: number, version: number): { x: number, y: number, x2: number, y2: number }[] {
-    return alignmentPatternLocations[version]?.flatMap(coord1 => {
+    const alignmentPatterns = alignmentPatternLocations[version]?.flatMap(coord1 => {
         return alignmentPatternLocations[version]!
             .filter(coord2 =>
                 !(
@@ -481,6 +481,8 @@ function computeAlignmentPatternsLocations(size: number, version: number): { x: 
                 return { x: coord1 - 2, y: coord2 - 2, x2: coord1 + 2, y2: coord2 + 2 };
             });
         });
+
+    return alignmentPatterns == undefined ? [] : alignmentPatterns;
 }
     
 
