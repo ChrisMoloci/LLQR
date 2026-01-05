@@ -41,14 +41,15 @@ function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, imageSpecs:
     matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height); // Fill entire canvas
     
     // -- 4. Render Finder Patterns --
-    matrixCanvas = renderFinderPatterns(matrix, matrixCtx, size, moduleSize, imageSpecs, radius);
+    matrixCanvas = renderFinderPatterns(matrixCtx, size, moduleSize, imageSpecs, radius);
     console.log(matrixCanvas)
 
     // Render Alignment Patterns
-    matrixCanvas = renderAlignmentPatterns(matrix, matrixCtx, size, moduleSize, imageSpecs, radius, version);
+    matrixCanvas = renderAlignmentPatterns(matrixCtx, size, moduleSize, imageSpecs, radius, version);
     console.log(isReserved(0, 0, size, version));
 
     // Render Modules
+    matrixCanvas = renderDataStream(matrix, matrixCtx, size, moduleSize, imageSpecs, radius, version);
 
     // Render Grid
 
@@ -59,7 +60,7 @@ function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, imageSpecs:
     return mainCanvas;
 }
 
-function renderFinderPatterns(matrix: Array<Array<number>>, matrixCtx: CanvasRenderingContext2D, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number): HTMLCanvasElement {
+function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number): HTMLCanvasElement {
     // Compute the finder pattern locations
     if (!finderPatterns) {
         finderPatterns = computeFinderPatternsLocations(size);
@@ -170,7 +171,7 @@ function renderFinderPatterns(matrix: Array<Array<number>>, matrixCtx: CanvasRen
     return matrixCtx.canvas;
 }
 
-function renderAlignmentPatterns(matrix: Array<Array<number>>, matrixCtx: CanvasRenderingContext2D, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number, version: number): HTMLCanvasElement {
+function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number, version: number): HTMLCanvasElement {
     if (!finderPatterns) {
         finderPatterns = computeFinderPatternsLocations(size);
         console.log("Computed Finder Patterns:", finderPatterns);
@@ -277,6 +278,64 @@ function renderAlignmentPatterns(matrix: Array<Array<number>>, matrixCtx: Canvas
                 );
                 break;
         }
+    }
+
+    return matrixCtx.canvas;
+}
+
+function renderDataStream(matrix: Array<Array<number>>, matrixCtx: CanvasRenderingContext2D, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number, version: number): HTMLCanvasElement {
+    const dataColor = imageSpecs.moduleColor;
+    const bgColor = imageSpecs.backgroundColor;
+
+    switch (imageSpecs.moduleShape) {
+        case QRELEMENTSHAPES.SQUARE:
+            // Draw square modules
+            for (let row = 0; row < size; row++) {
+                for (let col = 0; col < size; col++) {
+                    if (!isReserved(col, row, size, version)) {
+                        matrixCtx.fillStyle = matrix[row]![col]! ? dataColor : bgColor;
+                        drawSquareModule(
+                            matrixCtx,
+                            col * moduleSize,
+                            row * moduleSize,
+                            moduleSize
+                        );
+                    }
+                }
+            }
+            break;
+        case QRELEMENTSHAPES.CIRCLE:
+            // Draw circle modules
+            for (let row = 0; row < size; row++) {
+                for (let col = 0; col < size; col++) {
+                    if (!isReserved(col, row, size, version)) {
+                        matrixCtx.fillStyle = matrix[row]![col]! ? dataColor : bgColor;
+                        drawCircleModule(
+                            matrixCtx,
+                            col * moduleSize,
+                            row * moduleSize,
+                            moduleSize / 2
+                        );
+                    }
+                }
+            }
+            break;
+        case QRELEMENTSHAPES.ROUNDED:
+            for (let row = 0; row < size; row++) {
+                for (let col = 0; col < size; col++) {
+                    if (!isReserved(col, row, size, version)) {
+                        matrixCtx.fillStyle = matrix[row]![col]! ? dataColor : bgColor;
+                        drawRoundedModule(
+                            matrixCtx,
+                            col * moduleSize,
+                            row * moduleSize,
+                            moduleSize,
+                            radius
+                        );
+                    }
+                }
+            }
+            break;
     }
 
     return matrixCtx.canvas;
