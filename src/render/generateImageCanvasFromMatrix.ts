@@ -44,19 +44,19 @@ function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, imageSpecs:
     matrixCanvas = renderFinderPatterns(matrixCtx, size, moduleSize, imageSpecs, radius);
     console.log(matrixCanvas)
 
-    // Render Alignment Patterns
+    // -- 5. Render Alignment Patterns --
     matrixCanvas = renderAlignmentPatterns(matrixCtx, size, moduleSize, imageSpecs, radius, version);
     console.log(isReserved(0, 0, size, version));
 
-    // Render Modules
+    // -- 6. Render Modules --
     matrixCanvas = renderDataStream(matrix, matrixCtx, size, moduleSize, imageSpecs, radius, version);
 
-    // Render Grid
+    // -- 7. Render Grid --
 
-    // -- 3. Add the matrix canvas to the main canvas with quiet zone offset --
+    // -- 8. Add the matrix canvas to the main canvas with quiet zone offset --
     mainCtx.drawImage(matrixCanvas, safeAreaPixelSize / 2, safeAreaPixelSize / 2);
 
-    // Return the canvas
+    // -- 9. Return the canvas --
     return mainCanvas;
 }
 
@@ -324,13 +324,41 @@ function renderDataStream(matrix: Array<Array<number>>, matrixCtx: CanvasRenderi
             for (let row = 0; row < size; row++) {
                 for (let col = 0; col < size; col++) {
                     if (!isReserved(col, row, size, version)) {
+                        // Creating radiuses
+                        const radiuses: Radiuses = {
+                            topLeft: 0,
+                            topRight: 0,
+                            bottomRight: 0,
+                            bottomLeft: 0
+                        }
+
+                        // Top left corner - round if there's no black module above OR to the left
+                        if ((row === 0 || matrix[row-1][col] === 0) && (col === 0 || matrix[row][col-1] === 0)) {
+                            radiuses.topLeft = radius;
+                        }
+        
+                        // Top right corner - round if there's no black module above OR to the right
+                        if ((row === 0 || matrix[row-1][col] === 0) && (col === size-1 || matrix[row][col+1] === 0)) {
+                            radiuses.topRight = radius;
+                        }
+        
+                        // Bottom right corner - round if there's no black module below OR to the right
+                        if ((row === size-1 || matrix[row+1][col] === 0) && (col === size-1 || matrix[row][col+1] === 0)) {
+                            radiuses.bottomRight = radius;
+                        }
+        
+                        // Bottom left corner - round if there's no black module below OR to the left
+                        if ((row === size-1 || matrix[row+1][col] === 0) && (col === 0 || matrix[row][col-1] === 0)) {
+                            radiuses.bottomLeft = radius;
+                        }
+
                         matrixCtx.fillStyle = matrix[row]![col]! ? dataColor : bgColor;
                         drawRoundedModule(
                             matrixCtx,
                             col * moduleSize,
                             row * moduleSize,
                             moduleSize,
-                            radius
+                            radiuses
                         );
                     }
                 }
@@ -349,21 +377,38 @@ function drawSquareModule(ctx: CanvasRenderingContext2D, x: number, y: number, s
     return ctx.canvas;
 }
 
-function drawRoundedModule(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, radius: number): HTMLCanvasElement {
+interface Radiuses {
+    topLeft: number,
+    topRight: number,
+    bottomRight: number,
+    bottomLeft: number
+}
+
+function drawRoundedModule(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, radiuses: Radiuses | number): HTMLCanvasElement {
+    if (typeof radiuses === "number") {
+        radiuses = {
+            topLeft: radiuses,
+            topRight: radiuses,
+            bottomRight: radiuses,
+            bottomLeft: radiuses
+        }    
+    }
+
     ctx.beginPath();
 
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x - radius + size, y);
+    ctx.moveTo(x + radiuses.topLeft, y);
+    ctx.lineTo(x - radiuses.topRight + size, y);
 
-    ctx.quadraticCurveTo(x + size, y, x + size, y + radius);
-    ctx.lineTo(x + size, y + size - radius);
+    ctx.quadraticCurveTo(x + size, y, x + size, y + radiuses.topRight);
+    ctx.lineTo(x + size, y + size - radiuses.bottomRight);
 
-    ctx.quadraticCurveTo(x + size, y + size, x + size - radius, y + size);
-    ctx.lineTo(x + radius, y + size);
+    ctx.quadraticCurveTo(x + size, y + size, x + size - radiuses.bottomRight, y + size);
+    ctx.lineTo(x + radiuses.bottomLeft, y + size);
 
-    ctx.quadraticCurveTo(x, y + size, x, y + size - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.quadraticCurveTo(x, y + size, x, y + size - radiuses.bottomLeft);
+    ctx.lineTo(x, y + radiuses.topLeft);
+
+    ctx.quadraticCurveTo(x, y, x + radiuses.topLeft, y);
     ctx.closePath();   
 
     ctx.fill();
