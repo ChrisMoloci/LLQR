@@ -167,6 +167,18 @@ function renderFinderPatterns(matrix: Array<Array<number>>, matrixCtx: CanvasRen
     return matrixCtx.canvas;
 }
 
+function renderAlignmentPatterns() {
+    if (!finderPatterns) {
+        finderPatterns = computeFinderPatternsLocations(size);
+        console.log("Computed Finder Patterns:", finderPatterns);
+    }
+    if (!alignmentPatterns) {
+        // Only compute once
+        alignmentPatterns = computeAlignmentPatternsLocations(size, version);
+        console.log("Computed Alignment Patterns:", alignmentPatterns);
+    }
+}
+
 // Drawing Helper Functions
 
 function drawSquareModule(ctx: CanvasRenderingContext2D, x: number, y: number, size: number): HTMLCanvasElement {
@@ -213,29 +225,12 @@ let alignmentPatterns : { x: number, y: number, x2: number, y2: number }[];
 // Checks if an area is reserved (that means that that part was already drawn)
 function isReserved(x: number, y: number, size: number, version: number): boolean {
     if (!finderPatterns) {
-        // Only compute once
-        finderPatterns = [
-            { x: 0, y: 0, x2: 6, y2: 6 }, // Top Left
-            { x: size - 7, y: 0, x2: size - 1, y2: 6 }, // Top Right
-            { x: 0, y: size - 7, x2: 6, y2: size - 1 } // Bottom Left
-        ];
+        finderPatterns = computeFinderPatternsLocations(size);
         console.log("Computed Finder Patterns:", finderPatterns);
     }
     if (!alignmentPatterns) {
         // Only compute once
-        alignmentPatterns = alignmentPatternLocations[version]?.flatMap(coord1 => {
-        return alignmentPatternLocations[version]!
-            .filter(coord2 =>
-                !(
-                    (coord1 < 9 && coord2 < 9) || // Top-left finder
-                    (coord1 > size - 10 && coord2 < 9) || // Top-right finder
-                    (coord1 < 9 && coord2 > size - 10) // Bottom-left finder  
-                )
-            )
-            .map(coord2 => {
-                return { x: coord1 - 2, y: coord2 - 2, x2: coord1 + 2, y2: coord2 + 2 };
-            });
-        });
+        alignmentPatterns = computeAlignmentPatternsLocations(size, version);
         console.log("Computed Alignment Patterns:", alignmentPatterns);
     }
 
@@ -258,5 +253,31 @@ function isReserved(x: number, y: number, size: number, version: number): boolea
     // If neither finder nor alignment patterns are matched, return false
     return false;
 }
+
+function computeFinderPatternsLocations(size: number): { x: number, y: number, x2: number, y2: number }[] {
+    // Only compute once
+    return [
+        { x: 0, y: 0, x2: 6, y2: 6 }, // Top Left
+        { x: size - 7, y: 0, x2: size - 1, y2: 6 }, // Top Right
+        { x: 0, y: size - 7, x2: 6, y2: size - 1 } // Bottom Left
+    ];
+}
+
+function computeAlignmentPatternsLocations(size: number, version: number): { x: number, y: number, x2: number, y2: number }[] {
+    return alignmentPatternLocations[version]?.flatMap(coord1 => {
+        return alignmentPatternLocations[version]!
+            .filter(coord2 =>
+                !(
+                    (coord1 < 9 && coord2 < 9) || // Top-left finder
+                    (coord1 > size - 10 && coord2 < 9) || // Top-right finder
+                    (coord1 < 9 && coord2 > size - 10) // Bottom-left finder  
+                )
+            )
+            .map(coord2 => {
+                return { x: coord1 - 2, y: coord2 - 2, x2: coord1 + 2, y2: coord2 + 2 };
+            });
+        });
+}
+    
 
 export default generateImageCanvasFromMatrix;
