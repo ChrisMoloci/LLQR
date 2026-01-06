@@ -238,13 +238,21 @@ function addVersionInformation(qrMatrixCanvas: QRMatrixCanvas, version: number, 
     // The final ECC value for our version
     let eccVersion: number = version << 12; // Initialize by shifting version 12 bits to the left
 
+    let loopDepth = 0; // Safety variable to prevent infinite loops
+
     // Keep XORing until the bit length is less than or equal to 12
-    while (getBitLength(eccVersion) >= 12) {
+    while (getBitLength(eccVersion) > 12) {
+        const shiftAmount = getBitLength(eccVersion) - getBitLength(generatorPolynomial);
         // Pad the generator polynomial (on the end) to be the same length as the padded version number binary representation
-        const paddedGeneratorPolynomial = generatorPolynomial << (getBitLength(eccVersion) - getBitLength(generatorPolynomial));
+        const paddedGeneratorPolynomial = generatorPolynomial << shiftAmount;
         
         // Perform (18, 6) Golay Code division using XOR to get ECC bits
         eccVersion = eccVersion ^ paddedGeneratorPolynomial;
+        console.log(`EccVersion after XOR: ${eccVersion.toString(2)}, Padded generator polynomial: ${paddedGeneratorPolynomial.toString(2)}`);
+
+        if (loopDepth++ > 40) {
+            throw new Error("Infinite loop detected in version information ECC generation.");
+        } // Safety break to prevent infinite loops
     }
 
     // Add original 6-bit version number to the beginning of the ECC stream and convert to a reversed number array (start from LSB)
