@@ -64,7 +64,7 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     console.log("Finalized QR Matrices with Format Information:", finalizedMatrices);
 
     // -- 11. Determine optimal mask pattern and use that as the final matrix --
-    const optimalMatrix: Array<Array<number>> = determineOptimalMaskPattern(maskedMatrices);
+    const optimalMatrix: Array<Array<number>> = determineOptimalMaskPattern(finalizedMatrices);
     console.log("Optimal QR Matrix selected:", optimalMatrix);
 
     // -- 12. Return the finalized matrix --
@@ -228,6 +228,8 @@ function reserveFormatInformation(qrMatrixCanvas: QRMatrixCanvas, size: number):
 }
 
 function addVersionInformation(qrMatrixCanvas: QRMatrixCanvas, version: number, size: number): QRMatrixCanvas {
+    // version = 7;
+
     // -- 1. Compute the version information (With ECC) - With (18,6) Golay Code
 
     // Get the version number in binary representation (6 bits long)

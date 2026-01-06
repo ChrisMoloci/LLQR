@@ -157,9 +157,11 @@ function padECCZeroBytesToBlocks(groupedData: Array<Array<Array<number>>>, group
 function computeECC(groupedData: Array<Array<Array<number>>>, groupingObj: Object, generatorPolynomial: Array<number>): Array<Array<Array<number>>> {
     const eccGroupedData: Array<Array<Array<number>>> = groupedData.map((group, groupIndex) => {
         const numOfBlocks = groupingObj.blocks[`g${groupIndex + 1}`].numBlocks;
-        if (group instanceof Array && groupIndex + 1 <= numOfBlocks) {
+        // console.log("Computing ECC for Group:", groupIndex + 1, "with", numOfBlocks, "blocks.");
+        if (group instanceof Array && group.length > 0) {
             return group.map((block, blockIndex) => {
-                if (block instanceof Array && blockIndex + 1 <= numOfBlocks) {
+                // console.log("Computing ECC for Block:", blockIndex + 1, "of Group:", groupIndex + 1);
+                if (block instanceof Array && block.length > 0) {
                     const blockDataCodewordBufferSize = groupingObj.blocks[`g${groupIndex + 1}`].dataCodewordsPerBlock;
                     /**
                      * Why we need to copy the intial data and create a copy of the whole block:
@@ -241,21 +243,17 @@ function interleaveData(groupedData: Array<Array<Array<number>>>, groupingObj: O
 
     // -- 1. Loop through each data codeword and interleave
     for (let i = 0; i < highestDataBufferSize; i++) {
-        if (hasG1) {
+        if (hasG1 && i < g1DataCodewordBufferSize) {
             for (let block of groupedData[0]) {
-                if (i < block.length) {
-                    // Add data from all blocks in group 1
-                    dataCodewords.push(block[i]!);
-                }
+                // Add data from all blocks in group 1
+                dataCodewords.push(block[i]!);
             }
         }
 
-        if (hasG2) {
+        if (hasG2 && i < g2DataCodewordBufferSize) {
             for (let block of groupedData[1]) {
                 // Add data from all blocks in group 2
-                if (i < block.length) {
-                    dataCodewords.push(block[i]!);
-                }
+                dataCodewords.push(block[i]!);
             }
         }
     }
