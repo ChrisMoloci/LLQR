@@ -1,6 +1,7 @@
-import { DataEncodingMode, ECC_LEVEL_CODES, ECCLevelCode } from "../const";
+import { DataEncodingMode } from "../const";
 import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
+import { ECC_LEVEL_CODES, ECCLevelCode } from "../enums";
 import { qrVersions } from "../types";
 
 export default function determineMinQRVersion(encodedData: Array<string>, eccLevel: ECCLevelCode, mode: DataEncodingMode): {charCountIndicatorLength: number, version: qrVersions} {

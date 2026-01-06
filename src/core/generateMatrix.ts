@@ -1,9 +1,9 @@
-import { MASK_PATTERN_CODES, MaskPatternCode } from "../const";
+import { MASK_PATTERN_CODES, MaskPatternCode } from "../enums";
 import { alignmentPatternLocations } from "../datasets/alignmentPatternLocations";
 import { QRMatrixCanvas } from "../types";
 import determinePenaltyScore from "./determinePenaltyScore";
 import maskQR from "./maskingFunctions"; 
-import { mask0, mask1, mask2, mask3, mask4, mask5, mask6, mask7 } from "./maskingFunctions";
+// import { mask0, mask1, mask2, mask3, mask4, mask5, mask6, mask7 } from "./maskingFunctions";
 import { getBitLength } from "./utils";
 
 export interface MaskedQRMatrix {

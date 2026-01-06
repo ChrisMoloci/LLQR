@@ -1,4 +1,4 @@
-import { ECC_LEVEL_CODES, ECCLevelCode } from "../const";
+import { ECC_LEVEL_CODES, ECCLevelCode } from "../enums";
 import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { qrVersions } from "../types";
 import { gfMultiply, gfXor } from "./GF256_Arithmetic";

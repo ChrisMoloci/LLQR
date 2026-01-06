@@ -1,4 +1,4 @@
-import { DATA_ENCODING_MODES, DataEncodingMode } from "../const";
+import { DATA_ENCODING_MODES, DataEncodingMode } from "../enums";
 import encodeAlphanumeric from "./encoders/encodeAlphanumeric";
 import encodeBinary from "./encoders/encodeBinary";
 import encodeNumeric from "./encoders/encodeNumeric";

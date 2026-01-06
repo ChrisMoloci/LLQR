@@ -1,4 +1,4 @@
-import { DATA_ENCODING_MODES, DataEncodingMode } from "../const";
+import { DATA_ENCODING_MODES, DataEncodingMode } from "../enums";
 
 export default function determineMode(data: string): DataEncodingMode {
     if(/^\d+$/.test(data)) {

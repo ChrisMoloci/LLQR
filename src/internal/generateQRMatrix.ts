@@ -1,13 +1,14 @@
-import { DataEncodingMode, DEFAULT_QR_SPECS } from "../const";
-import { qrSpecs } from "../types";
+import { DataEncodingMode, QRSpecs } from "../enums";
 import autoEncodeData from "../core/autoEncodeData";
 import determineMode from "../core/determineEncodingMode";
 import determineMinQRVersion from "../core/determineMinQRVersion";
 import prepareDatastream from "../core/prepareDatastream";
 import generateECCStream from "../core/generateECCStream";
 import generateMatrix from "../core/generateMatrix";
+import { getCurrentConfigs } from "../core/defineConfig";
 
-function generateQRMatrix(data: string, specs: qrSpecs = DEFAULT_QR_SPECS): Array<Array<number>> {
+function generateQRMatrix(data: string): Array<Array<number>> {
+    const specs: QRSpecs = getCurrentConfigs().qrConfig;
     console.log("Generating QR Code with specs:", specs);
 
     // Determine Mode

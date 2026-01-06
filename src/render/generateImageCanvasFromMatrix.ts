@@ -1,11 +1,16 @@
 import { DEFAULT_IMAGE_SPECS } from "../const";
+import { getCurrentConfigs } from "../core/defineConfig";
 import { alignmentPatternLocations } from "../datasets/alignmentPatternLocations";
-import { ImageSpecs, QRELEMENTSHAPES } from "../types";
+import { ImageSpecs } from "../types";
+import { QRELEMENTSHAPES } from "../enums";
 
 let finderPatterns: { x: number, y: number, x2: number, y2: number }[]
 let alignmentPatterns : { x: number, y: number, x2: number, y2: number }[];
 
-function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, imageSpecs: ImageSpecs = DEFAULT_IMAGE_SPECS, pixelSize: number): HTMLCanvasElement {
+function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, pixelSize: number): HTMLCanvasElement {
+    const imageSpecs: ImageSpecs = getCurrentConfigs().imageConfig;
+    console.log("Generating Image from QR Matrix with Image Specs:", imageSpecs);
+    
     // -- 1. Initial Calculations --
     const size = matrix.length;
     const version = (size - 21) / 4 + 1; // Compute the version (for convenience so it doesn't have to be passed in)

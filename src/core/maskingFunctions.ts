@@ -1,4 +1,4 @@
-import { MASK_PATTERN_FUNCTIONS, MaskPatternCode } from "../const";
+import { MASK_PATTERN_FUNCTIONS, MaskPatternCode } from "../enums";
 import { QRMatrixCanvas } from "../types";
 import { MaskedQRMatrix } from "./generateMatrix";
 
