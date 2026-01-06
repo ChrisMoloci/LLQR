@@ -1,4 +1,4 @@
-import { DataEncodingMode } from "../const";
+import { DataEncodingMode } from "../enums";
 
 function prepareDatastream(unencodedData: string, encodedData: Array<string>, charCountIndicatorLength: number, mode: DataEncodingMode): Array<string> {
     // Generate Binary Length Indicator and make it the size of charCountIndicatorLength

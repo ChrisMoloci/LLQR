@@ -5,6 +5,7 @@ import determinePenaltyScore from "./determinePenaltyScore";
 import maskQR from "./maskingFunctions"; 
 // import { mask0, mask1, mask2, mask3, mask4, mask5, mask6, mask7 } from "./maskingFunctions";
 import { getBitLength } from "./utils";
+import { getCurrentConfigs } from "./defineConfig";
 
 export interface MaskedQRMatrix {
     matrix: Array<Array<number>>,
@@ -12,7 +13,8 @@ export interface MaskedQRMatrix {
     penaltyScore?: number,
 }
 
-function generateMatrix(dataStream: Array<string>, version: number, eccLevel: string, maskPattern: MaskPatternCode | null = null): Array<Array<number>> {
+function generateMatrix(dataStream: Array<string>, version: number, eccLevel: string): Array<Array<number>> {
+    const qrSpecs = getCurrentConfigs().qrConfig;
     // dataStream = [];
     // const matrix: Array<Array<number>> = []; // Will store the finalized matrix
     // const reservedAreas: Array<Array<boolean>> = []; // Stores the areas that data should not be placed into

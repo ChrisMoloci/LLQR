@@ -1,10 +1,11 @@
-import { ECC_LEVEL_CODES, QRELEMENTSHAPES, QRSpecs } from "./enums";
+import { ECC_LEVEL_CODES, QRELEMENTSHAPES } from "./enums";
+import { QRSpecs } from "./types";
 import { ImageSpecs } from "./types";
 
 // Used for default QR Specs
 export const QR_DEFAULTS = {
     ECC_LEVEL: ECC_LEVEL_CODES.M,
-    VERSION: null,
+    MIN_PREFERRED_VERSION: null,
     FORCE_BYTE_ENCODING: false as const,
     MASK_PATTERN: null,
     PREFERR_ECI: false as const,
@@ -16,7 +17,7 @@ export type QRDefault = typeof QR_DEFAULTS[keyof typeof QR_DEFAULTS];
 // A Preconfigured default QR Spec if the developer doesn't provide one
 export const DEFAULT_QR_SPECS: QRSpecs = {
     eccLevel: QR_DEFAULTS.ECC_LEVEL,
-    version: QR_DEFAULTS.VERSION,
+    minPreferredVersion: QR_DEFAULTS.MIN_PREFERRED_VERSION,
     forceByteEncoding: QR_DEFAULTS.FORCE_BYTE_ENCODING,
     maskPattern: QR_DEFAULTS.MASK_PATTERN,
     preferrECI: QR_DEFAULTS.PREFERR_ECI,

@@ -1,10 +1,11 @@
-import { DataEncodingMode } from "../const";
+import { DataEncodingMode } from "../enums";
 import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
 import { ECC_LEVEL_CODES, ECCLevelCode } from "../enums";
-import { qrVersions } from "../types";
+import { QRSpecs, qrVersions } from "../types";
+import { getCurrentConfigs } from "./defineConfig";
 
-export default function determineMinQRVersion(encodedData: Array<string>, eccLevel: ECCLevelCode, mode: DataEncodingMode): {charCountIndicatorLength: number, version: qrVersions} {
+export default function determineMinQRVersion(encodedData: Array<string>, eccLevel: ECCLevelCode, mode: DataEncodingMode, minPrefferedVersion: qrVersions | null = null): {charCountIndicatorLength: number, version: qrVersions} {
     // Determine length of data
     let length = encodedData.reduce((length, el) => length + el.length, 0);
 
@@ -53,6 +54,13 @@ export default function determineMinQRVersion(encodedData: Array<string>, eccLev
 
     // bestVersion = 3;
     // currentCharCountIndicatorLength = getCharCountIndicatorLength(mode, bestVersion);
+
+    // Check if preffered min version is higher than determined best version
+    if (minPrefferedVersion !== null && bestVersion < minPrefferedVersion) {
+        // Use preffered min version if possible
+        bestVersion = minPrefferedVersion;
+        currentCharCountIndicatorLength = getCharCountIndicatorLength(mode, bestVersion);
+    }
 
     return {charCountIndicatorLength: currentCharCountIndicatorLength, version: bestVersion as qrVersions};
 }

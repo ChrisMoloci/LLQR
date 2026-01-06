@@ -1,5 +1,4 @@
 import { mask0, mask1, mask2, mask3, mask4, mask5, mask6, mask7 } from "./core/maskingFunctions";
-import { qrVersions } from "./types";
 
 // ECC Level Codes
 export const ECC_LEVEL_CODES = {
@@ -49,16 +48,6 @@ export const MASK_PATTERN_FUNCTIONS = {
 } as const;
 
 export type MaskPatternFunction = typeof MASK_PATTERN_FUNCTIONS[keyof typeof MASK_PATTERN_FUNCTIONS];
-
-// Defines the rules for generating a QR code
-export type QRSpecs = {
-    eccLevel: ECCLevelCode
-    version: qrVersions | null, // Null means auto
-    forceByteEncoding: boolean,
-    maskPattern: MaskPatternCode | null, // Null means auto
-    preferrECI: boolean,
-    preferrBOM: boolean
-}
 
 export type RGB = `rgb(${number}, ${number}, ${number})`;
 export type RGBA = `rgba(${number}, ${number}, ${number}, ${number})`;

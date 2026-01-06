@@ -1,4 +1,3 @@
-import { DEFAULT_IMAGE_SPECS } from "../const";
 import { getCurrentConfigs } from "../core/defineConfig";
 import { alignmentPatternLocations } from "../datasets/alignmentPatternLocations";
 import { ImageSpecs } from "../types";
