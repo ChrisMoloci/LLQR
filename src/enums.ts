@@ -30,7 +30,8 @@ export const MASK_PATTERN_CODES = {
     4: "100",
     5: "101",
     6: "110",
-    7: "111"
+    7: "111",
+    AUTO: null
 } as const;
 
 export type MaskPatternCode = typeof MASK_PATTERN_CODES[keyof typeof MASK_PATTERN_CODES];

@@ -13,8 +13,7 @@ export interface MaskedQRMatrix {
     penaltyScore?: number,
 }
 
-function generateMatrix(dataStream: Array<string>, version: number, eccLevel: string): Array<Array<number>> {
-    const qrSpecs = getCurrentConfigs().qrConfig;
+function generateMatrix(dataStream: Array<string>, version: number, eccLevel: string, maskPattern: MaskPatternCode | null): Array<Array<number>> {
     // dataStream = [];
     // const matrix: Array<Array<number>> = []; // Will store the finalized matrix
     // const reservedAreas: Array<Array<boolean>> = []; // Stores the areas that data should not be placed into
@@ -65,7 +64,13 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
             addFormatInformationToMatrix(maskedMatrix, eccLevel, size));
     console.log("Finalized QR Matrices with Format Information:", finalizedMatrices);
 
-    // -- 11. Determine optimal mask pattern and use that as the final matrix --
+    // -- 11. Return the appropriate matrix based on maskPattern if mask pattern is specified --
+    if (maskPattern !== null) {
+        // If a specific mask pattern is requested, return that matrix
+        return finalizedMatrices.find(matrix => matrix.maskPattern === maskPattern)!.matrix;
+    }
+
+    // -- 12. Determine optimal mask pattern and use that as the final matrix if no mask pattern is specified --
     const optimalMatrix: Array<Array<number>> = determineOptimalMaskPattern(finalizedMatrices);
     console.log("Optimal QR Matrix selected:", optimalMatrix);
 

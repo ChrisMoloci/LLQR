@@ -39,7 +39,7 @@ function generateQRMatrix(data: string): Array<Array<number>> {
     console.log("Generated ECC Stream:", eccStream);
 
     // Generate the matrix using the ecc data stream
-    const matrix: Array<Array<number>> = generateMatrix(eccStream, minVersion, qrSpecs.eccLevel);
+    const matrix: Array<Array<number>> = generateMatrix(eccStream, minVersion, qrSpecs.eccLevel, qrSpecs.maskPattern);
     console.log("Generated QR Matrix:", matrix);
 
     return matrix;
