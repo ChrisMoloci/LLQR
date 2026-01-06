@@ -232,32 +232,27 @@ function addVersionInformation(qrMatrixCanvas: QRMatrixCanvas, version: number, 
 
     // -- 1. Compute the version information (With ECC) - With (18,6) Golay Code
 
-    // Get the version number in binary representation (6 bits long)
-    const binaryVersion = version.toString(2).padStart(6, '0');
-
-    // Shift left by 12 to make space for ECC bits (the leading 0s are technically already there since JS used 32-bit integers)
-    const paddedVersionNumber = version << 12;
-    // Get the binary representation of the padded(bit-shifted) version number (used for padding the generator polynomial)
-    const paddedVersionNumberBinary = paddedVersionNumber.toString(2);
-
     // Generator polynomial as an integer as a binary literal
     const generatorPolynomial: number = 0b1111100100101;
-    // Store the binary literal of the generator polynomial in an array (used for padding the generator polynomial)
-    const generatorPolynomialBinary: string = generatorPolynomial.toString(2);
 
-    // Pad the generator polynomial (on the end) to be the same length as the padded version number binary representation
-    const paddedGeneratorPolynomial = generatorPolynomial << (paddedVersionNumberBinary.length - generatorPolynomialBinary.length);
+    // The final ECC value for our version
+    let eccVersion: number = version << 12; // Initialize by shifting version 12 bits to the left
 
-    // Perform (18, 6) Golay Code division using XOR to get ECC bits
-    const eccVersion: number = paddedVersionNumber ^ paddedGeneratorPolynomial;
-
-    // Convert to a binary string and pad to 12 bits long
-    const eccVersionInformationStream = eccVersion.toString(2).padStart(12, '0'); // Get ECC bits as 12-bit binary string
-
-    console.log("ECC Version Information Stream (12 bits):", eccVersionInformationStream);
+    // Keep XORing until the bit length is less than or equal to 12
+    while (getBitLength(eccVersion) >= 12) {
+        // Pad the generator polynomial (on the end) to be the same length as the padded version number binary representation
+        const paddedGeneratorPolynomial = generatorPolynomial << (getBitLength(eccVersion) - getBitLength(generatorPolynomial));
+        
+        // Perform (18, 6) Golay Code division using XOR to get ECC bits
+        eccVersion = eccVersion ^ paddedGeneratorPolynomial;
+    }
 
     // Add original 6-bit version number to the beginning of the ECC stream and convert to a reversed number array (start from LSB)
-    const completeVersionInformationStream: number[] = (binaryVersion + eccVersionInformationStream).split('').map(bit => parseInt(bit)).reverse();
+    const completeVersionInformationStream: number[] = (
+        version.toString(2).padStart(6, '0') + // Original version number (6 bits)
+        eccVersion.toString(2).padStart(12, '0') // ECC bits (12 bits)
+    ).split('').map(bit => parseInt(bit)).reverse(); // Convert to array and reverse for easier placement
+
     console.log("Complete Version Information Stream (18 bits):", completeVersionInformationStream.join(''));
 
     // TODO: Update how bit length is calculated to use getBitLength from utils.ts
