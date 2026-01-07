@@ -6,11 +6,19 @@ import encodeNumeric from "./encoders/encodeNumeric";
 
 interface DataSegment {
     mode: DataEncodingMode;
-    segment: string;
+    data: string;
 }
 
-function autoEncodeData(data: string, encodingMode: DataEncodingMode, useModeSwitching: ModeSwitchingModes): Array<string> | undefined {
+export interface EncodedSegment {
+    mode: DataEncodingMode;
+    charCount: number;
+    encodedData: Array<string>;
+}
+
+function autoEncodeData(data: string, encodingMode: DataEncodingMode, useModeSwitching: ModeSwitchingModes): Array<EncodedSegment> | undefined {
     let segments: Array<DataSegment>;
+    const encodedSegments: Array<EncodedSegment> = [];
+
     if (useModeSwitching === "forced") {
         segments = segmentDataByMode(data);
         console.log("Data Segments for Encoding:", segments);
@@ -19,18 +27,30 @@ function autoEncodeData(data: string, encodingMode: DataEncodingMode, useModeSwi
     } else {
         segments = [{
             mode: encodingMode,
-            segment: data,
+            data: data,
         }];
     }
 
     for (const segment of segments) {
-        switch (encodingMode) {
+        switch (segment.mode) {
             case DATA_ENCODING_MODES.NUMERIC:
-                return encodeNumeric(data);
+                encodedSegments.push({
+                    mode: segment.mode,
+                    charCount: segment.data.length,
+                    encodedData: encodeNumeric(segment.data),
+                });
             case DATA_ENCODING_MODES.ALPHANUMERIC:
-                return encodeAlphanumeric(data);
+                encodedSegments.push({
+                    mode: segment.mode,
+                    charCount: segment.data.length,
+                    encodedData: encodeAlphanumeric(segment.data),
+                });
             case DATA_ENCODING_MODES.BYTE:
-                return encodeBinary(data);
+                encodedSegments.push({
+                    mode: segment.mode,
+                    charCount: segment.data.length,
+                    encodedData: encodeBinary(segment.data),
+                });
             case DATA_ENCODING_MODES.KANJI:
                 // TODO: Implement Kanji encoding
                 break;
@@ -38,6 +58,8 @@ function autoEncodeData(data: string, encodingMode: DataEncodingMode, useModeSwi
                 throw new Error("Unsupported encoding mode");
         }
     }
+
+    return encodedSegments;
 }
 
 // Force encodes data by its specific type regardless of efficiency
@@ -69,7 +91,7 @@ function segmentDataByMode(data: string): Array<DataSegment> {
             // Found a numeric segment
             segments.push({
                 mode: DATA_ENCODING_MODES.NUMERIC,
-                segment: numericSlice[0],
+                data: numericSlice[0],
             });
 
             i += numericSlice[0].length; // Move index forward
@@ -77,7 +99,7 @@ function segmentDataByMode(data: string): Array<DataSegment> {
             // Found an alphanumeric segment
             segments.push({
                 mode: DATA_ENCODING_MODES.ALPHANUMERIC,
-                segment: alphanumericSlice[0],
+                data: alphanumericSlice[0],
             });
 
             i += alphanumericSlice[0].length; // Move index forward
@@ -85,7 +107,7 @@ function segmentDataByMode(data: string): Array<DataSegment> {
             // Found a byte segment
             segments.push({
                 mode: DATA_ENCODING_MODES.BYTE,
-                segment: byteSlice[0],
+                data: byteSlice[0],
             });
 
             i += byteSlice[0].length; // Move index forward
