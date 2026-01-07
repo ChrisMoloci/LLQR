@@ -58,7 +58,7 @@ function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, pixelSize: 
     // -- 7. Render Grid --
 
     // -- 8. Add the matrix canvas to the main canvas with quiet zone offset --
-    mainCtx.drawImage(matrixCanvas, safeAreaPixelSize / 2, safeAreaPixelSize / 2);
+    mainCtx.drawImage(matrixCanvas, safeAreaPixelSize, safeAreaPixelSize);
 
     // -- 9. Return the canvas --
     return mainCanvas;
