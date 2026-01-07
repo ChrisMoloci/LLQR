@@ -8,7 +8,7 @@ import { QRSpecs } from "../types";
  *      [-] Create QRs with specified ECC level
  *      [-] Try to create QRs with specified min version
  *      [-] Force Byte Encoding
- *      [] Use specified mask pattern
+ *      [-] Use specified mask pattern
  *      [] Add ECI segment if specified
  *      [] Add BOM if specified
  */

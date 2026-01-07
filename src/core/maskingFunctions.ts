@@ -6,7 +6,7 @@ import { MaskedQRMatrix } from "./generateMatrix";
 // export type MaskFunctions = typeof mask0 | typeof mask1 | typeof mask2 | typeof mask3 | typeof mask4 | typeof mask5 | typeof mask6 | typeof mask7;
 
 export default function maskQR(maskCode: MaskPatternCode, qrMatrixCanvas: QRMatrixCanvas, size: number): MaskedQRMatrix {
-    const maskFunction = MASK_PATTERN_FUNCTIONS[maskCode];
+    const maskFunction = MASK_PATTERN_FUNCTIONS[maskCode!];
 
     for (let col = size - 1; col >= 0; col--) {
         if (col === 6) col--;
