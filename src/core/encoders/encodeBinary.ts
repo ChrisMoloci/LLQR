@@ -36,6 +36,9 @@ function encodeBinary(data: string): Array<string> {
         //     let charCode = data.charCodeAt(i);
         //     binaryEncoding.push(charCode.toString(2).padStart(8, '0')); // Convert to binary and pad to 8 bits
         // } // Iterate through the data and convert each character to its binary representation
+
+        console.log("Using Latin-1 encoding for binary data.");
+
         dataChars.forEach(element => {
             const charCode = element.codePointAt(0);
             if (charCode === undefined) {
@@ -45,6 +48,9 @@ function encodeBinary(data: string): Array<string> {
         });
     } else {
         // Use UTF-8 encoding
+
+        console.log("Using UTF-8 encoding for binary data.");
+
         if (typeof TextEncoder !== "undefined") {
             // Use TextEncoder if possible
             const encoder = new TextEncoder(); // Create a new TextEncoder instance

@@ -18,7 +18,7 @@ function generateQRMatrix(data: string): Array<Array<number>> {
     if (!mode) throw new Error("Unable to determine encoding mode for the provided data."); 
 
     // -- 3. Encode Data to Binary --
-    const encodedData: Array<string> | undefined = autoEncodeData(data, mode);
+    const encodedData: Array<string> | undefined = autoEncodeData(data, mode, qrSpecs.useModeSwitching);
 
     if (!encodedData) throw new Error("Data encoding failed.");
 
