@@ -30,6 +30,8 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
         console.log("Data Segments for Encoding:", initialDataSegments);
     } else if (useModeSwitching === "auto") {
         // Breaks data into segments when it can save on sizing
+        initialDataSegments = autoSegmentDataByMode(data);
+        console.log("Data Segments for Encoding:", initialDataSegments);
     } else if(useModeSwitching === "disabled") {
         throw new Error("Mode switching is disabled. Use encodeWithSingleMode instead.");
     } else {
@@ -99,9 +101,9 @@ function forceSegmentDataByMode(data: string): Array<InitialDataSegment> {
     const segments: Array<InitialDataSegment> = [];
 
     // Regular expressions to find all the different datatypes and get them as substrings (only matches at start using ^)
-    const numericRegEx      = /^\d+/g; // Numeric
-    const alphanumericRegEx = /^[A-Z]+/g; // Alphanumeric
-    const byteRegEx         = /^[^A-Z0-9]+/g; // Anything else (Byte)
+    const numericRegEx      = /^\d+/; // Numeric
+    const alphanumericRegEx = /^[A-Z$%*+\-./:]+/; // Alphanumeric
+    const byteRegEx         = /^[^A-Z0-9]+/; // Anything else (Byte)
     // TODO: Add kanji regex
 
     // Use a while loop i will be changed based on data removed
@@ -150,5 +152,76 @@ function forceSegmentDataByMode(data: string): Array<InitialDataSegment> {
 
 // Auto segments data based on efficiency
 function autoSegmentDataByMode(data: string): Array<InitialDataSegment> {
+    const segments: Array<InitialDataSegment> = [];
 
+    const numericRegEx      = /^\d+/; // Numeric
+    const alphanumericRegEx = /^[A-Z0-9 $%*+\-./:]+/; // Alphanumeric
+    const byteRegEx         = /^[^A-Z0-9]+/; // Anything else (Byte)
+
+    // Use a while loop i will be changed based on data removed
+    let i = 0; // Create the starting index
+    while (i < data.length) {
+        let slice = data.slice(i); // Slice from i to end
+
+        // Create a substring for each regex that only matches at the start of the slice (2/3 are designed to fail)
+        let numericSlice = slice.match(numericRegEx);
+        let alphanumericSlice = slice.match(alphanumericRegEx);
+        let byteSlice = slice.match(byteRegEx);
+
+        // Add the only found substring to the segments
+        if (numericSlice && numericSlice[0].length >= 4) {
+            // Found a numeric segment
+            segments.push({
+                mode: DATA_ENCODING_MODES.NUMERIC,
+                data: numericSlice[0],
+            });
+
+            i += numericSlice[0].length; // Move index forward
+        } else if (alphanumericSlice && alphanumericSlice[0].length >= 4) {
+            // Found an alphanumeric segment
+            segments.push({
+                mode: DATA_ENCODING_MODES.ALPHANUMERIC,
+                data: alphanumericSlice[0],
+            });
+
+            i += alphanumericSlice[0].length; // Move index forward
+        } else {
+            // Collect byte data until we find next efficient numeric or alphanumeric segment
+            let byteData = ''; // Stores all the characters for the byte segment
+            let j = i; // Temp index to find the end of byte data segment
+            
+            // Keep looping through data until we find the next efficient segment
+            while (j < data.length) {
+                // Create a temp slice from j to end
+                let tempSlice = data.slice(j);
+
+                // Create substrings just like earlier
+                let tempNumeric = tempSlice.match(numericRegEx);
+                let tempAlphanumeric = tempSlice.match(alphanumericRegEx);
+                
+                // Check if we've hit an efficient segment
+                if ((tempNumeric && tempNumeric[0].length >= 4) || 
+                    (tempAlphanumeric && tempAlphanumeric[0].length >= 4)) {
+                    break; // Stop collecting byte data
+                }
+                
+                // Add this character to byte data
+                byteData += data[j];
+                j++; // Move to next character
+            }
+            
+            // Add the byte data segment to segments
+            segments.push({
+                mode: DATA_ENCODING_MODES.BYTE,
+                data: byteData,
+            });
+            
+            i = j; // Move index forward since we've collected byte data
+        }
+
+        // Length for Kaji shoudl be 2+ characters (13-bit packing)
+    }
+
+    // Return the segmented data
+    return segments;
 }
