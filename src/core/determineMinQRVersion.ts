@@ -4,7 +4,7 @@ import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
 import { ECC_LEVEL_CODES, ECCLevelCode } from "../enums";
 import { EncodedSegmentDraft, FinalizedEncodedSegment, QRSpecs, QRVersions } from "../types";
 
-export default function determineMinQRVersion(encodedData: Array<EncodedSegmentDraft>, eccLevel: ECCLevelCode, minPrefferedVersion: QRVersions | null = null): {version: QRVersions, encodedSegments: Array<FinalizedEncodedSegment>} {
+export default function determineMinQRVersion(encodedData: Array<EncodedSegmentDraft>, eccLevel: ECCLevelCode, minPrefferedVersion: QRVersions | null = null): {version: QRVersions, finalizedEncodedSegments: Array<FinalizedEncodedSegment>} {
     const dataLength = encodedData.reduce((length, segment) => length + segment.encodedData.reduce((sum, val) => sum + val.length, 0), 0);
 
     let encodedDataSegmentsWithLengths: Array<FinalizedEncodedSegment> = encodedData.map(segment => {
@@ -87,7 +87,7 @@ export default function determineMinQRVersion(encodedData: Array<EncodedSegmentD
     // Return the determined best version and the encoded segments with their char count indicator lengths
     return {
         version: bestVersion as QRVersions,
-        encodedSegments: encodedDataSegmentsWithLengths
+        finalizedEncodedSegments: encodedDataSegmentsWithLengths
     };
 }
 

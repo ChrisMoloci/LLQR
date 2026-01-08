@@ -41,13 +41,13 @@ function generateQRMatrix(data: string): Array<Array<number>> {
      * Also determines the character count indicator lengths for each segment and adds them to the segments
      * returning FinalizedEncodedSegment[]
      */
-    const {version: minVersion, encodedSegments: encodedSegments} = determineMinQRVersion(encodedData, qrSpecs.eccLevel, qrSpecs.minPreferredVersion);
+    const {version: minVersion, finalizedEncodedSegments: finalizedEncodedSegments} = determineMinQRVersion(encodedData, qrSpecs.eccLevel, qrSpecs.minPreferredVersion);
 
     console.log("Determined Minimum QR Version:", minVersion);
     // console.log("Character Count Indicator Length:", charCountIndicatorLength);
 
     // -- 5. Prepare data stream for ECC generation (add mode, length indicators, etc.) --
-    const preparedDataStream: Array<string> = prepareDatastream(encodedSegments);
+    const preparedDataStream: Array<string> = prepareDatastream(finalizedEncodedSegments);
 
     console.log("Prepared Data Stream:", preparedDataStream);
     
