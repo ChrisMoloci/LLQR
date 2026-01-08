@@ -17,7 +17,6 @@ export function encodeWithSingleMode(data: string, mode: DataEncodingMode): Arra
             data: data,
     }];
 
-    // Encode the single segment and return it
     return encodeSegmentedData(initialDataSegments);
 }
 

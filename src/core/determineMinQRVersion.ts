@@ -3,8 +3,6 @@ import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
 import { ECC_LEVEL_CODES, ECCLevelCode } from "../enums";
 import { EncodedSegmentDraft, FinalizedEncodedSegment, QRSpecs, QRVersions } from "../types";
-import { getCurrentConfigs } from "./defineConfig";
-import { version } from "../../node_modules/typescript/lib/typescript";
 
 export default function determineMinQRVersion(encodedData: Array<EncodedSegmentDraft>, eccLevel: ECCLevelCode, minPrefferedVersion: QRVersions | null = null): {version: QRVersions, encodedSegments: Array<FinalizedEncodedSegment>} {
     const dataLength = encodedData.reduce((length, segment) => length + segment.encodedData.reduce((sum, val) => sum + val.length, 0), 0);
@@ -92,66 +90,6 @@ export default function determineMinQRVersion(encodedData: Array<EncodedSegmentD
         encodedSegments: encodedDataSegmentsWithLengths
     };
 }
-
-// export default function determineMinQRVersion(encodedData: Array<string>, eccLevel: ECCLevelCode, mode: DataEncodingMode, minPrefferedVersion: qrVersions | null = null): {charCountIndicatorLength: number, version: qrVersions} {
-//     // Determine length of data
-    // let length = encodedData.reduce((length, el) => length + el.length, 0);
-
-//     let currentCharCountIndicatorLength = getCharCountIndicatorLength(mode, 1); // Start with version 1
-//     let bestVersion = null;
-//     let prevVersion = -1;
-
-//     while (true) {
-//         if (currentCharCountIndicatorLength && bestVersion && prevVersion !== null) {
-//             break;
-//         } // If all are populated, a suitable version was found
-
-//         prevVersion = currentCharCountIndicatorLength; // Update prev version to be current before updaing current
-
-//         const totalBits = 4 + currentCharCountIndicatorLength + length; // Get length in bits of the data
-
-//         const totalBytes = Math.ceil(totalBits / 8); // Get length in Bytes of the total data
-
-//         let versionCandidate = null; // Holds a potential version candidate
-
-//         for (let versionNum: number = 1; versionNum <= 40; versionNum++) {
-//             const versionIndex = versionNum.toString();
-//             if (!versionIndex) throw new Error("Invalid version number during min version determination.");
-//             const capacity = qrDataCapacityBits[versionNum.toString()]; // Get info about a particullar QR Code version
-            
-//             if (!capacity) continue; // Skip if no capacity data for this version
-
-//             const eccLevelKey = Object.entries(ECC_LEVEL_CODES).find(([key, value]) => value === eccLevel)?.[0];
-
-//             const availableBytes = capacity[eccLevelKey].data;  // Get the available bytes for the selected ecc level
-
-//             if (availableBytes >= totalBytes) {
-//                 versionCandidate = versionNum;
-//                 break; // Found a suitable version
-//             }
-
-//         }
-//         if (versionCandidate === null) {
-//             throw new Error(`No suitable QR code version found for data length ${length} and mode ${mode}`);
-//         }
-
-//         currentCharCountIndicatorLength = getCharCountIndicatorLength(mode, versionCandidate);
-
-//         bestVersion = versionCandidate;
-//     }
-
-//     // bestVersion = 3;
-//     // currentCharCountIndicatorLength = getCharCountIndicatorLength(mode, bestVersion);
-
-//     // Check if preffered min version is higher than determined best version
-//     if (minPrefferedVersion !== null && bestVersion < minPrefferedVersion) {
-//         // Use preffered min version if possible
-//         bestVersion = minPrefferedVersion;
-//         currentCharCountIndicatorLength = getCharCountIndicatorLength(mode, bestVersion);
-//     }
-
-//     return {charCountIndicatorLength: currentCharCountIndicatorLength, version: bestVersion as qrVersions};
-// }
 
 // Helper function for determinVersion()
 function getCharCountIndicatorLength(mode: DataEncodingMode, version: QRVersions): number {

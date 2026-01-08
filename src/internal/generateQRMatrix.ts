@@ -18,23 +18,21 @@ function generateQRMatrix(data: string): Array<Array<number>> {
     if (!mode) throw new Error("Unable to determine encoding mode for the provided data."); 
     
     // Will hold the encoded data segments
-    let encodedData: Array<EncodedSegmentDraft> = [];
+    let encodedData: Array<EncodedSegmentDraft> | null = null;
 
     // -- 3. Encode Data to Binary as EncodedSegmentDraft --
     if (qrSpecs.useModeSwitching === "disabled") {
         // Encode using a single mode
-        encodeWithSingleMode(data, mode);
+        console.log("Encoding data using single mode:", mode);
+        encodedData = encodeWithSingleMode(data, mode);
     } else if (qrSpecs.useModeSwitching === "auto" || qrSpecs.useModeSwitching === "forced") {
+        console.log("Encoding data using mode switching:", qrSpecs.useModeSwitching);
         // Encode using mode switching
-        encodeWithModeSwitching(data, qrSpecs.useModeSwitching);
+        encodedData = encodeWithModeSwitching(data, qrSpecs.useModeSwitching);
     }
     
     // Throw an error if encoding failed
     if (!encodedData) throw new Error("Data encoding failed.");
-
-    // const encodedData: Array<EncodedSegmentDraft> = autoEncodeData(data, mode, qrSpecs.useModeSwitching);
-    console.log("Auto Encoded Data Segments:", encodedData);
-
 
     console.log("Encoded Data:", encodedData);
 
