@@ -2,37 +2,40 @@ import { DataEncodingMode } from "../enums";
 import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
 import { ECC_LEVEL_CODES, ECCLevelCode } from "../enums";
-import { QRSpecs, QRVersions } from "../types";
+import { EncodedSegmentDraft, FinalizedEncodedSegment, QRSpecs, QRVersions } from "../types";
 import { getCurrentConfigs } from "./defineConfig";
-import { EncodedSegment } from "../types"
 import { version } from "../../node_modules/typescript/lib/typescript";
 
-export default function determineMinQRVersion(encodedData: Array<EncodedSegment>, eccLevel: ECCLevelCode, mode: DataEncodingMode, minPrefferedVersion: QRVersions | null = null): {version: QRVersions, encodedSegments: Array<EncodedSegment>} {
+export default function determineMinQRVersion(encodedData: Array<EncodedSegmentDraft>, eccLevel: ECCLevelCode, minPrefferedVersion: QRVersions | null = null): {version: QRVersions, encodedSegments: Array<FinalizedEncodedSegment>} {
     const dataLength = encodedData.reduce((length, segment) => length + segment.encodedData.reduce((sum, val) => sum + val.length, 0), 0);
 
-    let encodedDataWithLengths: Array<EncodedSegment> = encodedData.map(segment => {
-        segment.charCountIndicatorLength = getCharCountIndicatorLength(segment.mode, 1);
-        return segment;
-    });
-    let bestVersion: QRVersions | null = null;
-    let prevVersion: QRVersions | null = null;
+    let encodedDataSegmentsWithLengths: Array<FinalizedEncodedSegment> = encodedData.map(segment => {
+        return {
+            ...segment,
+            charCountIndicatorLength: getCharCountIndicatorLength(segment.mode, 1) // Start with version 1
+        }
+    }) as Array<FinalizedEncodedSegment>;
 
-    // console.log("Initial Character Count Indicator Lengths:", charCountIndicatorLengths);
+    let bestVersion: QRVersions | null = null; // Stores best version found through iterations (eventuall the best version)
+    let prevVersion: QRVersions | null = null; // Stores the previous best version
 
     while (true) {
-        if (bestVersion !== null && prevVersion !== null && encodedDataWithLengths.every(item => item.charCountIndicatorLength !== null)) {
+        if (bestVersion !== null && prevVersion !== null && encodedDataSegmentsWithLengths.every(item => item.charCountIndicatorLength !== null)) {
             break;
         } // If all are populated, a suitable version was found
 
         prevVersion = bestVersion; // Update prev version to be current before updaing current
 
-        const totalBits = (encodedData.length * 4) + encodedDataWithLengths.reduce((sum, item) => sum + item.charCountIndicatorLength!, 0) + dataLength; // Get length in bits of the data
+        // Get the total bits of data (including hypothetical mode and length indicators)
+        const totalBits = (encodedData.length * 4) + encodedDataSegmentsWithLengths.reduce((sum, item) => sum + item.charCountIndicatorLength!, 0) + dataLength; // Get length in bits of the data
 
         const totalBytes = Math.ceil(totalBits / 8); // Get length in Bytes of the total data
 
         console.log("Total Bits:", totalBits, "Total Bytes:", totalBytes);
 
         let versionCandidate: QRVersions | null = null; // Holds a potential version candidate
+
+        // Iterate through all versions to find a suitable one
         for (let versionNum: number = 1; versionNum <= 40; versionNum++) {
             const capacity = qrDataCapacityBits[versionNum.toString()]; // Get info about a particullar QR Code version
 
@@ -46,6 +49,7 @@ export default function determineMinQRVersion(encodedData: Array<EncodedSegment>
 
             console.log("Available bytes for version", versionNum, "and ECC level", eccLevel, ":", availableBytes);
 
+            // When we reach a version that can hold the data, we can stop
             if (availableBytes >= totalBytes) {
                 versionCandidate = versionNum as QRVersions;
                 console.log("Found version candidate:", versionCandidate);
@@ -53,15 +57,19 @@ export default function determineMinQRVersion(encodedData: Array<EncodedSegment>
             }
         }
 
+        // If no version candidate was found, throw an error (should only occur if data is too large)
         if (versionCandidate === null) {
-            throw new Error(`No suitable QR code version found for data length ${length} and mode ${mode}`);
+            throw new Error(`No suitable QR code version found for data length ${length}`);
         }
 
-        encodedDataWithLengths.map(segment => {
+        // Update char count indicator lengths for all segments to be for versionCandidate
+        encodedDataSegmentsWithLengths.map(segment => {
             segment.charCountIndicatorLength = getCharCountIndicatorLength(segment.mode, versionCandidate);
         });
 
-        bestVersion = versionCandidate;
+        bestVersion = versionCandidate; // Set best version to version candidata
+
+        // Do not stop here, rather stop at beginning of next iteration if all values are populated
     }
 
     // bestVersion = 3;
@@ -70,15 +78,18 @@ export default function determineMinQRVersion(encodedData: Array<EncodedSegment>
     // Check if preffered min version is higher than determined best version
     if (minPrefferedVersion !== null && bestVersion < minPrefferedVersion) {
         // Use preffered min version if possible
-        bestVersion = minPrefferedVersion;
-        encodedDataWithLengths.map(segment => {
+        bestVersion = minPrefferedVersion; // Set best version to preffered min version
+
+        // Update char count indicator lengths for all segments to be for minPrefferedVersion
+        encodedDataSegmentsWithLengths.map(segment => {
             segment.charCountIndicatorLength = getCharCountIndicatorLength(segment.mode, minPrefferedVersion);
         });
     }
 
+    // Return the determined best version and the encoded segments with their char count indicator lengths
     return {
         version: bestVersion as QRVersions,
-        encodedSegments: encodedDataWithLengths
+        encodedSegments: encodedDataSegmentsWithLengths
     };
 }
 
