@@ -1,12 +1,12 @@
 import { DATA_ENCODING_MODES, DataEncodingMode } from "../enums";
-import { EncodedSegment, QRSpecs } from "../types";
-import autoEncodeData from "../core/autoEncodeData";
+import { EncodedSegmentDraft, FinalizedEncodedSegment, QRSpecs } from "../types";
 import determineMode from "../core/determineEncodingMode";
 import determineMinQRVersion from "../core/determineMinQRVersion";
 import prepareDatastream from "../core/prepareDatastream";
 import generateECCStream from "../core/generateECCStream";
 import generateMatrix from "../core/generateMatrix";
 import { getCurrentConfigs } from "../core/defineConfig";
+import { encodeWithModeSwitching, encodeWithSingleMode } from "../core/autoEncodeData";
 
 function generateQRMatrix(data: string): Array<Array<number>> {
     // -- 1. Get Current QR Configurations --
@@ -16,16 +16,33 @@ function generateQRMatrix(data: string): Array<Array<number>> {
     // -- 2. Determine Mode (or use Byte if forced) --
     const mode: DataEncodingMode = qrSpecs.forceByteEncoding ? DATA_ENCODING_MODES.BYTE : determineMode(data);
     if (!mode) throw new Error("Unable to determine encoding mode for the provided data."); 
+    
+    // Will hold the encoded data segments
+    let encodedData: Array<EncodedSegmentDraft> = [];
 
-    // -- 3. Encode Data to Binary --
-    const encodedData: Array<EncodedSegment> | undefined = autoEncodeData(data, mode, qrSpecs.useModeSwitching);
+    // -- 3. Encode Data to Binary as EncodedSegmentDraft --
+    if (qrSpecs.useModeSwitching === "disabled") {
+        // Encode using a single mode
+        encodeWithSingleMode(data, mode);
+    } else if (qrSpecs.useModeSwitching === "auto" || qrSpecs.useModeSwitching === "forced") {
+        // Encode using mode switching
+        encodeWithModeSwitching(data, qrSpecs.useModeSwitching);
+    }
+    
+    // Throw an error if encoding failed
+    if (!encodedData) throw new Error("Data encoding failed.");
+
+    // const encodedData: Array<EncodedSegmentDraft> = autoEncodeData(data, mode, qrSpecs.useModeSwitching);
     console.log("Auto Encoded Data Segments:", encodedData);
 
-    if (!encodedData) throw new Error("Data encoding failed.");
 
     console.log("Encoded Data:", encodedData);
 
-    // -- 4. Determine the Min Version of the QR Code (Or use Preferred Minimum if possible) --
+    // -- 4. Determine the Min Version of the QR Code (Or use Preferred Minimum if possible)
+    /**
+     * Also determines the character count indicator lengths for each segment and adds them to the segments
+     * returning FinalizedEncodedSegment[]
+     */
     const {version: minVersion, encodedSegments: encodedSegments} = determineMinQRVersion(encodedData, qrSpecs.eccLevel, mode, qrSpecs.minPreferredVersion);
 
     console.log("Determined Minimum QR Version:", minVersion);

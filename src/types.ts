@@ -52,12 +52,19 @@ export interface QRMatrixCanvas {
     reservedMatrix: Array<Array<boolean>>
 } // Stores the QR matrix and reserved areas that data should not be placed into in matrix
 
-export interface EncodedSegment {
+export interface EncodedSegmentDraft {
     mode: DataEncodingMode;
     charCount: number;
-    charCountIndicatorLength?: number; // Will be added when determining version
     encodedData: Array<string>;
-    unencodedData: string; // For debugging purposes
+    unencodedData: string;
+}
+
+export interface FinalizedEncodedSegment {
+    mode: DataEncodingMode;
+    charCount: number;
+    charCountIndicatorLength: number;
+    encodedData: Array<string>;
+    unencodedData: string;
 }
 
 // TODO Add types for datesets to get rid of TS errors
