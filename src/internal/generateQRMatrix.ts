@@ -1,5 +1,5 @@
 import { DATA_ENCODING_MODES, DataEncodingMode } from "../enums";
-import { QRSpecs } from "../types";
+import { EncodedSegment, QRSpecs } from "../types";
 import autoEncodeData from "../core/autoEncodeData";
 import determineMode from "../core/determineEncodingMode";
 import determineMinQRVersion from "../core/determineMinQRVersion";
@@ -18,20 +18,21 @@ function generateQRMatrix(data: string): Array<Array<number>> {
     if (!mode) throw new Error("Unable to determine encoding mode for the provided data."); 
 
     // -- 3. Encode Data to Binary --
-    const encodedData: Array<string> | undefined = autoEncodeData(data, mode, qrSpecs.useModeSwitching);
+    const encodedData: Array<EncodedSegment> | undefined = autoEncodeData(data, mode, qrSpecs.useModeSwitching);
+    console.log("Auto Encoded Data Segments:", encodedData);
 
     if (!encodedData) throw new Error("Data encoding failed.");
 
     console.log("Encoded Data:", encodedData);
 
     // -- 4. Determine the Min Version of the QR Code (Or use Preferred Minimum if possible) --
-    const {version: minVersion, charCountIndicatorLength: charCountIndicatorLength} = determineMinQRVersion(encodedData, qrSpecs.eccLevel, mode, qrSpecs.minPreferredVersion);
+    const {version: minVersion, encodedSegments: encodedSegments} = determineMinQRVersion(encodedData, qrSpecs.eccLevel, mode, qrSpecs.minPreferredVersion);
 
     console.log("Determined Minimum QR Version:", minVersion);
-    console.log("Character Count Indicator Length:", charCountIndicatorLength);
+    // console.log("Character Count Indicator Length:", charCountIndicatorLength);
 
     // -- 5. Prepare data stream for ECC generation (add mode, length indicators, etc.) --
-    const preparedDataStream: Array<string> = prepareDatastream(data, encodedData, charCountIndicatorLength, mode);
+    const preparedDataStream: Array<string> = prepareDatastream(encodedSegments);
 
     console.log("Prepared Data Stream:", preparedDataStream);
     

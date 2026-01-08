@@ -1,4 +1,4 @@
-import { ECCLevelCode, MaskPatternCode, QRElementShape } from "./enums";
+import { DataEncodingMode, ECCLevelCode, MaskPatternCode, QRElementShape } from "./enums";
 
 // Allowed QR Versions
 export type QRVersions = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40;
@@ -51,5 +51,13 @@ export interface QRMatrixCanvas {
     matrix: Array<Array<number>>,
     reservedMatrix: Array<Array<boolean>>
 } // Stores the QR matrix and reserved areas that data should not be placed into in matrix
+
+export interface EncodedSegment {
+    mode: DataEncodingMode;
+    charCount: number;
+    charCountIndicatorLength?: number; // Will be added when determining version
+    encodedData: Array<string>;
+    unencodedData: string; // For debugging purposes
+}
 
 // TODO Add types for datesets to get rid of TS errors

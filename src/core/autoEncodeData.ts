@@ -1,18 +1,13 @@
 import { DATA_ENCODING_MODES, DataEncodingMode } from "../enums";
-import { ModeSwitchingModes } from "../types";
+import { EncodedSegment, ModeSwitchingModes } from "../types";
 import encodeAlphanumeric from "./encoders/encodeAlphanumeric";
 import encodeBinary from "./encoders/encodeBinary";
 import encodeNumeric from "./encoders/encodeNumeric";
 
+// Temp interface used for segmenting data before encoding
 interface DataSegment {
     mode: DataEncodingMode;
     data: string;
-}
-
-export interface EncodedSegment {
-    mode: DataEncodingMode;
-    charCount: number;
-    encodedData: Array<string>;
 }
 
 function autoEncodeData(data: string, encodingMode: DataEncodingMode, useModeSwitching: ModeSwitchingModes): Array<EncodedSegment> | undefined {
@@ -20,10 +15,11 @@ function autoEncodeData(data: string, encodingMode: DataEncodingMode, useModeSwi
     const encodedSegments: Array<EncodedSegment> = [];
 
     if (useModeSwitching === "forced") {
+        // Break data into segments based on character types (most people should not use this)
         segments = segmentDataByMode(data);
         console.log("Data Segments for Encoding:", segments);
     } else if (useModeSwitching === "auto") {
-
+        // Breaks data into segments when it can save on sizing
     } else {
         segments = [{
             mode: encodingMode,
@@ -38,19 +34,25 @@ function autoEncodeData(data: string, encodingMode: DataEncodingMode, useModeSwi
                     mode: segment.mode,
                     charCount: segment.data.length,
                     encodedData: encodeNumeric(segment.data),
+                    unencodedData: segment.data,
                 });
+                break;
             case DATA_ENCODING_MODES.ALPHANUMERIC:
                 encodedSegments.push({
                     mode: segment.mode,
                     charCount: segment.data.length,
                     encodedData: encodeAlphanumeric(segment.data),
+                    unencodedData: segment.data,
                 });
+                break;
             case DATA_ENCODING_MODES.BYTE:
                 encodedSegments.push({
                     mode: segment.mode,
                     charCount: segment.data.length,
                     encodedData: encodeBinary(segment.data),
+                    unencodedData: segment.data,
                 });
+                break;
             case DATA_ENCODING_MODES.KANJI:
                 // TODO: Implement Kanji encoding
                 break;
