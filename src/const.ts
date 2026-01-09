@@ -9,6 +9,7 @@ export const QR_DEFAULTS = {
     FORCE_BYTE_ENCODING: false as const,
     MASK_PATTERN: null,
     USE_MODE_SWITCHING: "auto" as const,
+    USE_ECI_SWITCHING: "auto" as const,
     PREFERR_ECI: false as const,
     PREFERR_BOM: false as const
 } as const;
@@ -22,6 +23,7 @@ export const DEFAULT_QR_SPECS: QRSpecs = {
     forceByteEncoding: QR_DEFAULTS.FORCE_BYTE_ENCODING,
     maskPattern: QR_DEFAULTS.MASK_PATTERN,
     useModeSwitching: QR_DEFAULTS.USE_MODE_SWITCHING,
+    useECISwitching: QR_DEFAULTS.USE_ECI_SWITCHING,
     preferrECI: QR_DEFAULTS.PREFERR_ECI,
     preferrBOM: QR_DEFAULTS.PREFERR_BOM
 };

@@ -1,95 +1,95 @@
-function encodeBinary(data: string): Array<string> {
-    let dataChars: Array<string>;
-    // TODO in future updates, add more encoding modes with manual encoding selection
-    if (typeof data === 'string') {
-        dataChars = data.split('');
+import { DATA_ENCODING_CHARACTER_SETS, DataEncodingCharacterSet } from "../../enums";
+import { EncodedSegmentDraft, PlainTextDataSegment } from "../../types";
+import BINARY_ENCODER_FUNCTION_MAPPINGS from "./byteEncoders/binaryEncoderFunctionMappings";
+
+function encodeBinary(plainTextDataSegment: PlainTextDataSegment): EncodedSegmentDraft {
+    // -- 1. Create an array of all the chars from data --
+    let plainDataChars: Array<string>; // Create empty array to store characters
+
+    if (typeof plainTextDataSegment.data === 'string') {
+        // Add data as characters to plainDataChars
+        plainDataChars = plainTextDataSegment.data.split('');
     } else {
+        // If data is not a string, throw an error
         throw new Error("Data must be a string for binary encoding."); 
     }
-    if (dataChars.length === 0) {
-        return []; // Return empty string for empty input
+
+    // -- Prepare the encoded segment draft --
+    const encodedSegmentDraft: EncodedSegmentDraft = {
+        mode: plainTextDataSegment.mode,
+        charCount: plainTextDataSegment.data.length,
+        characterSet: null,
+        useECIInSegment: false,
+        encodedData: [], // Will be filled after encoding
+        unencodedData: plainTextDataSegment.data,
     }
 
-    let isLatin1 = true; // Bool to track if all characters are Latin-1
-    dataChars.forEach(element => {
-        // Get the code point of the character (hex)
-        const cp = element.codePointAt(0);
+    if (plainDataChars.length === 0) {
+        // If no data is provided, return empty encoding
+        console.warn("Provided data was empty.")
+        return encodedSegmentDraft; // Return empty encoded segment for empty input
+    }
 
-        if (cp === undefined) {
-            throw new Error("Invalid character in data for binary encoding.");
+    // -- 2. Determine Character Set --
+    const charSet: DataEncodingCharacterSet = getCharSet(plainDataChars);
+    encodedSegmentDraft.characterSet = charSet; // Set the char set
+
+    // -- 3. Encode the data and place it in the encodedSegmentDraft --
+    encodedSegmentDraft.encodedData = BINARY_ENCODER_FUNCTION_MAPPINGS[charSet]!(plainDataChars);
+
+    // -- 4. Return the encoded segment draft --
+    return encodedSegmentDraft;
+}
+
+function getCharSet(plainDataChars: Array<string>): DataEncodingCharacterSet {
+    console.log("Plain data chars: ", plainDataChars);
+
+    // Define compatible charsets for binary encoding (order determines priority)
+    const compatibleCharsets: Array<DataEncodingCharacterSet> = [
+        DATA_ENCODING_CHARACTER_SETS["ISO-8859-1"], // Priority 1
+        DATA_ENCODING_CHARACTER_SETS["UTF-8"] // Priority 2
+    ];
+
+    // Check each charset for compatibility
+    for (const charset of compatibleCharsets) {
+        if (checkCharsetCompatibility(plainDataChars, charset)) {
+            console.log(`Using character set ${Object.keys(DATA_ENCODING_CHARACTER_SETS).find(key => DATA_ENCODING_CHARACTER_SETS[key] === charset)} for binary encoding.`);
+            return charset; // Return the first compatible charset found
         }
+    }
 
-        // Check if the codepoint is greater than the Latin-1 range (0xFF or 256)
-        if (cp > 0xFF) {
-            isLatin1 = false;
-        }
-    });
+    // If character set could not be determined, something is probably wrong with the data
+    throw new Error("Unable to determine character set for binary encoding.");
 
-    console.log(`Encoding binary data: ${dataChars}`);
-
-    let binaryEncoding: Array<string> = [];
-
-
-    if (isLatin1) {
-        // Use latin-1 encoding
-        // for (let i = 0; i < data.length; i++) {
-        //     let charCode = data.charCodeAt(i);
-        //     binaryEncoding.push(charCode.toString(2).padStart(8, '0')); // Convert to binary and pad to 8 bits
-        // } // Iterate through the data and convert each character to its binary representation
-
-        console.log("Using Latin-1 encoding for binary data.");
-
-        dataChars.forEach(element => {
-            const charCode = element.codePointAt(0);
-            if (charCode === undefined) {
-                throw new Error("Invalid character in data for binary encoding.");
+    // Checks if a provided char set is compatible for the provided data
+    function checkCharsetCompatibility(plainDataChars: Array<string>, charset: DataEncodingCharacterSet): boolean {
+        // Loop through all chars
+        for (const element of plainDataChars) {
+            // Get the code point of the character (hex)
+            const cp = element.codePointAt(0);
+            if (cp === undefined) {
+                // Throw error if character is invalid
+                throw new Error(`Invalid character in data for binary encoding: ${element}`);
             }
-            binaryEncoding.push(charCode.toString(2).padStart(8, '0')); // Convert to binary and pad to 8 bits
-        });
-    } else {
-        // Use UTF-8 encoding
 
-        console.log("Using UTF-8 encoding for binary data.");
-
-        if (typeof TextEncoder !== "undefined") {
-            // Use TextEncoder if possible
-            const encoder = new TextEncoder(); // Create a new TextEncoder instance
-            const encodedData = encoder.encode(dataChars.join('')); // Encode the data to a Uint8Array
-            encodedData.forEach(byte => {
-                binaryEncoding.push(byte.toString(2).padStart(8, '0')); // Convert each byte to binary and pad to 8 bits
-            });
-        } else {
-            // Manually encode if using a browser that doesn't support TextEncoder() interface
-            const bytes: number[] = [];
-            dataChars.forEach(element => {
-                const cp = element.codePointAt(0);
-                if (cp === undefined) {
-                    throw new Error("Invalid character in data for binary encoding.");
-                }
-                if (cp <= 0x7F) {
-                    bytes.push(cp);
-                } else if (cp <= 0x7FF) {
-                    bytes.push(0xC0 | (cp >> 6));
-                    bytes.push(0x80 | (cp & 0x3F));
-                } else if (cp <= 0xFFFF) {
-                    bytes.push(0xE0 | (cp >> 12));
-                    bytes.push(0x80 | ((cp >> 6) & 0x3F));
-                    bytes.push(0x80 | (cp & 0x3F));
-                } else {
-                    bytes.push(0xF0 | (cp >> 18));
-                    bytes.push(0x80 | ((cp >> 12) & 0x3F));
-                    bytes.push(0x80 | ((cp >> 6) & 0x3F));
-                    bytes.push(0x80 | (cp & 0x3F));
-                }
-                // binaryEncoding = new Uint8Array(bytes);
-                for (const b of bytes) binaryEncoding.push(b.toString(2).padStart(8, '0'))
-            });
+            // Test for incompatibility based on provided charset
+            switch (charset) {
+                case DATA_ENCODING_CHARACTER_SETS["ISO-8859-1"]:
+                    if (cp < 0x00 || cp > 0xFF) {
+                        return false; // Character not compatible with ISO-8859-1
+                    }
+                    break;
+                case DATA_ENCODING_CHARACTER_SETS["UTF-8"]:
+                    if (cp < 0x00 || cp > 0x10FFFF) {
+                        return false; // Character not compatible with UTF-8
+                    }
+                    break;
+                default:
+                    return false; // Unsupported charset
+            }
         }
+        return true; // All characters are compatible with the charset
     }
-
-    console.log("binary encoding final data:", binaryEncoding);
-
-    return binaryEncoding;
 }
 
 export default encodeBinary;

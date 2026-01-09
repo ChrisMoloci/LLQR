@@ -54,6 +54,15 @@ export interface QRMatrixCanvas {
     reservedMatrix: Array<Array<boolean>>
 } // Stores the QR matrix and reserved areas that data should not be placed into in matrix
 
+// Data Segmentation Interfaces
+
+// Stores plain text
+export interface PlainTextDataSegment {
+    mode: DataEncodingMode;
+    data: string;
+}
+
+// Intermediary interface for encoded data (contains most of the data)
 export interface EncodedSegmentDraft {
     mode: DataEncodingMode;
     charCount: number;
@@ -63,6 +72,7 @@ export interface EncodedSegmentDraft {
     unencodedData: string;
 }
 
+// Finalized encoded segment with character count indicator length included
 export interface FinalizedEncodedSegment {
     mode: DataEncodingMode; // The QR encoding mode used
     characterSet: DataEncodingCharacterSet | null; // ECI character set name if applicable

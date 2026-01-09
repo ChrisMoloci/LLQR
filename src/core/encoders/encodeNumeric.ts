@@ -1,20 +1,30 @@
-function encodeNumeric(data: string): Array<string> {
-    if (!/^\d+$/.test(data)) {
+import { EncodedSegmentDraft, PlainTextDataSegment } from "../../types";
+
+function encodeNumeric(plainTextDataSegment: PlainTextDataSegment): EncodedSegmentDraft {
+    if (!/^\d+$/.test(plainTextDataSegment.data)) {
         throw new Error("Data is not numeric.");
     }
-    if (data.length === 0) {
-        console.warn("Provided data was empty.")
-        return []; // Return empty array for empty input
+
+    console.log(`Encoding numeric data: ${plainTextDataSegment.data}`);
+
+    const encodedSegmentDraft: EncodedSegmentDraft = {
+        mode: plainTextDataSegment.mode,
+        charCount: plainTextDataSegment.data.length,
+        characterSet: null,
+        useECIInSegment: false,
+        encodedData: [],
+        unencodedData: plainTextDataSegment.data,
     }
 
-    console.log(`Encoding numeric data: ${data}`);
-
-    let numericEncoding = [];
+    if (plainTextDataSegment.data.length === 0) {
+        console.warn("Provided data was empty.")
+        return encodedSegmentDraft; // Return empty encoding for empty input
+    }
 
     // Iterate through the data in chunks of 3 digits
     let i = 0; // Start from the first character
-    while (i < data.length) {
-        let chunk = data.slice(i, i + 3); // Get the next 3 or less digits
+    while (i < plainTextDataSegment.data.length) {
+        let chunk = plainTextDataSegment.data.slice(i, i + 3); // Get the next 3 or less digits
 
         // Convert the chunk to binary with appropriate padding
         if (chunk.length >= 3) {
@@ -27,9 +37,9 @@ function encodeNumeric(data: string): Array<string> {
             chunk = parseInt(chunk, 10).toString(2).padStart(4, '0');
             i += 1; // Move to the next chunk
         }
-        numericEncoding.push(chunk); // Concatenate the binary string
+        encodedSegmentDraft.encodedData.push(chunk); // Concatenate the binary string
     }
-    return numericEncoding; // Return the encoded numeric data
+    return encodedSegmentDraft; // Return the encoded numeric data
 }
 
 export default encodeNumeric;
