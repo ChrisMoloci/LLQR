@@ -1,8 +1,9 @@
-import { DataEncodingMode, ECCLevelCode, MaskPatternCode, QRElementShape } from "./enums";
+import { DataEncodingCharacterSet, DataEncodingMode, ECCLevelCode, MaskPatternCode, QRElementShape } from "./enums";
 
 // Allowed QR Versions
 export type QRVersions = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40;
 export type ModeSwitchingModes = "disabled" | "auto" | "forced";
+export type ECISwitchingModes = "disabled" | "auto" | "forced";
 
 // Defines the rules for generating a QR code
 export type QRSpecs = {
@@ -11,6 +12,7 @@ export type QRSpecs = {
     forceByteEncoding: boolean,
     maskPattern: MaskPatternCode | null, // Null means auto
     useModeSwitching: ModeSwitchingModes,
+    useECISwitching: ECISwitchingModes 
     preferrECI: boolean,
     preferrBOM: boolean
 }
@@ -55,14 +57,18 @@ export interface QRMatrixCanvas {
 export interface EncodedSegmentDraft {
     mode: DataEncodingMode;
     charCount: number;
+    characterSet: DataEncodingCharacterSet | null; // ECI character set name if applicable
+    useECIInSegment: boolean; // Whether to use ECI for this segment (This represents ECI mode state in the overal QR Code
     encodedData: Array<string>;
     unencodedData: string;
 }
 
 export interface FinalizedEncodedSegment {
-    mode: DataEncodingMode;
+    mode: DataEncodingMode; // The QR encoding mode used
+    characterSet: DataEncodingCharacterSet | null; // ECI character set name if applicable
+    useECIInSegment: boolean; // Whether to use ECI for this segment (This represents ECI mode state in the overal QR Code)
     charCount: number;
-    charCountIndicatorLength: number;
+    charCountIndicatorLength: number; // Length of the char count length indicator (in bits) for determining version
     encodedData: Array<string>;
     unencodedData: string;
 }

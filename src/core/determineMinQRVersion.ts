@@ -7,7 +7,7 @@ import { EncodedSegmentDraft, FinalizedEncodedSegment, QRSpecs, QRVersions } fro
 export default function determineMinQRVersion(encodedData: Array<EncodedSegmentDraft>, eccLevel: ECCLevelCode, minPrefferedVersion: QRVersions | null = null): {version: QRVersions, finalizedEncodedSegments: Array<FinalizedEncodedSegment>} {
     const dataLength = encodedData.reduce((length, segment) => length + segment.encodedData.reduce((sum, val) => sum + val.length, 0), 0);
 
-    let encodedDataSegmentsWithLengths: Array<FinalizedEncodedSegment> = encodedData.map(segment => {
+    let encodedDataSegmentsWithLengths: Array<FinalizedEncodedSegment> = encodedData.map((segment: EncodedSegmentDraft) => {
         return {
             ...segment,
             charCountIndicatorLength: getCharCountIndicatorLength(segment.mode, 1) // Start with version 1

@@ -21,6 +21,52 @@ export const DATA_ENCODING_MODES = {
 
 export type DataEncodingMode = typeof DATA_ENCODING_MODES[keyof typeof DATA_ENCODING_MODES];
 
+export const DATA_ENCODING_CHARACTER_SETS = {
+    // Unicode
+    "UTF-8": 26,
+    "UTF-16BE": 25,
+    "UTF-32BE": 33,
+
+    // ISO/IEC 8859 series (Latin and others)
+    "ISO-8859-1": 3, // Latin-1
+    "ISO-8859-2": 4,
+    "ISO-8859-3": 5,
+    "ISO-8859-4": 6,
+    "ISO-8859-5": 7,
+    "ISO-8859-6": 8,
+    "ISO-8859-7": 9,
+    "ISO-8859-8": 10,
+    "ISO-8859-9": 11,
+    "ISO-8859-10": 12,
+    "ISO-8859-11": 13,
+    "ISO-8859-13": 15,
+    "ISO-8859-14": 16,
+    "ISO-8859-15": 17,
+    "ISO-8859-16": 18,
+
+    // East Asian
+    "Shift-JIS": 20,
+    "EUC-JP": 21,
+    "GB2312": 22,
+    "EUC-KR": 30,
+    "Big5": 28,
+    "GB18030": 29,
+
+    // Legacy Encodings
+    "US-ASCII": 1,
+    "IBM 437": 2,
+    "Windows-1250": 34,
+    "Windows-1251": 35,
+    "Windows-1252": 36,
+    "Windows-1256": 38,
+
+    // Special
+    "JIS X 0208": 23,
+    "JIS X 0212": 24,
+}
+
+export type DataEncodingCharacterSet = typeof DATA_ENCODING_CHARACTER_SETS[keyof typeof DATA_ENCODING_CHARACTER_SETS];
+
 // Mask Pattern Codes
 export const MASK_PATTERN_CODES = {
     0: "000",
