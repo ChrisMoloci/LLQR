@@ -24,11 +24,11 @@ function generateQRMatrix(data: string): Array<Array<number>> {
     if (qrSpecs.useModeSwitching === "disabled") {
         // Encode using a single mode
         console.log("Encoding data using single mode:", mode);
-        encodedData = encodeWithSingleMode(data, mode);
+        encodedData = encodeWithSingleMode(data, mode, qrSpecs.useECISwitching);
     } else if (qrSpecs.useModeSwitching === "auto" || qrSpecs.useModeSwitching === "forced") {
         console.log("Encoding data using mode switching:", qrSpecs.useModeSwitching);
         // Encode using mode switching
-        encodedData = encodeWithModeSwitching(data, qrSpecs.useModeSwitching);
+        encodedData = encodeWithModeSwitching(data, qrSpecs.useModeSwitching, qrSpecs.useECISwitching);
     }
     
     // Throw an error if encoding failed

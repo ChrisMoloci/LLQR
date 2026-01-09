@@ -2,7 +2,7 @@ import { DATA_ENCODING_CHARACTER_SETS, DataEncodingCharacterSet } from "../../en
 import { EncodedSegmentDraft, PlainTextDataSegment } from "../../types";
 import BINARY_ENCODER_FUNCTION_MAPPINGS from "./byteEncoders/binaryEncoderFunctionMappings";
 
-function encodeBinary(plainTextDataSegment: PlainTextDataSegment): EncodedSegmentDraft {
+function encodeBinary(plainTextDataSegment: PlainTextDataSegment, isECISegment: boolean): EncodedSegmentDraft {
     // -- 1. Create an array of all the chars from data --
     let plainDataChars: Array<string>; // Create empty array to store characters
 
@@ -19,7 +19,7 @@ function encodeBinary(plainTextDataSegment: PlainTextDataSegment): EncodedSegmen
         mode: plainTextDataSegment.mode,
         charCount: plainTextDataSegment.data.length,
         characterSet: null,
-        useECIInSegment: false,
+        useECIInSegment: isECISegment,
         encodedData: [], // Will be filled after encoding
         unencodedData: plainTextDataSegment.data,
     }
