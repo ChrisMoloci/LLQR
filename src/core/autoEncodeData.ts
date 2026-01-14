@@ -2,6 +2,7 @@ import { DATA_ENCODING_MODES, DataEncodingCharacterSet, DataEncodingMode } from 
 import { ECISwitchingModes, EncodedSegmentDraft, ModeSwitchingModes, PlainTextDataSegment } from "../types";
 import encodeAlphanumeric from "./encoders/encodeAlphanumeric";
 import encodeBinary from "./encoders/encodeBinary";
+import encodeKanji from "./encoders/encodeKanji";
 import encodeNumeric from "./encoders/encodeNumeric";
 
 // Main function to auto encode data based on mode switching preference
@@ -57,11 +58,16 @@ function encodeSegmentedData(dataSegments: Array<PlainTextDataSegment>, useECISw
                 // Encode the segment as alphanumeric
                 encodedSegments.push(encodeAlphanumeric(segment));
                 break;
+            case DATA_ENCODING_MODES.KANJI:
+                // Encode the segment as kanji
+                encodedSegments.push(encodeKanji(segment));
+                break;
             case DATA_ENCODING_MODES.BYTE:
                 // Encode the segment as byte
                 const encodedSegment: EncodedSegmentDraft = encodeBinary(segment, currentECIUpdateState);
                 encodedSegments.push(encodedSegment);
 
+                // ECI Logic
                 if (currentECICharset !== encodedSegment.characterSet && useECISwitching == "auto") {
                     // Update the state of current ECI charset if it changed
                     currentECICharset = encodedSegment.characterSet;
@@ -95,14 +101,15 @@ function forceSegmentDataByMode(data: string): Array<PlainTextDataSegment> {
      * When forced mode switching is enabled, this function breaks using the following priority:
      * 1. Numeric
      * 2. Alphanumeric (does not include numbers since Numeric takes priority)
-     * 3. Byte (does not contain alphanumeric or numeric characters since those take priority)
      * 4. Kanji (Not yet implemented)
+     * 3. Byte (does not contain alphanumeric or numeric characters since those take priority)
      */
     const segments: Array<PlainTextDataSegment> = [];
 
     // Regular expressions to find all the different datatypes and get them as substrings (only matches at start using ^)
     const numericRegEx      = /^\d+/; // Numeric
     const alphanumericRegEx = /^[A-Z$%*+\-./:]+/; // Alphanumeric
+    const kanjiCandidateRegEx = /^[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u3000-\u303F]+/u; // Kanji candidates (Hiragana, Katakana, Kanji, Full-width punctuation)
     const byteRegEx         = /^[^A-Z0-9]+/; // Anything else (Byte)
     // TODO: Add kanji regex
 
@@ -114,6 +121,7 @@ function forceSegmentDataByMode(data: string): Array<PlainTextDataSegment> {
         // Create a substring for each regex that only matches at the start of the slice (2/3 are designed to fail)
         let numericSlice = slice.match(numericRegEx);
         let alphanumericSlice = slice.match(alphanumericRegEx);
+        let kanjiCandidateSlice = slice.match(kanjiCandidateRegEx);
         let byteSlice = slice.match(byteRegEx);
 
         // Add the only found substring to the segments
@@ -133,6 +141,17 @@ function forceSegmentDataByMode(data: string): Array<PlainTextDataSegment> {
             });
 
             i += alphanumericSlice[0].length; // Move index forward
+        } else if (kanjiCandidateSlice) {
+            // Found a kanji candidate segment
+            segments.push({
+                mode: DATA_ENCODING_MODES.KANJI,
+                data: kanjiCandidateSlice[0],
+            });
+
+            i += kanjiCandidateSlice[0].length; // Move index forward
+
+            // Verify that the kanji candidate slice can be fully encoded in kanji mode
+
         } else if (byteSlice) {
             // Found a byte segment
             segments.push({

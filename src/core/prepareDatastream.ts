@@ -12,6 +12,13 @@ function prepareDatastream(encodedSegments: Array<FinalizedEncodedSegment>): Arr
         const charCountLengthIndicator = generateLengthIndicator(segment.unencodedData, segment.encodedData, segment.charCountIndicatorLength!, segment.mode);
         console.log("Character Count Length Indicator:", segment.charCountIndicatorLength);
 
+        // Generate the ECI Indicator and Assignment Number if applicable
+        if (segment.useECIInSegment && segment.characterSet !== null) {
+            const eciStream = generateECIIndicatorAndAssignmentNumber(segment.encodedData, segment.characterSet);
+            dataStream.push(...eciStream); // Append ECI indicator and assignment number to the data stream
+            console.log("Added ECI Segment to data stream:", eciStream);
+        }
+
         // Append Mode Indicator, Length Indicator, and Encoded Data to the data stream
         dataStream.push(segment.mode, charCountLengthIndicator, ...segment.encodedData); // Add Mode Indicator
     }
@@ -29,6 +36,25 @@ function generateLengthIndicator(unencodedData: string, encodedData: Array<strin
     // const length = unencodedData.length; // Use unencoded data length for all modes
 
     return length.toString(2).padStart(charCountIndicatorLength, '0'); // Return the length as a binary string
+}
+
+function generateECIIndicatorAndAssignmentNumber(data: Array<string>, assignmentNumber: number): Array<string> {
+    // ECI Mode Indicator is always '0111'
+    const eciModeIndicator = '0111';
+
+    // Convert assignment number to binary (8 bits for 0-127, 16 bits for 128-16383)
+    let assignmentNumberBinary: string;
+    if (assignmentNumber >= 0 && assignmentNumber <= 127) {
+        assignmentNumberBinary = assignmentNumber.toString(2).padStart(8, '0');
+    } else if (assignmentNumber >= 128 && assignmentNumber <= 16383) {
+        assignmentNumberBinary = assignmentNumber.toString(2).padStart(16, '0');
+    } else if (assignmentNumber >= 16384 && assignmentNumber <= 999999) {
+        assignmentNumberBinary = assignmentNumber.toString(2).padStart(24, '0');
+    } else {
+        throw new Error("ECI Assignment Number out of range (0-999999).");
+    }
+
+    return [eciModeIndicator, assignmentNumberBinary];
 }
 
 export default prepareDatastream;

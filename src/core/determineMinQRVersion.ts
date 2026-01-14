@@ -5,7 +5,28 @@ import { ECC_LEVEL_CODES, ECCLevelCode } from "../enums";
 import { EncodedSegmentDraft, FinalizedEncodedSegment, QRSpecs, QRVersions } from "../types";
 
 export default function determineMinQRVersion(encodedData: Array<EncodedSegmentDraft>, eccLevel: ECCLevelCode, minPrefferedVersion: QRVersions | null = null): {version: QRVersions, finalizedEncodedSegments: Array<FinalizedEncodedSegment>} {
-    const dataLength = encodedData.reduce((length, segment) => length + segment.encodedData.reduce((sum, val) => sum + val.length, 0), 0);
+    const dataLength = encodedData.reduce((length, segment) => {
+        // Get the length of the encoded data in bits
+        const encodedDataLength = segment.encodedData.reduce((sum, val) => sum + val.length, 0) 
+
+        // Get the length of the ECI assignment number if applicable
+        let eciSegmentSize: number = 0;
+        switch(true) {
+            case segment.charCount <= 127:
+                eciSegmentSize = 12; // mode + assignment number
+                break;
+            case segment.charCount <= 16383:
+                eciSegmentSize = 20; // mode + assignment number
+                break;
+            case segment.charCount <= 999999:
+                eciSegmentSize = 28; // mode + assignment number
+                break;
+            default:
+                throw new Error("ECI Assignment Number too large in detemine min version.");
+        }
+
+        return length + eciSegmentSize + encodedDataLength;
+    }, 0);
 
     let encodedDataSegmentsWithLengths: Array<FinalizedEncodedSegment> = encodedData.map((segment: EncodedSegmentDraft) => {
         return {
