@@ -1,30 +1,29 @@
-import { EncodedSegmentDraft, PlainTextDataSegment } from "../../types";
+import { DATA_ENCODING_MODES } from "../../enums";
+import { EncodedDataSegment } from "../../types";
 
-function encodeNumeric(plainTextDataSegment: PlainTextDataSegment): EncodedSegmentDraft {
-    if (!/^\d+$/.test(plainTextDataSegment.data)) {
+function encodeNumeric(data: string): EncodedDataSegment {
+    if (!/^\d+$/.test(data)) {
         throw new Error("Data is not numeric.");
     }
 
-    console.log(`Encoding numeric data: ${plainTextDataSegment.data}`);
+    console.log(`Encoding numeric data: ${data}`);
 
-    const encodedSegmentDraft: EncodedSegmentDraft = {
-        mode: plainTextDataSegment.mode,
-        charCount: plainTextDataSegment.data.length,
-        characterSet: null,
-        useECIInSegment: false,
-        encodedData: [],
-        unencodedData: plainTextDataSegment.data,
+    const encodedDataSegment: EncodedDataSegment = {
+        encodingMode: DATA_ENCODING_MODES.NUMERIC,
+        charCount: data.length,
+        plainTextData: data,
+        encodedData: []
     }
 
-    if (plainTextDataSegment.data.length === 0) {
+    if (data.length === 0) {
         console.warn("Provided data was empty.")
-        return encodedSegmentDraft; // Return empty encoding for empty input
+        return encodedDataSegment; // Return empty encoding for empty input
     }
 
     // Iterate through the data in chunks of 3 digits
     let i = 0; // Start from the first character
-    while (i < plainTextDataSegment.data.length) {
-        let chunk = plainTextDataSegment.data.slice(i, i + 3); // Get the next 3 or less digits
+    while (i < data.length) {
+        let chunk = data.slice(i, i + 3); // Get the next 3 or less digits
 
         // Convert the chunk to binary with appropriate padding
         if (chunk.length >= 3) {
@@ -37,9 +36,9 @@ function encodeNumeric(plainTextDataSegment: PlainTextDataSegment): EncodedSegme
             chunk = parseInt(chunk, 10).toString(2).padStart(4, '0');
             i += 1; // Move to the next chunk
         }
-        encodedSegmentDraft.encodedData.push(chunk); // Concatenate the binary string
+        encodedDataSegment.encodedData.push(chunk); // Concatenate the binary string
     }
-    return encodedSegmentDraft; // Return the encoded numeric data
+    return encodedDataSegment; // Return the encoded numeric data
 }
 
 export default encodeNumeric;

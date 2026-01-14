@@ -1,26 +1,45 @@
-import { DataEncodingMode } from "../enums";
-import { FinalizedEncodedSegment } from "../types";
+import { DATA_ENCODING_MODES, DataEncodingCharacterSet, DataEncodingMode } from "../enums";
+import { ECISwitchingModes, EncodedDataSegment, QRVersions } from "../types";
+import { getCharCountIndicatorLength } from "./determineMinQRVersion";
 
-function prepareDatastream(encodedSegments: Array<FinalizedEncodedSegment>): Array<string> {
-    let dataStream: Array<string> = []; // Will hold the final data stream (as an array of codewords)
+function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: QRVersions, eciSwitchingMode: ECISwitchingModes = "disabled"): Array<string> {
+    const dataStream: Array<string> = []; // Will hold the final data stream (as an array of codewords)
+
+    // Store Encoding Mode and ECI Assignment Number states for mode switching checks
+    let encodingModeState: DataEncodingMode | null = null; // Holds current encoding mode state for mode switching
+    let eciModeAssignmentNumberState: DataEncodingCharacterSet | null = null; // Holds current ECI mode charset state for mode switching
 
     // Iterate through each encoded segment to build the data stream
     for (const segment of encodedSegments) {
         console.log("Preparing segment for datastream:", segment);
 
-        // Generate Binary Length Indicator and make it the size of charCountIndicatorLength
-        const charCountLengthIndicator = generateLengthIndicator(segment.unencodedData, segment.encodedData, segment.charCountIndicatorLength!, segment.mode);
-        console.log("Character Count Length Indicator:", segment.charCountIndicatorLength);
+        if (encodingModeState !== segment.encodingMode) {
+            // Add Mode Indicator if encoding mode has changed
+            const encodingMode: DataEncodingMode = segment.encodingMode;
 
-        // Generate the ECI Indicator and Assignment Number if applicable
-        if (segment.useECIInSegment && segment.characterSet !== null) {
-            const eciStream = generateECIIndicatorAndAssignmentNumber(segment.encodedData, segment.characterSet);
-            dataStream.push(...eciStream); // Append ECI indicator and assignment number to the data stream
-            console.log("Added ECI Segment to data stream:", eciStream);
+            // Add Character Count Indicator
+            const charCountIndicator = generateLengthIndicator(segment.plainTextData, segment.encodedData, getCharCountIndicatorLength(segment.encodingMode, version), segment.encodingMode)
+
+            // Add Mode Indicator and Character Count Indicator to data stream
+            dataStream.push(encodingMode, charCountIndicator);
+            console.log(`Added Mode Indicator ${encodingMode} and Character Count Indicator ${charCountIndicator} to data stream.`);
+
+            // Update encoding mode state
+            encodingModeState = encodingMode;
         }
 
-        // Append Mode Indicator, Length Indicator, and Encoded Data to the data stream
-        dataStream.push(segment.mode, charCountLengthIndicator, ...segment.encodedData); // Add Mode Indicator
+        if (eciSwitchingMode === "forced" && segment.encodingMode === DATA_ENCODING_MODES.BYTE) {
+            // Always add ECI Indicator and Assignment Number for Byte mode segments if ECI switching is forced
+            const eciStream = generateECIIndicatorAndAssignmentNumber(segment.charSetAssignmentNumber);
+            dataStream.push(...eciStream); // Append ECI indicator and assignment number to the data stream
+            console.log("Added ECI Segment to data stream (forced):", eciStream);
+        } else if (eciSwitchingMode === "auto" && segment.encodingMode === DATA_ENCODING_MODES.BYTE && eciModeAssignmentNumberState !== segment.charSetAssignmentNumber) {
+            // Add ECI Indicator and Assignment Number for Byte mode segments if ECI switching is "auto" and charset has changed
+            const eciStream = generateECIIndicatorAndAssignmentNumber(segment.charSetAssignmentNumber);
+            dataStream.push(...eciStream); // Append ECI indicator and assignment number to the data stream
+            console.log("Added ECI Segment to data stream (auto):", eciStream);
+            eciModeAssignmentNumberState = segment.charSetAssignmentNumber; // Update ECI charset state
+        }
     }
 
     console.log("Final Prepared Data Stream:", dataStream);
@@ -38,7 +57,8 @@ function generateLengthIndicator(unencodedData: string, encodedData: Array<strin
     return length.toString(2).padStart(charCountIndicatorLength, '0'); // Return the length as a binary string
 }
 
-function generateECIIndicatorAndAssignmentNumber(data: Array<string>, assignmentNumber: number): Array<string> {
+// Generates the ECI Mode Indicator and Assignment Number binary strings to be added to the data stream
+function generateECIIndicatorAndAssignmentNumber(assignmentNumber: number): Array<string> {
     // ECI Mode Indicator is always '0111'
     const eciModeIndicator = '0111';
 

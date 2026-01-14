@@ -1,44 +1,42 @@
-import { DATA_ENCODING_CHARACTER_SETS, DataEncodingCharacterSet } from "../../enums";
-import { EncodedSegmentDraft, PlainTextDataSegment } from "../../types";
+import { DATA_ENCODING_CHARACTER_SETS, DATA_ENCODING_MODES, DataEncodingCharacterSet } from "../../enums";
+import { EncodedDataSegment} from "../../types";
 import BINARY_ENCODER_FUNCTION_MAPPINGS from "./byteEncoders/binaryEncoderFunctionMappings";
 
-function encodeBinary(plainTextDataSegment: PlainTextDataSegment, isECISegment: boolean): EncodedSegmentDraft {
+function encodeBinary(data: string): EncodedDataSegment {
     // -- 1. Create an array of all the chars from data --
     let plainDataChars: Array<string>; // Create empty array to store characters
 
-    if (typeof plainTextDataSegment.data === 'string') {
+    if (typeof data === 'string') {
         // Add data as characters to plainDataChars
-        plainDataChars = plainTextDataSegment.data.split('');
+        plainDataChars = data.split('');
     } else {
         // If data is not a string, throw an error
         throw new Error("Data must be a string for binary encoding."); 
     }
 
-    // -- Prepare the encoded segment draft --
-    const encodedSegmentDraft: EncodedSegmentDraft = {
-        mode: plainTextDataSegment.mode,
-        charCount: plainTextDataSegment.data.length,
-        characterSet: null,
-        useECIInSegment: isECISegment,
-        encodedData: [], // Will be filled after encoding
-        unencodedData: plainTextDataSegment.data,
+    // -- 2. Determine Character Set --
+    const charSetAssignmentNumber: DataEncodingCharacterSet = getCharSet(plainDataChars);
+
+    // -- 3. Prepare the encoded segment draft --
+    const encodedDataSegment: EncodedDataSegment = {
+        encodingMode: DATA_ENCODING_MODES.BYTE,
+        charSetAssignmentNumber: charSetAssignmentNumber,
+        charCount: data.length,
+        plainTextData: data,
+        encodedData: []
     }
 
     if (plainDataChars.length === 0) {
         // If no data is provided, return empty encoding
         console.warn("Provided data was empty.")
-        return encodedSegmentDraft; // Return empty encoded segment for empty input
+        return encodedDataSegment; // Return empty encoded segment for empty input
     }
 
-    // -- 2. Determine Character Set --
-    const charSet: DataEncodingCharacterSet = getCharSet(plainDataChars);
-    encodedSegmentDraft.characterSet = charSet; // Set the char set
+    // -- 4. Encode the data and place it in the encodedSegmentDraft --
+    encodedDataSegment.encodedData = BINARY_ENCODER_FUNCTION_MAPPINGS[charSetAssignmentNumber]!(plainDataChars);
 
-    // -- 3. Encode the data and place it in the encodedSegmentDraft --
-    encodedSegmentDraft.encodedData = BINARY_ENCODER_FUNCTION_MAPPINGS[charSet]!(plainDataChars);
-
-    // -- 4. Return the encoded segment draft --
-    return encodedSegmentDraft;
+    // -- 5. Return the encoded segment draft --
+    return encodedDataSegment;
 }
 
 function getCharSet(plainDataChars: Array<string>): DataEncodingCharacterSet {

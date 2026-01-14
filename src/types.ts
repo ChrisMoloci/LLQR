@@ -1,4 +1,4 @@
-import { DataEncodingCharacterSet, DataEncodingMode, ECCLevelCode, MaskPatternCode, QRElementShape } from "./enums";
+import { DATA_ENCODING_MODES, DataEncodingCharacterSet, DataEncodingMode, ECCLevelCode, MaskPatternCode, QRElementShape } from "./enums";
 
 // Allowed QR Versions
 export type QRVersions = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40;
@@ -62,25 +62,14 @@ export interface PlainTextDataSegment {
     data: string;
 }
 
-// Intermediary interface for encoded data (contains most of the data)
-export interface EncodedSegmentDraft {
-    mode: DataEncodingMode;
-    charCount: number;
-    characterSet: DataEncodingCharacterSet | null; // ECI character set name if applicable
-    useECIInSegment: boolean; // Whether to use ECI for this segment (This represents ECI mode state in the overal QR Code
-    encodedData: Array<string>;
-    unencodedData: string;
-}
-
-// Finalized encoded segment with character count indicator length included
-export interface FinalizedEncodedSegment {
-    mode: DataEncodingMode; // The QR encoding mode used
-    characterSet: DataEncodingCharacterSet | null; // ECI character set name if applicable
-    useECIInSegment: boolean; // Whether to use ECI for this segment (This represents ECI mode state in the overal QR Code)
-    charCount: number;
-    charCountIndicatorLength: number; // Length of the char count length indicator (in bits) for determining version
-    encodedData: Array<string>;
-    unencodedData: string;
-}
-
+export type EncodedDataSegment = 
+    // Segment type used for Numeric
+    | {encodingMode: typeof DATA_ENCODING_MODES.NUMERIC, charCount: number, plainTextData: string, encodedData: Array<string> }
+    // Segment type used for Alphanumeric
+    | {encodingMode: typeof DATA_ENCODING_MODES.ALPHANUMERIC, charCount: number, plainTextData: string, encodedData: Array<string> }
+    // Segment type used for Kanji
+    | {encodingMode: typeof DATA_ENCODING_MODES.KANJI, charCount: number, plainTextData: string, encodedData: Array<string> }
+    // Segment type used for Byte which includes character set info
+    | {encodingMode: typeof DATA_ENCODING_MODES.BYTE, charSetAssignmentNumber: DataEncodingCharacterSet, charCount: number, plainTextData: string, encodedData: Array<string> };
+    
 // TODO Add types for datesets to get rid of TS errors

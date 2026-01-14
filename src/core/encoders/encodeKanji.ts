@@ -1,64 +1,80 @@
-import { EncodedSegmentDraft, PlainTextDataSegment } from "../../types";
+import { EncodedDataSegment } from "../../types";
 import unicodeToShiftJIS from "../../datasets/unicode_to_shiftjis";
+import { DATA_ENCODING_MODES } from "../../enums";
 
-function encodeKanji(plainTextDataSegment: PlainTextDataSegment): EncodedSegmentDraft {
+function encodeKanji(data: string): EncodedDataSegment | null {
     // Validate that the data is possibly kanji characters
-    if (!/^[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u3000-\u303F]+/u.test(plainTextDataSegment.data)) {
-        throw new Error("Data must be kanji for kanji encoding.");
+    if (!/^[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u3000-\u303F]+$/u.test(data)) {
+        // throw new Error("Data must be kanji for kanji encoding.");
+        console.warn("Data does not appear to be kanji characters. Kanji encoding aborted.");
+        return null; // Return null to indicate kanji encoding is not possible
     }
 
-    console.log(`Encoding kanji data: ${plainTextDataSegment.data}`);
+    console.log(`Encoding kanji data: ${data}`);
 
-    // Create the initial encoded segment draft (without encoded data)
-    const encodedSegmentDraft: EncodedSegmentDraft = {
-        mode: plainTextDataSegment.mode,
-        charCount: plainTextDataSegment.data.length,
-        characterSet: null,
-        useECIInSegment: false,
-        encodedData: [],
-        unencodedData: plainTextDataSegment.data,
+    const encodedDataSegment: EncodedDataSegment = {
+        encodingMode: DATA_ENCODING_MODES.KANJI,
+        charCount: data.length,
+        plainTextData: data,
+        encodedData: []
     }
 
     // Handle empty input
-    if (plainTextDataSegment.data.length === 0 || !plainTextDataSegment.data) {
+    if (data.length === 0) {
         console.warn("Provided data was empty.")
-        return encodedSegmentDraft; // Return empty encoded data segment for empty input
+        return encodedDataSegment; // Return empty encoded data segment for empty input
+    }
+    
+    // Try encoding in kanji, if an incompatible char is found, return null signifying to encode in byte mode instead
+    try {
+        // Convert chars to Shift JIS
+        const shiftJISChars = Array.from(data).map(char => {
+            const shiftJISChar = unicodeToShiftJIS["0x" + char.charCodeAt(0).toString(16).toUpperCase()];
+            if (shiftJISChar === undefined) {
+                throw new Error(`Character "${char}" cannot be converted to Shift JIS for Kanji encoding.`);
+            }
+            return shiftJISChar;
+        }).filter(code => 
+                code !== undefined).map(code => 
+                    parseInt(code, 16));
+
+        console.log("Converted Shift JIS Codes: ", shiftJISChars);
+
+        console.log("Attempting Kanji Encoding for Shift JIS chars: ", shiftJISChars);
+        // Encode each Shift JIS char to kanji and return as binary strings
+        encodedDataSegment.encodedData = shiftJISChars.map(charCode => {
+            if (charCode >= 0x8140 && charCode <= 0x9FFC) {
+                // Encoding bytes in the range 0x8140 to 0x9FFC
+                charCode -= 0x8140;
+                console.log("Adjusted Code: ", "0x" + charCode.toString(16).toUpperCase());
+
+                // Get the LSB and MSB assuming number is two bytes (which kanji characters are in Shift JIS)
+                const lsb = charCode & 0xFF; // Isolate lsb by masking with 0xFF
+                const msb = (charCode >> 8) & 0xFF; // Isolate msb by shifting right 8 bits and masking with 0xFF
+                console.log("MSB: ", "0x" + msb.toString(16).toUpperCase(), "LSB: ", "0x" + lsb.toString(16).toUpperCase());
+
+                return ((msb * 0xC0) + lsb).toString(2).padStart(13, '0'); // Convert to binary and pad to 13 bits
+            } else if(charCode >= 0xE040 && charCode <= 0xEBBF) {
+                // Encoding bytes in the range 0xE040 to 0xEBBF
+                charCode -= 0xC140;
+
+                const lsb = charCode & 0xFF; // Isolate lsb by masking with 0xFF
+                const msb = (charCode >> 8) & 0xFF; // Isolate msb by shifting right 8 bits and masking with 0xFF
+                console.log("MSB: ", "0x" + msb.toString(16).toUpperCase(), "LSB: ", "0x" + lsb.toString(16).toUpperCase());
+
+                return ((msb * 0xC0) + lsb).toString(2).padStart(13, '0'); // Convert to binary and pad to 13 bits
+            } else {
+                throw new Error(`Character with Shift JIS code "0x${charCode.toString(16).toUpperCase()}" cannot be encoded in Kanji mode.`);
+            }
+        })
+        return encodedDataSegment;
+    } catch (error) {
+        // console.error("Error during Kanji encoding: ", error);
+        console.warn("Kanji encoding failed. Falling back to Byte encoding. Error: ", error);
+        return null; // Return null to indicate kanji encoding failed
     }
 
-    // Convert chars to Shift JIS
-    const shiftJISChars = Array.from(plainTextDataSegment.data).map(char => 
-        unicodeToShiftJIS["0x" + char.charCodeAt(0).toString(16).toUpperCase()]).filter(code => 
-            code !== undefined).map(code => 
-                parseInt(code, 16));
-    
-    // Encode each Shift JIS char to kanji and return as binary strings
-    encodedSegmentDraft.encodedData = shiftJISChars.map(charCode => {
-        if (charCode >= 0x8140 && charCode <= 0x9FFC) {
-            // Encoding bytes in the range 0x8140 to 0x9FFC
-            charCode -= 0x8140;
-            console.log("Adjusted Code: ", "0x" + charCode.toString(16).toUpperCase());
-
-            // Get the LSB and MSB assuming number is two bytes (which kanji characters are in Shift JIS)
-            const lsb = charCode & 0xFF; // Isolate lsb by masking with 0xFF
-            const msb = (charCode >> 8) & 0xFF; // Isolate msb by shifting right 8 bits and masking with 0xFF
-            console.log("MSB: ", "0x" + msb.toString(16).toUpperCase(), "LSB: ", "0x" + lsb.toString(16).toUpperCase());
-
-            return ((msb * 0xC0) + lsb).toString(2).padStart(13, '0'); // Convert to binary and pad to 13 bits
-        } else if(charCode >= 0xE040 && charCode <= 0xEBBF) {
-            // Encoding bytes in the range 0xE040 to 0xEBBF
-            charCode -= 0xC140;
-
-            const lsb = charCode & 0xFF; // Isolate lsb by masking with 0xFF
-            const msb = (charCode >> 8) & 0xFF; // Isolate msb by shifting right 8 bits and masking with 0xFF
-            console.log("MSB: ", "0x" + msb.toString(16).toUpperCase(), "LSB: ", "0x" + lsb.toString(16).toUpperCase());
-
-            return ((msb * 0xC0) + lsb).toString(2).padStart(13, '0'); // Convert to binary and pad to 13 bits
-        } else {
-            throw new Error(`Character with Shift JIS code "0x${charCode.toString(16).toUpperCase()}" cannot be encoded in Kanji mode.`);
-        }
-    })
-
-    return encodedSegmentDraft
+    return null; // Fallback return, should not reach here
 }
 
 export default encodeKanji;

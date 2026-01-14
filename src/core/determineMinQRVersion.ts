@@ -1,138 +1,131 @@
-import { DataEncodingMode } from "../enums";
+import { DATA_ENCODING_CHARACTER_SETS, DATA_ENCODING_MODES, DataEncodingCharacterSet, DataEncodingMode } from "../enums";
 import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
 import { ECC_LEVEL_CODES, ECCLevelCode } from "../enums";
-import { EncodedSegmentDraft, FinalizedEncodedSegment, QRSpecs, QRVersions } from "../types";
+import { ECISwitchingModes, EncodedDataSegment, QRSpecs, QRVersions } from "../types";
 
-export default function determineMinQRVersion(encodedData: Array<EncodedSegmentDraft>, eccLevel: ECCLevelCode, minPrefferedVersion: QRVersions | null = null): {version: QRVersions, finalizedEncodedSegments: Array<FinalizedEncodedSegment>} {
-    const dataLength = encodedData.reduce((length, segment) => {
-        // Get the length of the encoded data in bits
-        const encodedDataLength = segment.encodedData.reduce((sum, val) => sum + val.length, 0) 
-
-        // Get the length of the ECI assignment number if applicable
-        let eciSegmentSize: number = 0;
-        switch(true) {
-            case segment.charCount <= 127:
-                eciSegmentSize = 12; // mode + assignment number
-                break;
-            case segment.charCount <= 16383:
-                eciSegmentSize = 20; // mode + assignment number
-                break;
-            case segment.charCount <= 999999:
-                eciSegmentSize = 28; // mode + assignment number
-                break;
-            default:
-                throw new Error("ECI Assignment Number too large in detemine min version.");
-        }
-
-        return length + eciSegmentSize + encodedDataLength;
-    }, 0);
-
-    let encodedDataSegmentsWithLengths: Array<FinalizedEncodedSegment> = encodedData.map((segment: EncodedSegmentDraft) => {
-        return {
-            ...segment,
-            charCountIndicatorLength: getCharCountIndicatorLength(segment.mode, 1) // Start with version 1
-        }
-    }) as Array<FinalizedEncodedSegment>;
-
+export default function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingModes = "disabled", minPrefferedVersion: QRVersions | null = null): QRVersions {
     let bestVersion: QRVersions | null = null; // Stores best version found through iterations (eventuall the best version)
-    let prevVersion: QRVersions | null = null; // Stores the previous best version
 
-    while (true) {
-        if (bestVersion !== null && prevVersion !== null && encodedDataSegmentsWithLengths.every(item => item.charCountIndicatorLength !== null)) {
-            break;
-        } // If all are populated, a suitable version was found
+    // Loop through all QR versions from 1 to 40
+    for (let version: QRVersions = 1; version <= 40; version++) {
+        // -- 1. Determine how much data can fit in this version with the given ECC level
+        const eccLevelKey = Object.entries(ECC_LEVEL_CODES).find(([key, value]) => value === eccLevel)?.[0];
+        const capacity = qrDataCapacityBits[version][eccLevelKey!].data; // Get info about a particullar QR Code version
 
-        prevVersion = bestVersion; // Update prev version to be current before updaing current
+        // -- 1. Calculate the total bits needed to encode all the data for a particullar version
+        let encodingModeState: DataEncodingMode | null = null; // Holds current encoding mode state for mode switching
+        let eciModeAssignmentNumberState: DataEncodingCharacterSet | null = null; // Holds current ECI mode state for mode switching
+        let dataStreamSize = encodedData.reduce((length, segment) => {
+            // Mode indicator + char count indicator if switching modes or adjacent byte segments have ECI mode indicator + assignment number
+            if (encodingModeState !== segment.encodingMode ||
+                (
+                    // Always add mode indicator + char count indicator size if ECI switching is forced since it must acompany every ECI mode indicator + assignment number
+                    eciSwitchingMode === "forced" &&
+                    segment.encodingMode == DATA_ENCODING_MODES.BYTE
+                ) ||
+                (
+                    // Add a mode indicator + char count indicator size if ECI switching is "auto" and adjacent byte segments have different ECI assignment numbers
+                    eciSwitchingMode === "auto" &&
+                    segment.encodingMode === DATA_ENCODING_MODES.BYTE &&
+                    eciModeAssignmentNumberState !== segment.charSetAssignmentNumber
+                )
+            ) {
+                length += 4 // Mode indicator size
 
-        // Get the total bits of data (including hypothetical mode and length indicators)
-        const totalBits = (encodedData.length * 4) + encodedDataSegmentsWithLengths.reduce((sum, item) => sum + item.charCountIndicatorLength!, 0) + dataLength; // Get length in bits of the data
+                // Get length indicator size for this segment based on version
+                length += getCharCountIndicatorLength(segment.encodingMode, version as QRVersions);
 
-        const totalBytes = Math.ceil(totalBits / 8); // Get length in Bytes of the total data
-
-        console.log("Total Bits:", totalBits, "Total Bytes:", totalBytes);
-
-        let versionCandidate: QRVersions | null = null; // Holds a potential version candidate
-
-        // Iterate through all versions to find a suitable one
-        for (let versionNum: number = 1; versionNum <= 40; versionNum++) {
-            const capacity = qrDataCapacityBits[versionNum.toString()]; // Get info about a particullar QR Code version
-
-            console.log("Capacity for version", versionNum, ":", capacity);
-
-            if (!capacity) continue; // Skip if no capacity data for this version
-
-            const eccLevelKey = Object.entries(ECC_LEVEL_CODES).find(([key, value]) => value === eccLevel)?.[0];
-
-            const availableBytes = capacity[eccLevelKey].data;  // Get the available bytes for the selected ecc level
-
-            console.log("Available bytes for version", versionNum, "and ECC level", eccLevel, ":", availableBytes);
-
-            // When we reach a version that can hold the data, we can stop
-            if (availableBytes >= totalBytes) {
-                versionCandidate = versionNum as QRVersions;
-                console.log("Found version candidate:", versionCandidate);
-                break; // Found a suitable version
+                // Update encoding mode state
+                encodingModeState = segment.encodingMode;
             }
+
+            if (eciSwitchingMode === "forced" && segment.encodingMode == DATA_ENCODING_MODES.BYTE) {
+                // ECI indicator + assignment number for every byte instance if ECI switching is "forced"
+                length += 4; // ECI Mode Indicator size
+
+                // Get assignment number size based on char count
+                console.log("Getting ECI assignment number size for assignment number:", segment.charSetAssignmentNumber);
+                length += getECIAssignmentNumberSize(segment.charSetAssignmentNumber);
+
+                // Update ECI mode state
+                eciModeAssignmentNumberState = segment.charSetAssignmentNumber;
+            }
+
+            else if (eciSwitchingMode === "auto" && segment.encodingMode === DATA_ENCODING_MODES.BYTE && eciModeAssignmentNumberState !== segment.charSetAssignmentNumber) {
+                // ECI indicator + assignment number based on state change if ECI switching is "auto"
+                length += 4; // ECI Mode Indicator size
+
+                // Get assignment number size based on char count
+                console.log("Getting ECI assignment number size for assignment number:", segment.charSetAssignmentNumber);
+                length += getECIAssignmentNumberSize(segment.charSetAssignmentNumber);
+
+                // Update ECI mode state
+                eciModeAssignmentNumberState = segment.charSetAssignmentNumber;
+            }
+
+            // Add the length of the encoded data in bits
+            length += segment.encodedData.reduce((sum, codeWord) => sum + codeWord.length, 0); // Add encoded data length in bits
+
+            return length;
+
+        }, 0);
+
+        // Calculate for terminator and byte alignment
+        dataStreamSize += Math.min(4, Math.max(0, (capacity * 8) - dataStreamSize)); // Terminator (up to 4 bits)
+        dataStreamSize += (8 - (dataStreamSize % 8)) % 8; // Byte alignment
+
+        // -- 2. When we find a version that can hold the data, return it
+        if (capacity >= Math.ceil(dataStreamSize / 8)) {
+            bestVersion = version as QRVersions;
+            break; // Found a suitable version
         }
-
-        // If no version candidate was found, throw an error (should only occur if data is too large)
-        if (versionCandidate === null) {
-            throw new Error(`No suitable QR code version found for data length ${length}`);
-        }
-
-        // Update char count indicator lengths for all segments to be for versionCandidate
-        encodedDataSegmentsWithLengths.map(segment => {
-            segment.charCountIndicatorLength = getCharCountIndicatorLength(segment.mode, versionCandidate);
-        });
-
-        bestVersion = versionCandidate; // Set best version to version candidata
-
-        // Do not stop here, rather stop at beginning of next iteration if all values are populated
     }
 
-    // bestVersion = 3;
-    // currentCharCountIndicatorLength = getCharCountIndicatorLength(mode, bestVersion);
-
-    // Check if preffered min version is higher than determined best version
-    if (minPrefferedVersion !== null && bestVersion < minPrefferedVersion) {
-        // Use preffered min version if possible
-        bestVersion = minPrefferedVersion; // Set best version to preffered min version
-
-        // Update char count indicator lengths for all segments to be for minPrefferedVersion
-        encodedDataSegmentsWithLengths.map(segment => {
-            segment.charCountIndicatorLength = getCharCountIndicatorLength(segment.mode, minPrefferedVersion);
-        });
+    // Check if preferred min version can be used
+    if (minPrefferedVersion !== null && bestVersion !== null && bestVersion < minPrefferedVersion && minPrefferedVersion <= 40) {
+        bestVersion = minPrefferedVersion; // Use preffered min version if possible
     }
 
-    // Return the determined best version and the encoded segments with their char count indicator lengths
-    return {
-        version: bestVersion as QRVersions,
-        finalizedEncodedSegments: encodedDataSegmentsWithLengths
-    };
+    if (bestVersion === null || bestVersion > 40) {
+        throw new Error("No suitable QR code version found for the provided data and ECC level.");
+    }
+
+    return bestVersion;
 }
 
 // Helper function for determinVersion()
-function getCharCountIndicatorLength(mode: DataEncodingMode, version: QRVersions): number {
+export function getCharCountIndicatorLength(mode: DataEncodingMode, version: QRVersions): number {
     console.log(`Getting Character Count Indicator Length for mode ${mode} and version ${version}`);
     // ternary is used to convert ECI to Byte mode for lookup table
     // While encoding for the two work a little different, char count remains the same 
     // since it's still binary mode (even data will be the same in constraints of Latin-1 in UTF-8 encoding)
     let length;
     if (version >= 1 && version <= 9) {
-        // length = qrEncodingCharCounts.v1_9[mode == "0111" ? "0100" : mode]; // Use "0100" for Byte mode in v1_9
         length = qrEncodingCharCounts.v1_9[mode]; // Use "0100" for Byte mode in v1_9
     }
     else if (version >= 10 && version <= 26) {
-        // length = qrEncodingCharCounts.v10_26[mode == "0111" ? "0100" : mode];
         length = qrEncodingCharCounts.v10_26[mode];
     }
     else if (version >= 27 && version <= 40) {
-        // length = qrEncodingCharCounts.v27_40[mode == "0111" ? "0100" : mode];
         length = qrEncodingCharCounts.v27_40[mode];
     }
     else {
         throw new Error("Invalid QR code version " + version);
     }
     return length;
+}
+
+// Helper function to get ECI assignment number size in bits
+function getECIAssignmentNumberSize(assignmentNumber: number): number {
+    switch(true) {
+        case assignmentNumber >= 0 && assignmentNumber <= 127:
+            return 8; // assignment number size
+        case assignmentNumber >= 128 && assignmentNumber <= 16383:
+            return 16; // assignment number size
+        case assignmentNumber >= 16384 && assignmentNumber <= 999999:
+            return 24; // assignment number size
+        default:
+            throw new Error("ECI Assignment Number too large in determine min version.");
+    }
 }

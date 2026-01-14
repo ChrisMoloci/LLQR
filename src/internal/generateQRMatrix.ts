@@ -1,5 +1,5 @@
 import { DATA_ENCODING_MODES, DataEncodingMode } from "../enums";
-import { EncodedSegmentDraft, FinalizedEncodedSegment, QRSpecs } from "../types";
+import { EncodedDataSegment, QRSpecs } from "../types";
 import determineMode from "../core/determineEncodingMode";
 import determineMinQRVersion from "../core/determineMinQRVersion";
 import prepareDatastream from "../core/prepareDatastream";
@@ -18,7 +18,7 @@ function generateQRMatrix(data: string): Array<Array<number>> {
     if (!mode) throw new Error("Unable to determine encoding mode for the provided data."); 
     
     // Will hold the encoded data segments
-    let encodedData: Array<EncodedSegmentDraft> | null = null;
+    let encodedData: Array<EncodedDataSegment> | null = null;
 
     // -- 3. Encode Data to Binary as EncodedSegmentDraft --
     if (qrSpecs.useModeSwitching === "disabled") {
@@ -41,22 +41,22 @@ function generateQRMatrix(data: string): Array<Array<number>> {
      * Also determines the character count indicator lengths for each segment and adds them to the segments
      * returning FinalizedEncodedSegment[]
      */
-    const {version: minVersion, finalizedEncodedSegments: finalizedEncodedSegments} = determineMinQRVersion(encodedData, qrSpecs.eccLevel, qrSpecs.minPreferredVersion);
+    const version = determineMinQRVersion(encodedData, qrSpecs.eccLevel, qrSpecs.useECISwitching, qrSpecs.minPreferredVersion);
 
-    console.log("Determined Minimum QR Version:", minVersion);
+    console.log("Determined Minimum QR Version:", version);
     // console.log("Character Count Indicator Length:", charCountIndicatorLength);
 
     // -- 5. Prepare data stream for ECC generation (add mode, length indicators, etc.) --
-    const preparedDataStream: Array<string> = prepareDatastream(finalizedEncodedSegments);
+    const preparedDataStream: Array<string> = prepareDatastream(encodedData, version, qrSpecs.useECISwitching);
 
     console.log("Prepared Data Stream:", preparedDataStream);
     
     // -- 6. Generate Error Correction Codewords --
-    const eccStream: Array<string> = generateECCStream(preparedDataStream, minVersion, qrSpecs.eccLevel);
+    const eccStream: Array<string> = generateECCStream(preparedDataStream, version, qrSpecs.eccLevel);
     console.log("Generated ECC Stream:", eccStream);
 
     // -- 7. Generate the matrix using the ecc data stream --
-    const matrix: Array<Array<number>> = generateMatrix(eccStream, minVersion, qrSpecs.eccLevel, qrSpecs.maskPattern);
+    const matrix: Array<Array<number>> = generateMatrix(eccStream, version, qrSpecs.eccLevel, qrSpecs.maskPattern);
     console.log("Generated QR Matrix:", matrix);
 
     // -- 8. Return the generated matrix --
