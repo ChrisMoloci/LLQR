@@ -13,7 +13,32 @@ function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: 
     for (const segment of encodedSegments) {
         console.log("Preparing segment for datastream:", segment);
 
-        if (encodingModeState !== segment.encodingMode) {
+        if (eciSwitchingMode === "forced" && segment.encodingMode === DATA_ENCODING_MODES.BYTE) {
+            // Always add ECI Indicator and Assignment Number for Byte mode segments if ECI switching is forced
+            const eciStream = generateECIIndicatorAndAssignmentNumber(segment.charSetAssignmentNumber);
+            dataStream.push(...eciStream); // Append ECI indicator and assignment number to the data stream
+            console.log("Added ECI Segment to data stream (forced):", eciStream);
+        } else if (eciSwitchingMode === "auto" && segment.encodingMode === DATA_ENCODING_MODES.BYTE && eciModeAssignmentNumberState !== segment.charSetAssignmentNumber) {
+            // Add ECI Indicator and Assignment Number for Byte mode segments if ECI switching is "auto" and charset has changed
+            const eciStream = generateECIIndicatorAndAssignmentNumber(segment.charSetAssignmentNumber);
+            dataStream.push(...eciStream); // Append ECI indicator and assignment number to the data stream
+            console.log("Added ECI Segment to data stream (auto):", eciStream);
+            eciModeAssignmentNumberState = segment.charSetAssignmentNumber; // Update ECI charset state
+        }
+
+        if (encodingModeState !== segment.encodingMode ||
+            (
+                // Always add mode indicator + char count indicator if ECI switching is forced since it must acompany every ECI mode indicator + assignment number
+                eciSwitchingMode === "forced" &&
+                segment.encodingMode == DATA_ENCODING_MODES.BYTE
+            ) ||
+            (
+                // Add a mode indicator + char count indicator if ECI switching is "auto" and adjacent byte segments have different ECI assignment numbers
+                eciSwitchingMode === "auto" &&
+                segment.encodingMode === DATA_ENCODING_MODES.BYTE &&
+                eciModeAssignmentNumberState !== segment.charSetAssignmentNumber
+            )
+        ) {
             // Add Mode Indicator if encoding mode has changed
             const encodingMode: DataEncodingMode = segment.encodingMode;
 
@@ -28,18 +53,8 @@ function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: 
             encodingModeState = encodingMode;
         }
 
-        if (eciSwitchingMode === "forced" && segment.encodingMode === DATA_ENCODING_MODES.BYTE) {
-            // Always add ECI Indicator and Assignment Number for Byte mode segments if ECI switching is forced
-            const eciStream = generateECIIndicatorAndAssignmentNumber(segment.charSetAssignmentNumber);
-            dataStream.push(...eciStream); // Append ECI indicator and assignment number to the data stream
-            console.log("Added ECI Segment to data stream (forced):", eciStream);
-        } else if (eciSwitchingMode === "auto" && segment.encodingMode === DATA_ENCODING_MODES.BYTE && eciModeAssignmentNumberState !== segment.charSetAssignmentNumber) {
-            // Add ECI Indicator and Assignment Number for Byte mode segments if ECI switching is "auto" and charset has changed
-            const eciStream = generateECIIndicatorAndAssignmentNumber(segment.charSetAssignmentNumber);
-            dataStream.push(...eciStream); // Append ECI indicator and assignment number to the data stream
-            console.log("Added ECI Segment to data stream (auto):", eciStream);
-            eciModeAssignmentNumberState = segment.charSetAssignmentNumber; // Update ECI charset state
-        }
+        dataStream.push(...segment.encodedData); // Append the encoded data to the data stream
+        console.log("Added Encoded Data to data stream:", segment.encodedData);
     }
 
     console.log("Final Prepared Data Stream:", dataStream);
