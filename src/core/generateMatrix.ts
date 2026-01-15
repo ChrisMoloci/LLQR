@@ -3,7 +3,7 @@ import { alignmentPatternLocations } from "../datasets/alignmentPatternLocations
 import { QRMatrixCanvas } from "../types";
 import determinePenaltyScore from "./determinePenaltyScore";
 import maskQR from "./maskingFunctions"; 
-import { mask0, mask1, mask2, mask3, mask4, mask5, mask6, mask7 } from "./maskingFunctions";
+
 import { getBitLength } from "./utils";
 
 export interface MaskedQRMatrix {
@@ -376,10 +376,10 @@ function addFormatInformationToMatrix(maskedQRMatrix: MaskedQRMatrix, eccLevel: 
     const combinedFormatInformationStream: number = parseInt(formatInformationString + formatInformationNumber.toString(2).padStart(10, '0'), 2);
 
     // Spec compliant binary value to XOR the ECCed format information stream with
-    const arbritraryBinaryValue: number = 0b101010000010010;
+    const arbitraryBinaryValue: number = 0b101010000010010;
 
     // Final Spec compliant XOR
-    const finalFormatInformationNumber: number = combinedFormatInformationStream ^ arbritraryBinaryValue;
+    const finalFormatInformationNumber: number = combinedFormatInformationStream ^ arbitraryBinaryValue;
 
     // Convert to array to an array that is ready to apply to the matrix
     const completeFormatInformationStream: number[] = finalFormatInformationNumber.toString(2).padStart(15, '0').split('').map(bit => parseInt(bit));

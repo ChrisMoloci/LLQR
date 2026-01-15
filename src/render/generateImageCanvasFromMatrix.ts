@@ -42,7 +42,7 @@ function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, imageSpecs:
     
     // -- 4. Render Finder Patterns --
     matrixCanvas = renderFinderPatterns(matrixCtx, size, moduleSize, imageSpecs, radius);
-    console.log(matrixCanvas)
+    console.log(matrixCanvas);
 
     // -- 5. Render Alignment Patterns --
     matrixCanvas = renderAlignmentPatterns(matrixCtx, size, moduleSize, imageSpecs, radius, version);
@@ -69,7 +69,7 @@ function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, size: number,
 
     // Get the colors
     const outlineColor = imageSpecs.finderPatternOutlineColor;
-    const backgroundColor = imageSpecs.backgroundColor;
+
     const innerColor = imageSpecs.finderPatternInnerColor;
 
     for (let i = 0; i < 3; i++) {
@@ -116,7 +116,7 @@ function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, size: number,
                     (finderPatternLocation.x * moduleSize) + moduleSize,
                     (finderPatternLocation.y * moduleSize) + moduleSize,
                     moduleSize * 5
-                );;
+                );
                 break;
             case QRELEMENTSHAPES.CIRCLE:
                 drawCircleModule(
@@ -228,7 +228,7 @@ function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: numb
                     (alignmentPatternLocation.x * moduleSize) + moduleSize,
                     (alignmentPatternLocation.y * moduleSize) + moduleSize,
                     moduleSize * 3
-                );;
+                );
                 break;
             case QRELEMENTSHAPES.CIRCLE:
                 drawCircleModule(
@@ -330,7 +330,7 @@ function renderDataStream(matrix: Array<Array<number>>, matrixCtx: CanvasRenderi
                             topRight: 0,
                             bottomRight: 0,
                             bottomLeft: 0
-                        }
+                        };
 
                         // Top left corner - round if there's no black module above OR to the left
                         if ((row === 0 || matrix[row-1][col] === 0) && (col === 0 || matrix[row][col-1] === 0)) {
@@ -391,7 +391,7 @@ function drawRoundedModule(ctx: CanvasRenderingContext2D, x: number, y: number, 
             topRight: radiuses,
             bottomRight: radiuses,
             bottomLeft: radiuses
-        }    
+        };
     }
 
     ctx.beginPath();

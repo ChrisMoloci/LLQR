@@ -42,8 +42,8 @@ export const QR_DEFAULTS = {
     VERSION: null,
     FORCE_BYTE_ENCODING: false as const,
     MASK_PATTERN: null,
-    PREFERR_ECI: false as const,
-    PREFERR_BOM: false as const
+    PREFER_ECI: false as const,
+    PREFER_BOM: false as const
 } as const;
 
 export type QRDefault = typeof QR_DEFAULTS[keyof typeof QR_DEFAULTS];
@@ -54,8 +54,8 @@ export const DEFAULT_QR_SPECS: qrSpecs = {
     version: QR_DEFAULTS.VERSION,
     forceByteEncoding: QR_DEFAULTS.FORCE_BYTE_ENCODING,
     maskPattern: QR_DEFAULTS.MASK_PATTERN,
-    preferrECI: QR_DEFAULTS.PREFERR_ECI,
-    preferrBOM: QR_DEFAULTS.PREFERR_BOM
+    preferECI: QR_DEFAULTS.PREFER_ECI,
+    preferBOM: QR_DEFAULTS.PREFER_BOM
 };
 
 // Used for default Image Specs

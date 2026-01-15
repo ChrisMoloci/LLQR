@@ -48,24 +48,24 @@ function normalizeDataStream(encodedData: Array<string>, dataCodewordBufferSize:
     console.log("Encoded Data String:", encodedDataString);
 
     // Calculate the remaining codeword bits available
-    let remaingBufferSize: number = dataCodewordBufferSize - encodedDataString.length;
-    console.log("Remaining Buffer Size (in bits):", remaingBufferSize);
+    let remainingBufferSize: number = dataCodewordBufferSize - encodedDataString.length;
+    console.log("Remaining Buffer Size (in bits):", remainingBufferSize);
 
     // Check for buffer overflow
-    if (remaingBufferSize < 0) throw new Error("Encoded data exceeds capacity for the specified QR version and ECC level.");
+    if (remainingBufferSize < 0) throw new Error("Encoded data exceeds capacity for the specified QR version and ECC level.");
 
     // Add terminator bits (max 4 or buffer size if we have less than 4 bits left in the buffer)
-    const terminatorSize = Math.min(4, remaingBufferSize); // If remaing buffer is greater than 4 bits, 4
+    const terminatorSize = Math.min(4, remainingBufferSize); // If remaing buffer is greater than 4 bits, 4
     encodedDataString += '0'.repeat(terminatorSize); // Add terminator bits
-    remaingBufferSize -= terminatorSize; // Update remaining buffer size
+    remainingBufferSize -= terminatorSize; // Update remaining buffer size
 
     // Align data stream to next byte boundary if not already aligned
     const boundaryDiff = encodedDataString.length % 8;
     console.log("Boundary Difference before Alignment:", boundaryDiff);
     if (boundaryDiff !== 0) {
-        const bitsToNextByte = Math.min(8 - boundaryDiff, remaingBufferSize); // Calculate bits to next byte or buffer size
+        const bitsToNextByte = Math.min(8 - boundaryDiff, remainingBufferSize); // Calculate bits to next byte or buffer size
         encodedDataString += '0'.repeat(bitsToNextByte); // Add padding bits to align to next byte
-        remaingBufferSize -= bitsToNextByte; // Update remaining buffer size
+        remainingBufferSize -= bitsToNextByte; // Update remaining buffer size
     }
 
     console.log("Data Stream after Terminator and Byte Alignment:", encodedDataString);
@@ -79,14 +79,14 @@ function normalizeDataStream(encodedData: Array<string>, dataCodewordBufferSize:
     }
 
     // Add padding bytes (0xEC, 0x11) until we reach the data codeword capacity
-    if (remaingBufferSize > 0) {
+    if (remainingBufferSize > 0) {
         const paddingBytes: Array<string> = ['11101100', '00010001']; // 0xEC and 0x11 in binary
         let isFirstPaddingByte: boolean = true; // Toggle between the two padding bytes
         const dataCodewordBufferSizeInBytes = dataCodewordBufferSize / 8; // Convert buffer size to bytes to work with the array
         for (let i = normalizedDataArray.length; i < dataCodewordBufferSizeInBytes; i++) {
             // Loop until we fill the data codeword buffer
             normalizedDataArray.push(isFirstPaddingByte ? paddingBytes[0]! : paddingBytes[1]!); // Add padding byte
-            remaingBufferSize -= 8; // Update remaining buffer size
+            remainingBufferSize -= 8; // Update remaining buffer size
             isFirstPaddingByte = !isFirstPaddingByte; // Toggle padding byte
         }
     }
@@ -156,7 +156,6 @@ function padECCZeroBytesToBlocks(groupedData: Array<Array<Array<number>>>, group
 
 function computeECC(groupedData: Array<Array<Array<number>>>, groupingObj: Object, generatorPolynomial: Array<number>): Array<Array<Array<number>>> {
     const eccGroupedData: Array<Array<Array<number>>> = groupedData.map((group, groupIndex) => {
-        const numOfBlocks = groupingObj.blocks[`g${groupIndex + 1}`].numBlocks;
         // console.log("Computing ECC for Group:", groupIndex + 1, "with", numOfBlocks, "blocks.");
         if (group instanceof Array && group.length > 0) {
             return group.map((block, blockIndex) => {

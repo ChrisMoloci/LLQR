@@ -23,8 +23,8 @@ export type qrSpecs = {
     version: qrVersions | null, // Null means auto
     forceByteEncoding: boolean,
     maskPattern: MaskPatternCode | null, // Null means auto
-    preferrECI: boolean,
-    preferrBOM: boolean
+    preferECI: boolean,
+    preferBOM: boolean
 }
 
 export type ImageSpecs = {
