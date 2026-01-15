@@ -13,8 +13,8 @@ export type QRSpecs = {
     maskPattern: MaskPatternCode | null, // Null means auto
     useModeSwitching: ModeSwitchingModes,
     useECISwitching: ECISwitchingModes 
-    preferrECI: boolean,
-    preferrBOM: boolean
+    preferECI: boolean,
+    preferBOM: boolean
 }
 
 // Defines the rules for generating an image from a QR matrix
