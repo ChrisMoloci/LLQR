@@ -6,9 +6,9 @@ export default function determineMode(data: string): DataEncodingMode {
         return DATA_ENCODING_MODES.NUMERIC; // Numeric mode
     } else if (/^[0-9A-Z $%*+\-./:]+$/.test(data)) {
         return DATA_ENCODING_MODES.ALPHANUMERIC; // Alphanumeric mode
+    } else if (/^[^\x00-\x7F\uFF61-\uFF9F]+/.test(data)) {
+        return DATA_ENCODING_MODES.KANJI; // Kanji mode
     } else {
         return DATA_ENCODING_MODES.BYTE; // Byte mode
     }
 }
-
-// TODO: Add Kanji mode detection

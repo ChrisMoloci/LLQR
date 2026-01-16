@@ -50,7 +50,7 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
     // Regular expressions to find all the different datatypes and get them as substrings (only matches at start using ^)
     const numericRegEx      = /^\d+/; // Numeric
     const alphanumericRegEx = /^[A-Z$%*+\-./:]+/; // Alphanumeric
-    const kanjiCandidateRegEx = /^[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u3000-\u303F]+$/u; // Kanji candidates (since its a subset of shift-JIS not unicode)
+    const kanjiCandidateRegEx = /^[^\x00-\x7F\uFF61-\uFF9F]+/; // Kanji candidates (since its a subset of shift-JIS not unicode)
     const byteRegEx         = /^[^A-Z0-9]+/; // Anything else (Byte)
 
     // Defines the minimum char count for a segment based on auto or forced mode switching
