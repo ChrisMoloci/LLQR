@@ -13,12 +13,18 @@
   },
   "scripts": {
     "dev": "tsup --watch --sourcemap --format cjs,esm --dts",
-    "build": "tsup --format cjs,esm --dts"
+    "build": "tsup --format cjs,esm --dts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui"
   },
   "author": "chrismoloci",
   "license": "MIT",
   "dependencies": {
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.17"
   }
 }

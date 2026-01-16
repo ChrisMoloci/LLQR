@@ -4,7 +4,7 @@ import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
 import { ECC_LEVEL_CODES, ECCLevelCode } from "../enums";
 import { ECISwitchingModes, EncodedDataSegment, QRVersions } from "../types";
 
-export default function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingModes = "disabled", minPreferredVersion: QRVersions | null = null): QRVersions {
+export default function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingModes = "disabled", minPrefferedVersion: QRVersions | null = null): QRVersions {
     let bestVersion: QRVersions | null = null; // Stores best version found through iterations (eventuall the best version)
 
     // Loop through all QR versions from 1 to 40
@@ -83,8 +83,8 @@ export default function determineMinQRVersion(encodedData: Array<EncodedDataSegm
     }
 
     // Check if preferred min version can be used
-    if (minPreferredVersion !== null && bestVersion !== null && bestVersion < minPreferredVersion && minPreferredVersion <= 40) {
-        bestVersion = minPreferredVersion; // Use preferred min version if possible
+    if (minPrefferedVersion !== null && bestVersion !== null && bestVersion < minPrefferedVersion && minPrefferedVersion <= 40) {
+        bestVersion = minPrefferedVersion; // Use preffered min version if possible
     }
 
     if (bestVersion === null || bestVersion > 40) {
