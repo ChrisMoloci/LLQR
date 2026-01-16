@@ -6,7 +6,7 @@ function encodeNumeric(data: string): EncodedDataSegment {
         throw new Error("Data is not numeric.");
     }
 
-    console.log(`Encoding numeric data: ${data}`);
+    // console.log(`Encoding numeric data: ${data}`);
 
     const encodedDataSegment: EncodedDataSegment = {
         encodingMode: DATA_ENCODING_MODES.NUMERIC,
