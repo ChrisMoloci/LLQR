@@ -6,8 +6,7 @@ function encodeAlphanumeric(data: string): EncodedDataSegment {
         throw new Error("Data must be alphanumeric for alphanumeric encoding.");
     }
 
-    console.log(`Encoding alphanumeric data: ${data}`);
-
+    // console.log(`Encoding alphanumeric data: ${data}`);
 
     const encodedDataSegment: EncodedDataSegment = {
         encodingMode: DATA_ENCODING_MODES.ALPHANUMERIC,
