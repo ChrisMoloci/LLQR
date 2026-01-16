@@ -1,9 +1,9 @@
-import { ECC_LEVEL_CODES, ECCLevelCode } from "../const";
+import { ECC_LEVEL_CODES, ECCLevelCode } from "../enums";
 import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
-import { qrVersions } from "../types";
+import { QRVersions } from "../types";
 import { gfMultiply, gfXor } from "./GF256_Arithmetic";
 
-function generateECCStream(encodedData: Array<string>, qrVersion: qrVersions, eccLevelCode: ECCLevelCode): Array<string> {
+function generateECCStream(encodedData: Array<string>, qrVersion: QRVersions, eccLevelCode: ECCLevelCode): Array<string> {
     const eccLevel = Object.entries(ECC_LEVEL_CODES).find(([key, value]) => value === eccLevelCode)?.[0];
     const groupingObj = qrDataCapacityBits[qrVersion][eccLevel!];
     const dataCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevel].data * 8;

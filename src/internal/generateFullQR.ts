@@ -1,14 +1,15 @@
-import { DEFAULT_QR_SPECS } from "../const";
-import { qrSpecs } from "../types";
+import generateImageFromQRMatrix from "./generateImageFromQRMatrix";
 import generateQRMatrix from "./generateQRMatrix";
 
-function generateFullQR(data: string, specs: qrSpecs = DEFAULT_QR_SPECS) {
-    // Generate the QR Matrix
-    const qrMatrix = generateQRMatrix(data, specs);
+function generateFullQR(data: string): HTMLImageElement {
+    // -- 1. Generate the QR Matrix --
+    const qrMatrix = generateQRMatrix(data);
 
-    // Generate An Image from the Matrix
+    // -- 2. Generate An Image from the Matrix --
+    const image: HTMLImageElement = generateImageFromQRMatrix(qrMatrix);
 
-    // Return the Image
+    // -- 3. Return the Image --
+    return image;
 }
 
 export default generateFullQR;

@@ -1,5 +1,6 @@
-import { DATA_ENCODING_MODES, DataEncodingMode } from "../const";
+import { DATA_ENCODING_MODES, DataEncodingMode } from "../enums";
 
+// Determines the most efficient encoding mode required to encode the whole data (mode switching is handled later)
 export default function determineMode(data: string): DataEncodingMode {
     if(/^\d+$/.test(data)) {
         return DATA_ENCODING_MODES.NUMERIC; // Numeric mode

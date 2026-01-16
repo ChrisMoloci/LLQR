@@ -1,4 +1,4 @@
-export const qrDataCapacityBits = {
+export const qrDataCapacityBits: Record<string, any> = {
   "1": {
     "L": {
       "total": 26,
