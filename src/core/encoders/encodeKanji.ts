@@ -74,7 +74,6 @@ function encodeKanji(data: string): EncodedDataSegment | null {
         return null; // Return null to indicate kanji encoding failed
     }
 
-    return null; // Fallback return, should not reach here
 }
 
 export default encodeKanji;

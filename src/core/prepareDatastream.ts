@@ -43,7 +43,7 @@ function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: 
             const encodingMode: DataEncodingMode = segment.encodingMode;
 
             // Add Character Count Indicator
-            const charCountIndicator = generateLengthIndicator(segment.plainTextData, segment.encodedData, getCharCountIndicatorLength(segment.encodingMode, version), segment.encodingMode)
+            const charCountIndicator = generateLengthIndicator(segment.plainTextData, segment.encodedData, getCharCountIndicatorLength(segment.encodingMode, version), segment.encodingMode);
 
             // Add Mode Indicator and Character Count Indicator to data stream
             dataStream.push(encodingMode, charCountIndicator);
@@ -65,7 +65,7 @@ function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: 
 
 // Creates a length indicator based on data length, mode, and char count indicator length
 function generateLengthIndicator(unencodedData: string, encodedData: Array<string>, charCountIndicatorLength: number, mode: DataEncodingMode) {
-    // If byte mode, 
+    // If byte mode, use the encoded byte length; otherwise use the unencoded character length
     const length = mode === "0100" ? encodedData.length : unencodedData.length;
     // const length = unencodedData.length; // Use unencoded data length for all modes
 

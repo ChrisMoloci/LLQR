@@ -12,7 +12,7 @@ export type QRSpecs = {
     forceByteEncoding: boolean,
     maskPattern: MaskPatternCode | null, // Null means auto
     useModeSwitching: ModeSwitchingModes,
-    useECISwitching: ECISwitchingModes 
+    useECISwitching: ECISwitchingModes,
     preferECI: boolean,
     preferBOM: boolean
 }

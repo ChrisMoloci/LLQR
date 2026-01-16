@@ -1,10 +1,10 @@
-import { DATA_ENCODING_CHARACTER_SETS, DATA_ENCODING_MODES, DataEncodingCharacterSet, DataEncodingMode } from "../enums";
+import { DATA_ENCODING_MODES, DataEncodingCharacterSet, DataEncodingMode } from "../enums";
 import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
 import { ECC_LEVEL_CODES, ECCLevelCode } from "../enums";
-import { ECISwitchingModes, EncodedDataSegment, QRSpecs, QRVersions } from "../types";
+import { ECISwitchingModes, EncodedDataSegment, QRVersions } from "../types";
 
-export default function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingModes = "disabled", minPrefferedVersion: QRVersions | null = null): QRVersions {
+export default function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingModes = "disabled", minPreferredVersion: QRVersions | null = null): QRVersions {
     let bestVersion: QRVersions | null = null; // Stores best version found through iterations (eventuall the best version)
 
     // Loop through all QR versions from 1 to 40
@@ -31,7 +31,7 @@ export default function determineMinQRVersion(encodedData: Array<EncodedDataSegm
                     eciModeAssignmentNumberState !== segment.charSetAssignmentNumber
                 )
             ) {
-                length += 4 // Mode indicator size
+                length += 4; // Mode indicator size
 
                 // Get length indicator size for this segment based on version
                 length += getCharCountIndicatorLength(segment.encodingMode, version as QRVersions);
@@ -83,8 +83,8 @@ export default function determineMinQRVersion(encodedData: Array<EncodedDataSegm
     }
 
     // Check if preferred min version can be used
-    if (minPrefferedVersion !== null && bestVersion !== null && bestVersion < minPrefferedVersion && minPrefferedVersion <= 40) {
-        bestVersion = minPrefferedVersion; // Use preffered min version if possible
+    if (minPreferredVersion !== null && bestVersion !== null && bestVersion < minPreferredVersion && minPreferredVersion <= 40) {
+        bestVersion = minPreferredVersion; // Use preferred min version if possible
     }
 
     if (bestVersion === null || bestVersion > 40) {

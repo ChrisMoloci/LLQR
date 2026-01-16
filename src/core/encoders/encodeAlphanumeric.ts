@@ -8,14 +8,6 @@ function encodeAlphanumeric(data: string): EncodedDataSegment {
 
     console.log(`Encoding alphanumeric data: ${data}`);
 
-    // const encodedSegmentDraft: EncodedSegmentDraft = {
-    //     mode: plainTextDataSegment.mode,
-    //     charCount: plainTextDataSegment.data.length,
-    //     characterSet: null,
-    //     useECIInSegment: false,
-    //     encodedData: [],
-    //     unencodedData: plainTextDataSegment.data,
-    // }
 
     const encodedDataSegment: EncodedDataSegment = {
         encodingMode: DATA_ENCODING_MODES.ALPHANUMERIC,

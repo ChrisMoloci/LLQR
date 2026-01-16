@@ -5,7 +5,7 @@ import determinePenaltyScore from "./determinePenaltyScore";
 import maskQR from "./maskingFunctions"; 
 
 import { getBitLength } from "./utils";
-import { getCurrentConfigs } from "./defineConfig";
+
 
 export interface MaskedQRMatrix {
     matrix: Array<Array<number>>,

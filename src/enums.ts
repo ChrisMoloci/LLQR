@@ -15,7 +15,7 @@ export type ECCLevelKey = keyof typeof ECC_LEVEL_CODES;
 export const DATA_ENCODING_MODES = {
     NUMERIC: "0001",
     ALPHANUMERIC: "0010",
-    KANJI: "1000", // Not yet implemented
+    KANJI: "1000",
     BYTE: "0100"
 } as const;
 

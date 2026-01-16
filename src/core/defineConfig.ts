@@ -2,17 +2,6 @@ import { DEFAULT_IMAGE_SPECS, DEFAULT_QR_SPECS } from "../const"
 import { ImageSpecs, QRConfigs } from "../types";
 import { QRSpecs } from "../types";
 
-/**
- * CONFIG TODOs:
- *  QR Specs:
- *      [-] Create QRs with specified ECC level
- *      [-] Try to create QRs with specified min version
- *      [-] Force Byte Encoding
- *      [-] Use specified mask pattern
- *      [] Add ECI segment if specified
- *      [] Add BOM if specified
- */
-
 // Stores the current global configuration for QR code generation
 let qrConfigs: QRConfigs = {
     qrConfig: DEFAULT_QR_SPECS,
