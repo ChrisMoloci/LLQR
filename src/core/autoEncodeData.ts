@@ -50,7 +50,7 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
     // Regular expressions to find all the different datatypes and get them as substrings (only matches at start using ^)
     const numericRegEx      = /^\d+/; // Numeric
     const alphanumericRegEx = /^[A-Z$%*+\-./:]+/; // Alphanumeric
-    const kanjiCandidateRegEx = /^[^\x00-\x7F\uFF61-\uFF9F]+/; // Kanji candidates (since its a subset of shift-JIS not unicode)
+    const kanjiCandidateRegEx = /^[\u0100-\u9FFF\uF900-\uFAFF]+/; // Kanji candidates (since its a subset of shift-JIS not unicode)
     const byteRegEx         = /^[^A-Z0-9]+/; // Anything else (Byte)
 
     // Defines the minimum char count for a segment based on auto or forced mode switching
@@ -110,11 +110,13 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
                         // In auto mode, we only encode byte segments when necessary
                         let byteData = ''; // Stores all the characters for the byte segment
                         let j = i; // Temp index to find the end of byte data segment
-                        
+
                         // Keep looping through data until we find the next efficient segment
                         while (j < data.length) {
                             // Create a temp slice from j to end
                             let tempSlice = data.slice(j);
+
+                            console.log("Temp Slice for Byte Segmentation:", tempSlice);
     
                             // Create substrings just like earlier
                             let tempNumeric = tempSlice.match(numericRegEx);
@@ -124,12 +126,15 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
                             if ((tempNumeric && tempNumeric[0].length >= 4) || 
                                 (tempAlphanumeric && tempAlphanumeric[0].length >= 4) ||
                                 (tempKanjiCandidate && tempKanjiCandidate[0].length >= 2)) {
+                                console.log("Found next efficient segment at index ", j, " Segment: ", tempSlice, " with length ", tempSlice.length);
                                 break; // Stop collecting byte data
                             }
                             
                             // Add this character to byte data
                             byteData += data[j];
                             j++; // Move to next character
+
+                            console.log("Collected Byte Data so far:", byteData, " at index ", j);
                         }
                         
                         // Add the byte data segment to segments

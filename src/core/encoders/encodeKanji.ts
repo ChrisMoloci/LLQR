@@ -6,7 +6,7 @@ function encodeKanji(data: string): EncodedDataSegment | null {
     // Validate that the data is possibly kanji characters
 
     // TODO: Fix regex to supports all kanji characters
-    if (!/^[^\x00-\x7F\uFF61-\uFF9F]+/.test(data)) {
+    if (!/^[\u0100-\u9FFF\uF900-\uFAFF]+/.test(data)) {
         // throw new Error("Data must be kanji for kanji encoding.");
         console.warn("Data does not appear to be kanji characters. Kanji encoding aborted.");
         return null; // Return null to indicate kanji encoding is not possible

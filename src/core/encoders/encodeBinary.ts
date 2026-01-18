@@ -28,7 +28,7 @@ function encodeBinary(data: string): EncodedDataSegment {
 
     if (plainDataChars.length === 0) {
         // If no data is provided, return empty encoding
-        console.warn("Provided data was empty.")
+        console.warn("Provided byte data was empty.")
         return encodedDataSegment; // Return empty encoded segment for empty input
     }
 
