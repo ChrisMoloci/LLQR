@@ -15,16 +15,21 @@
     "dev": "tsup --watch --sourcemap --format cjs,esm --dts",
     "build": "tsup --format cjs,esm --dts",
     "test": "vitest run",
+    "test:browser": "vitest --config=vitest.browser.config.ts run",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui"
+    "test:browser:watch": "vitest --config=vitest.browser.config.ts"
   },
   "author": "chrismoloci",
   "license": "MIT",
   "dependencies": {
+    "@zxing/library": "^0.21.3",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@types/node": "^25.0.10",
+    "@vitest/browser-playwright": "^4.0.17",
+    "@vitest/ui": "^4.0.17",
     "vitest": "^4.0.17"
   }
 }

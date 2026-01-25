@@ -15,5 +15,5 @@ describe("Encode Kanji", () => {
 
             expect(encodeKanji(testChars)?.encodedData.length).toBe(i);
         }
-    }, 10000)
+    })
 });

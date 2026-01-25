@@ -1,5 +1,4 @@
 function encodeUTF8(plainDataChars: Array<string>): Array<string> {
-    // delete global.TextEncoder;
     if (typeof TextEncoder !== "undefined") {
         // Use TextEncoder if possible
         const textEncoder = new TextEncoder();

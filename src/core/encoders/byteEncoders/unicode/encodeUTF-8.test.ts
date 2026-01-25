@@ -5,15 +5,15 @@ import encodeUTF8 from "./encodeUTF-8";
 
 describe("Custom UTF-8 Encoder", () => {
     // Store the original TextEncoder so we can delete it for testing
-    const OriginalTextEncoder = global.TextEncoder;
+    const OriginalTextEncoder = globalThis.TextEncoder;
     
     // By default our custom encoder uses the native TextEncoder so we need to remove it first
     beforeAll(() => {
-        // delete global.TextEncoder;
+        delete globalThis.TextEncoder;
     });
 
     afterAll(() => {
-        global.TextEncoder = OriginalTextEncoder;
+        globalThis.TextEncoder = OriginalTextEncoder;
     })
 
     // Use the built in TextEncoder to compare results to our custom implementation
@@ -46,7 +46,7 @@ describe("Custom UTF-8 Encoder", () => {
                 expect(manualResult).toEqual(nativeResult);
             }
         });     
-    }, 15000);
+    });
 
     it("Should return replacement character for invalid surrogate pair", () => {
         const invalidSurrogateValues = [

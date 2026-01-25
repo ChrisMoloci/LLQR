@@ -6,7 +6,8 @@ import prepareDatastream from "../core/prepareDatastream";
 import generateECCStream from "../core/generateECCStream";
 import generateMatrix from "../core/generateMatrix";
 import { getCurrentConfigs } from "../core/defineConfig";
-import { encodeWithModeSwitching, encodeWithSingleMode } from "../core/autoEncodeData";
+import { encodeWithSingleMode } from "../core/encodeWithSingleMode";
+import { encodeWithModeSwitching } from "../core/encodeWithModeSwitching";
 
 function generateQRMatrix(data: string): Array<Array<number>> {
     // -- 1. Get Current QR Configurations --
@@ -24,11 +25,11 @@ function generateQRMatrix(data: string): Array<Array<number>> {
     if (qrSpecs.useModeSwitching === "disabled") {
         // Encode using a single mode
         console.log("Encoding data using single mode:", mode);
-        encodedData = encodeWithSingleMode(data, mode, qrSpecs.useECISwitching);
+        encodedData = encodeWithSingleMode(data, mode);
     } else if (qrSpecs.useModeSwitching === "auto" || qrSpecs.useModeSwitching === "forced") {
         console.log("Encoding data using mode switching:", qrSpecs.useModeSwitching);
         // Encode using mode switching
-        encodedData = encodeWithModeSwitching(data, qrSpecs.useModeSwitching, qrSpecs.useECISwitching);
+        encodedData = encodeWithModeSwitching(data, qrSpecs.useModeSwitching);
     }
     
     // Throw an error if encoding failed

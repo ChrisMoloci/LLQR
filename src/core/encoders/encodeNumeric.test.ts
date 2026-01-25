@@ -13,4 +13,4 @@ describe("Numeric Encoder", () => {
             expect(encodeNumeric(testChars).charCount).toBe(i);
         }
     });
-})
+});
