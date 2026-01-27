@@ -17,7 +17,7 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
 
     // Regular expressions to find all the different datatypes and get them as substrings (only matches at start using ^)
     const numericRegEx      = /^\d+/; // Numeric
-    const alphanumericRegEx = /^[A-Z$%*+\-./:]+/; // Alphanumeric
+    const alphanumericRegEx = /^[A-Z$%*+\-./: ]+/; // Alphanumeric
     const kanjiCandidateRegEx = /^[\u0100-\u9FFF\uF900-\uFAFF]+/; // Kanji candidates (since its a subset of shift-JIS not unicode)
     const byteRegEx         = /^[^A-Z0-9]+/; // Anything else (Byte)
 

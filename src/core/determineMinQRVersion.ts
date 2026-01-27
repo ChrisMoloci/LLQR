@@ -45,7 +45,7 @@ export default function determineMinQRVersion(encodedData: Array<EncodedDataSegm
                 length += 4; // ECI Mode Indicator size
 
                 // Get assignment number size based on char count
-                console.log("Getting ECI assignment number size for assignment number:", segment.charSetAssignmentNumber);
+                // console.log("Getting ECI assignment number size for assignment number:", segment.charSetAssignmentNumber);
                 length += getECIAssignmentNumberSize(segment.charSetAssignmentNumber);
 
                 // Update ECI mode state
@@ -57,7 +57,7 @@ export default function determineMinQRVersion(encodedData: Array<EncodedDataSegm
                 length += 4; // ECI Mode Indicator size
 
                 // Get assignment number size based on char count
-                console.log("Getting ECI assignment number size for assignment number:", segment.charSetAssignmentNumber);
+                // console.log("Getting ECI assignment number size for assignment number:", segment.charSetAssignmentNumber);
                 length += getECIAssignmentNumberSize(segment.charSetAssignmentNumber);
 
                 // Update ECI mode state
@@ -88,7 +88,63 @@ export default function determineMinQRVersion(encodedData: Array<EncodedDataSegm
     }
 
     if (bestVersion === null || bestVersion > 40) {
-        throw new Error("No suitable QR code version found for the provided data and ECC level.");
+        let encodingModeState: DataEncodingMode | null = null; // Holds current encoding mode state for mode switching
+        let eciModeAssignmentNumberState: DataEncodingCharacterSet | null = null; // Holds current ECI mode state for mode switching
+        const dataStreamSize = encodedData.reduce((length, segment) => {
+            // Mode indicator + char count indicator if switching modes or adjacent byte segments have ECI mode indicator + assignment number
+            if (encodingModeState !== segment.encodingMode ||
+                (
+                    // Always add mode indicator + char count indicator size if ECI switching is forced since it must acompany every ECI mode indicator + assignment number
+                    eciSwitchingMode === "forced" &&
+                    segment.encodingMode == DATA_ENCODING_MODES.BYTE
+                ) ||
+                (
+                    // Add a mode indicator + char count indicator size if ECI switching is "auto" and adjacent byte segments have different ECI assignment numbers
+                    eciSwitchingMode === "auto" &&
+                    segment.encodingMode === DATA_ENCODING_MODES.BYTE &&
+                    eciModeAssignmentNumberState !== segment.charSetAssignmentNumber
+                )
+            ) {
+                length += 4; // Mode indicator size
+
+                // Get length indicator size for this segment based on version
+                length += getCharCountIndicatorLength(segment.encodingMode, version as QRVersions);
+
+                // Update encoding mode state
+                encodingModeState = segment.encodingMode;
+            }
+
+            if (eciSwitchingMode === "forced" && segment.encodingMode == DATA_ENCODING_MODES.BYTE) {
+                // ECI indicator + assignment number for every byte instance if ECI switching is "forced"
+                length += 4; // ECI Mode Indicator size
+
+                // Get assignment number size based on char count
+                // console.log("Getting ECI assignment number size for assignment number:", segment.charSetAssignmentNumber);
+                length += getECIAssignmentNumberSize(segment.charSetAssignmentNumber);
+
+                // Update ECI mode state
+                eciModeAssignmentNumberState = segment.charSetAssignmentNumber;
+            }
+
+            else if (eciSwitchingMode === "auto" && segment.encodingMode === DATA_ENCODING_MODES.BYTE && eciModeAssignmentNumberState !== segment.charSetAssignmentNumber) {
+                // ECI indicator + assignment number based on state change if ECI switching is "auto"
+                length += 4; // ECI Mode Indicator size
+
+                // Get assignment number size based on char count
+                // console.log("Getting ECI assignment number size for assignment number:", segment.charSetAssignmentNumber);
+                length += getECIAssignmentNumberSize(segment.charSetAssignmentNumber);
+
+                // Update ECI mode state
+                eciModeAssignmentNumberState = segment.charSetAssignmentNumber;
+            }
+
+            // Add the length of the encoded data in bits
+            length += segment.encodedData.reduce((sum, codeWord) => sum + codeWord.length, 0); // Add encoded data length in bits
+
+            return length;
+
+        }, 0);
+        throw new Error(`No suitable QR code version found for the provided data and ECC level. Data size: ${dataStreamSize}`);
     }
 
     return bestVersion;
@@ -96,7 +152,7 @@ export default function determineMinQRVersion(encodedData: Array<EncodedDataSegm
 
 // Helper function for determinVersion()
 export function getCharCountIndicatorLength(mode: DataEncodingMode, version: QRVersions): number {
-    console.log(`Getting Character Count Indicator Length for mode ${mode} and version ${version}`);
+    // console.log(`Getting Character Count Indicator Length for mode ${mode} and version ${version}`);
     // ternary is used to convert ECI to Byte mode for lookup table
     // While encoding for the two work a little different, char count remains the same 
     // since it's still binary mode (even data will be the same in constraints of Latin-1 in UTF-8 encoding)
