@@ -1,12 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { DATA_ENCODING_MODES, DataEncodingMode, ECC_LEVEL_CODES } from "../enums";
 import { ECCLevelCode } from "../../dist";
-import { EncodedDataSegment, QRVersions } from "../types";
+import { ECISwitchingModes, EncodedDataSegment, ModeSwitchingModes, QRVersions } from "../types";
 import unicodeToShiftJIS from "../datasets/unicode_to_shiftjis";
 import determineMinQRVersion from "./determineMinQRVersion";
+import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
+import { encodeWithModeSwitching } from "./encodeWithModeSwitching";
+import prepareDatastream from "./prepareDatastream";
 import { encodeWithSingleMode } from "./encodeWithSingleMode";
-import { afterEach } from "node:test";
-import { version } from "punycode";
 
 const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVersions, number>>> = {
     // Max char capacity for numeric encoding
@@ -955,17 +956,19 @@ describe("Determine the minimum version for a QR Code with single mode", () => {
             for (const [versionStr, capacity] of Object.entries(eccStruc)) {
                 const version = parseInt(versionStr) as QRVersions;
                 const prevVersion = version > 1 ? (version - 1) as QRVersions : null;
-                const prevCapacity = prevVersion ? eccStruc[prevVersion] : 0;
+                const prevCapacity = prevVersion ? eccStruc[prevVersion] : 0; 
 
                 for (let i = prevCapacity + 1; i <= capacity + 10; i++) {
                     it(`should determine version ${version} is required for charCount: ${i} with mode: ${mode} chars at ECC level ${eccLevel}`, () => {
                         const data = generateDataForLength(i, mode as DataEncodingMode);
     
                         const encodedData = encodeWithSingleMode(data, mode as DataEncodingMode);
+
+                        if (encodedData.reduce((sum, segment) => sum + segment.encodedData.length, 0) > capacity * 8``) {
                         
                         if (version === 40 && i > capacity) return; // Skip test if exceeding max capacity
 
-                        const determinedVersion = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", null);
+                        const determinedVersion = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", null);
 
                         if (i <= capacity) {
                             // If within capacity, expect the determined version to be the current version
@@ -977,10 +980,10 @@ describe("Determine the minimum version for a QR Code with single mode", () => {
                             if (version < 40) {
                                 // Test with a higher preferred version
                                 const preferredVersion = version + 1 as QRVersions;
-                                const determinedVersionWithPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", preferredVersion);
+                                const determinedVersionWithPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", preferredVersion);
                                 expect(determinedVersionWithPref).toBe(preferredVersion); // Test with version +1 higher
                                 
-                                const determineVersionWithHighestPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", 40);
+                                const determineVersionWithHighestPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", 40);
                                 expect(determineVersionWithHighestPref).toBe(40); // Test with version max version as preferred
                             } 
 
@@ -1004,63 +1007,614 @@ describe("Determine the minimum version for a QR Code with single mode", () => {
 });
 
 // describe("Determine the minimum version for a QR Code with segmented data", () => {
-//     for (let version = 1 as QRVersions; version <= 40; version++) {
-//         it(`should determine version ${version} is required for charCount: ${i} with mode: ${mode} chars at ECC level ${eccLevel} in segmented mode`, () => {
+//     const encodingModes: DataEncodingMode[] = [
+//         DATA_ENCODING_MODES.NUMERIC,
+//         DATA_ENCODING_MODES.ALPHANUMERIC,
+//         DATA_ENCODING_MODES.KANJI,
+//         DATA_ENCODING_MODES.BYTE,
+//     ]; // Will cycle through all modes when constructing the plain text data for testing
+
+//     for (let size = 1; size <= 501; size++) {
+//         // Test between 1..2596 bits (approx 324 bytes)
+
+//         // Create test data with various segment counts and sizes
+//         for (let segCount = 2; segCount <= 6; segCount++) {
 //             // Test between 2..6 segments
-//             for (let segCount = 2; segCount <= 6; segCount++) {
-//                 const segmentSizes = splitInt(0, segCount); // Split i into segCount parts (of whole numbers)
-//                 const segments = () => {
-//                     for (let segSize of segmentSizes) {
-                        
+
+//             // Create segment sizes that fit within the version capacity
+//             const segmentSizes = splitInt(size, segCount); // Split i into segCount parts (of whole numbers)
+
+//             // Create data for each segment based on its assgined segment size
+//             const segments = new Array(segCount).fill("").map(() => {
+//                 for (let segSize of segmentSizes) {
+//                     const mode = encodingModes[(segCount - 2) % 4] as DataEncodingMode;
+//                     let charCount: number;
+
+//                     // Calculate the char count based on encoding mode (since different modes have different bits per codeword)
+//                     switch (mode) {
+//                         case DATA_ENCODING_MODES.NUMERIC:
+//                             // Numeric: 3 digits = 10 bits ≈ 1.25 bytes
+//                             switch (segSize % 3) {
+//                                 case 0:
+//                                     charCount = Math.floor(segSize * 8 / 10);
+//                                     break;
+//                                 case 2:
+//                                     charCount = Math.floor(((segSize - 1) * 8 / 10) + 7);
+//                                     break;
+//                                 case 1:
+//                                     charCount = Math.floor(((segSize - 1) * 8 / 10) + 4);
+//                                     break;
+//                                 default:
+//                                     charCount = 0; // Should not happen
+//                             }
+//                             break;
+//                         case DATA_ENCODING_MODES.ALPHANUMERIC:
+//                             // Alphanumeric: 2 chars = 11 bits ≈ 1.375 bytes
+//                             switch (segSize % 2) {
+//                                 case 0:
+//                                     charCount = Math.floor(segSize * 8 / 11);
+//                                     break;
+//                                 case 1:
+//                                     charCount = Math.floor(((segSize - 1) * 8 / 11)) + 6;
+//                                     break;
+//                                 default:
+//                                     charCount = 0; // Should not happen
+//                             }
+//                             break;
+//                         case DATA_ENCODING_MODES.KANJI:
+//                             // Kanji: 1 char = 13 bits ≈ 1.625 bytes
+//                             charCount = Math.floor(segSize * 8 / 13); // 13 bits per char
+//                             break;
+//                         case DATA_ENCODING_MODES.BYTE:
+//                             // Byte: 1 char = 8 bits = 1 byte
+//                             charCount = segSize;
+//                             break;
+//                         default:
+//                             throw new Error("Unsupported encoding mode");
+//                     }
+
+//                     return generateDataForLength(charCount, mode);
+//                 }
+//             }).join("");
+
+//             const encodedData: Record<string, Array<EncodedDataSegment>> = {
+//                 "auto": encodeWithModeSwitching(segments, "auto"), // auto mode switching
+//                 "forced": encodeWithModeSwitching(segments, "forced"), // forced mode switching
+//                 // encodeWithModeSwitching(segments, "disabled"), // no mode switching
+//             }
+
+//             for (const [modeSwitchingMode, data] of Object.entries(encodedData)) {
+//                 for (const eccLevel of Object.values(ECC_LEVEL_CODES)) {
+//                     for (let eciMode of ["disabled", "auto", "forced"]) {
+//                         // if (size <= 324) {
+//                             it(`Should determine the correct version for a string of mixed data of`, () => {
+//                                 const determinedVersion = determineMinQRVersion(data, eccLevel as ECCLevelCode, eciMode as ECISwitchingModes, null);
+
+//                                 // Gotta sum the individual strings in the array since not all codewords will by bytes (such as for numeric, alphanumeric, or kanji)
+//                                 const preparedDataSize = Math.ceil(prepareDatastream(data, determinedVersion, eciMode as ECISwitchingModes).reduce((sum, seg) => sum + seg.length, 0) / 8);
+//                                 const maxDataSize = getDataSizeForVersion(determinedVersion, eccLevel as ECCLevelCode); // Get the max allowed data size for the determined version (in bytes)
+
+//                                 expect(preparedDataSize).toBeLessThanOrEqual(maxDataSize); // Check if prepared data size fits within the max data size (valid version)
+//                                 // expect(1).toBe(1); // Placeholder to avoid empty test suite error
+//                             });
+//                         // } 
+//                         // else if (size > 324) {
+//                         //     it("It should yield an exception when exceeding max capacity", () => {
+//                         //         expect(determineMinQRVersion(data, eccLevel as ECCLevelCode, eciMode as ECISwitchingModes, null)).toThrow();
+//                         //     });
+//                         // }
 //                     }
 //                 }
 //             }
-//         });
+//         }
 //     }
 // });
 
 const numericChars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 const alphanumericChars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", " ", "$", "%", "*", "+", "-", ".", "/", ":"];
-const kanjiChars = Object.keys(unicodeToShiftJIS).map((key) => String.fromCharCode(parseInt(key)));
+// const kanjiChars = Object.keys(unicodeToShiftJIS).map((key) => String.fromCharCode(parseInt(key)));
+const kanjiChars = [
+    "　",
+    "、",
+    "。",
+    "・",
+    "゛",
+    "゜",
+    "ヽ",
+    "ヽ",
+    "゙",
+    "ゝ",
+    "ゝ",
+    "゙",
+    "〃",
+    "仝",
+    "々",
+    "〆",
+    "〇",
+    "ー",
+    "―",
+    "‐",
+    "〜",
+    "‖",
+    "…",
+    "‥",
+    "‘",
+    "’",
+    "“",
+    "”",
+    "〔",
+    "〕",
+    "〈",
+    "〉",
+    "《",
+    "》",
+    "「",
+    "」",
+    "『",
+    "』",
+    "【",
+    "】",
+    "−",
+    "≠",
+    "≦",
+    "≧",
+    "∞",
+    "∴",
+    "♂",
+    "♀",
+    "′",
+    "″",
+    "℃",
+    "☆",
+    "★",
+    "○",
+    "●",
+    "◎",
+    "◇",
+    "◆",
+    "□",
+    "■",
+    "△",
+    "▲",
+    "▽",
+    "▼",
+    "※",
+    "〒",
+    "→",
+    "←",
+    "↑",
+    "↓",
+    "〓",
+    "∈",
+    "∋",
+    "⊆",
+    "⊇",
+    "⊂",
+    "⊃",
+    "∪",
+    "∩",
+    "∧",
+    "∨",
+    "⇒",
+    "⇔",
+    "∀",
+    "∃",
+    "∠",
+    "⊥",
+    "⌒",
+    "∂",
+    "∇",
+    "≡",
+    "≒",
+    "≪",
+    "≫",
+    "√",
+    "∽",
+    "∝",
+    "∵",
+    "∫",
+    "∬",
+    "Å",
+    "‰",
+    "♯",
+    "♭",
+    "♪",
+    "†",
+    "‡",
+    "◯",
+    "　",
+    "、",
+    "。",
+    "・",
+    "゛",
+    "゜",
+    "ヽ",
+    "ヽ",
+    "゙",
+    "ゝ",
+    "ゝ",
+    "゙",
+    "〃",
+    "仝",
+    "々",
+    "〆",
+    "〇",
+    "ー",
+    "―",
+    "‐",
+    "〜",
+    "‖",
+    "…",
+    "‥",
+    "‘",
+    "’",
+    "“",
+    "”",
+    "〔",
+    "〕",
+    "〈",
+    "〉",
+    "《",
+    "》",
+    "「",
+    "」",
+    "『",
+    "』",
+    "【",
+    "】",
+    "−",
+    "≠",
+    "≦",
+    "≧",
+    "∞",
+    "∴",
+    "♂",
+    "♀",
+    "′",
+    "″",
+    "℃",
+    "☆",
+    "★",
+    "○",
+    "●",
+    "◎",
+    "◇",
+    "◆",
+    "□",
+    "■",
+    "△",
+    "▲",
+    "▽",
+    "▼",
+    "※",
+    "〒",
+    "→",
+    "←",
+    "↑",
+    "↓",
+    "〓",
+    "∈",
+    "∋",
+    "⊆",
+    "⊇",
+    "⊂",
+    "⊃",
+    "∪",
+    "∩",
+    "∧",
+    "∨",
+    "⇒",
+    "⇔",
+    "∀",
+    "∃",
+    "∠",
+    "⊥",
+    "⌒",
+    "∂",
+    "∇",
+    "≡",
+    "≒",
+    "≪",
+    "≫",
+    "√",
+    "∽",
+    "∝",
+    "∵",
+    "∫",
+    "∬",
+    "Å",
+    "‰",
+    "♯",
+    "♭",
+    "♪",
+    "†",
+    "‡",
+    "◯",
+    "　",
+    "、",
+    "。",
+    "・",
+    "゛",
+    "゜",
+    "ヽ",
+    "ヽ",
+    "゙",
+    "ゝ",
+    "ゝ",
+    "゙",
+    "〃",
+    "仝",
+    "々",
+    "〆",
+    "〇",
+    "ー",
+    "―",
+    "‐",
+    "〜",
+    "‖",
+    "…",
+    "‥",
+    "‘",
+    "’",
+    "“",
+    "”",
+    "〔",
+    "〕",
+    "〈",
+    "〉",
+    "《",
+    "》",
+    "「",
+    "」",
+    "『",
+    "』",
+    "【",
+    "】",
+    "−",
+    "≠",
+    "≦",
+    "≧",
+    "∞",
+    "∴",
+    "♂",
+    "♀",
+    "′",
+    "″",
+    "℃",
+    "☆",
+    "★",
+    "○",
+    "●",
+    "◎",
+    "◇",
+    "◆",
+    "□",
+    "■",
+    "△",
+    "▲",
+    "▽",
+    "▼",
+    "※",
+    "〒",
+    "→",
+    "←",
+    "↑",
+    "↓",
+    "〓",
+    "∈",
+    "∋",
+    "⊆",
+    "⊇",
+    "⊂",
+    "⊃",
+    "∪",
+    "∩",
+    "∧",
+    "∨",
+    "⇒",
+    "⇔",
+    "∀",
+    "∃",
+    "∠",
+    "⊥",
+    "⌒",
+    "∂",
+    "∇",
+    "≡",
+    "≒",
+    "≪",
+    "≫",
+    "√",
+    "∽",
+    "∝",
+    "∵",
+    "∫",
+    "∬",
+    "Å",
+    "‰",
+    "♯",
+    "♭",
+    "♪",
+    "†",
+    "‡",
+    "◯",
+    "　",
+    "、",
+    "。",
+    "・",
+    "゛",
+    "゜",
+    "ヽ",
+    "ヽ",
+    "゙",
+    "ゝ",
+    "ゝ",
+    "゙",
+    "〃",
+    "仝",
+    "々",
+    "〆",
+    "〇",
+    "ー",
+    "―",
+    "‐",
+    "〜",
+    "‖",
+    "…",
+    "‥",
+    "‘",
+    "’",
+    "“",
+    "”",
+    "〔",
+    "〕",
+    "〈",
+    "〉",
+    "《",
+    "》",
+    "「",
+    "」",
+    "『",
+    "』",
+    "【",
+    "】",
+    "−",
+    "≠",
+    "≦",
+    "≧",
+    "∞",
+    "∴",
+    "♂",
+    "♀",
+    "′",
+    "″",
+    "℃",
+    "☆",
+    "★",
+    "○",
+    "●",
+    "◎",
+    "◇",
+    "◆",
+    "□",
+    "■",
+    "△",
+    "▲",
+    "▽",
+    "▼",
+    "※",
+    "〒",
+    "→",
+    "←",
+    "↑",
+    "↓",
+    "〓",
+    "∈",
+    "∋",
+    "⊆",
+    "⊇",
+    "⊂",
+    "⊃",
+    "∪",
+    "∩",
+    "∧",
+    "∨",
+    "⇒",
+    "⇔",
+    "∀",
+    "∃",
+    "∠",
+    "⊥",
+    "⌒",
+    "∂",
+    "∇",
+    "≡",
+    "≒",
+    "≪",
+    "≫",
+    "√",
+    "∽",
+    "∝",
+    "∵",
+    "∫",
+    "∬",
+    "Å",
+    "‰",
+    "♯",
+    "♭",
+    "♪",
+    "†",
+    "‡",
+    "◯"
+]; // these are specifically chars that won't be picked up by Number or Alphanumeric modes int auto or forced mode switching (varaiety doesn't matter here since we're not testing data integrity and all kanji chars take same space)
+// const byteChars = [
+//   "\u0000", "\u0001", "\u0002", "\u0003", "\u0004", "\u0005", "\u0006", "\u0007",
+//   "\u0008", "\u0009", "\u000A", "\u000B", "\u000C", "\u000D", "\u000E", "\u000F",
+//   "\u0010", "\u0011", "\u0012", "\u0013", "\u0014", "\u0015", "\u0016", "\u0017",
+//   "\u0018", "\u0019", "\u001A", "\u001B", "\u001C", "\u001D", "\u001E", "\u001F",
+
+//   "\u0020", "\u0021", "\u0022", "\u0023", "\u0024", "\u0025", "\u0026", "\u0027",
+//   "\u0028", "\u0029", "\u002A", "\u002B", "\u002C", "\u002D", "\u002E", "\u002F",
+//   "\u0030", "\u0031", "\u0032", "\u0033", "\u0034", "\u0035", "\u0036", "\u0037",
+//   "\u0038", "\u0039", "\u003A", "\u003B", "\u003C", "\u003D", "\u003E", "\u003F",
+//   "\u0040", "\u0041", "\u0042", "\u0043", "\u0044", "\u0045", "\u0046", "\u0047",
+//   "\u0048", "\u0049", "\u004A", "\u004B", "\u004C", "\u004D", "\u004E", "\u004F",
+//   "\u0050", "\u0051", "\u0052", "\u0053", "\u0054", "\u0055", "\u0056", "\u0057",
+//   "\u0058", "\u0059", "\u005A", "\u005B", "\u005C", "\u005D", "\u005E", "\u005F",
+//   "\u0060", "\u0061", "\u0062", "\u0063", "\u0064", "\u0065", "\u0066", "\u0067",
+//   "\u0068", "\u0069", "\u006A", "\u006B", "\u006C", "\u006D", "\u006E", "\u006F",
+//   "\u0070", "\u0071", "\u0072", "\u0073", "\u0074", "\u0075", "\u0076", "\u0077",
+//   "\u0078", "\u0079", "\u007A", "\u007B", "\u007C", "\u007D", "\u007E", "\u007F",
+
+//   "\u0080", "\u0081", "\u0082", "\u0083", "\u0084", "\u0085", "\u0086", "\u0087",
+//   "\u0088", "\u0089", "\u008A", "\u008B", "\u008C", "\u008D", "\u008E", "\u008F",
+//   "\u0090", "\u0091", "\u0092", "\u0093", "\u0094", "\u0095", "\u0096", "\u0097",
+//   "\u0098", "\u0099", "\u009A", "\u009B", "\u009C", "\u009D", "\u009E", "\u009F",
+
+//   "\u00A0", "\u00A1", "\u00A2", "\u00A3", "\u00A4", "\u00A5", "\u00A6", "\u00A7",
+//   "\u00A8", "\u00A9", "\u00AA", "\u00AB", "\u00AC", "\u00AD", "\u00AE", "\u00AF",
+//   "\u00B0", "\u00B1", "\u00B2", "\u00B3", "\u00B4", "\u00B5", "\u00B6", "\u00B7",
+//   "\u00B8", "\u00B9", "\u00BA", "\u00BB", "\u00BC", "\u00BD", "\u00BE", "\u00BF",
+
+//   "\u00C0", "\u00C1", "\u00C2", "\u00C3", "\u00C4", "\u00C5", "\u00C6", "\u00C7",
+//   "\u00C8", "\u00C9", "\u00CA", "\u00CB", "\u00CC", "\u00CD", "\u00CE", "\u00CF",
+//   "\u00D0", "\u00D1", "\u00D2", "\u00D3", "\u00D4", "\u00D5", "\u00D6", "\u00D7",
+//   "\u00D8", "\u00D9", "\u00DA", "\u00DB", "\u00DC", "\u00DD", "\u00DE", "\u00DF",
+
+//   "\u00E0", "\u00E1", "\u00E2", "\u00E3", "\u00E4", "\u00E5", "\u00E6", "\u00E7",
+//   "\u00E8", "\u00E9", "\u00EA", "\u00EB", "\u00EC", "\u00ED", "\u00EE", "\u00EF",
+//   "\u00F0", "\u00F1", "\u00F2", "\u00F3", "\u00F4", "\u00F5", "\u00F6", "\u00F7",
+//   "\u00F8", "\u00F9", "\u00FA", "\u00FB", "\u00FC", "\u00FD", "\u00FE", "\u00FF"
+// ];
 const byteChars = [
-  "\u0000", "\u0001", "\u0002", "\u0003", "\u0004", "\u0005", "\u0006", "\u0007",
-  "\u0008", "\u0009", "\u000A", "\u000B", "\u000C", "\u000D", "\u000E", "\u000F",
-  "\u0010", "\u0011", "\u0012", "\u0013", "\u0014", "\u0015", "\u0016", "\u0017",
-  "\u0018", "\u0019", "\u001A", "\u001B", "\u001C", "\u001D", "\u001E", "\u001F",
-
-  "\u0020", "\u0021", "\u0022", "\u0023", "\u0024", "\u0025", "\u0026", "\u0027",
-  "\u0028", "\u0029", "\u002A", "\u002B", "\u002C", "\u002D", "\u002E", "\u002F",
-  "\u0030", "\u0031", "\u0032", "\u0033", "\u0034", "\u0035", "\u0036", "\u0037",
-  "\u0038", "\u0039", "\u003A", "\u003B", "\u003C", "\u003D", "\u003E", "\u003F",
-  "\u0040", "\u0041", "\u0042", "\u0043", "\u0044", "\u0045", "\u0046", "\u0047",
-  "\u0048", "\u0049", "\u004A", "\u004B", "\u004C", "\u004D", "\u004E", "\u004F",
-  "\u0050", "\u0051", "\u0052", "\u0053", "\u0054", "\u0055", "\u0056", "\u0057",
-  "\u0058", "\u0059", "\u005A", "\u005B", "\u005C", "\u005D", "\u005E", "\u005F",
-  "\u0060", "\u0061", "\u0062", "\u0063", "\u0064", "\u0065", "\u0066", "\u0067",
-  "\u0068", "\u0069", "\u006A", "\u006B", "\u006C", "\u006D", "\u006E", "\u006F",
-  "\u0070", "\u0071", "\u0072", "\u0073", "\u0074", "\u0075", "\u0076", "\u0077",
-  "\u0078", "\u0079", "\u007A", "\u007B", "\u007C", "\u007D", "\u007E", "\u007F",
-
-  "\u0080", "\u0081", "\u0082", "\u0083", "\u0084", "\u0085", "\u0086", "\u0087",
-  "\u0088", "\u0089", "\u008A", "\u008B", "\u008C", "\u008D", "\u008E", "\u008F",
-  "\u0090", "\u0091", "\u0092", "\u0093", "\u0094", "\u0095", "\u0096", "\u0097",
-  "\u0098", "\u0099", "\u009A", "\u009B", "\u009C", "\u009D", "\u009E", "\u009F",
-
-  "\u00A0", "\u00A1", "\u00A2", "\u00A3", "\u00A4", "\u00A5", "\u00A6", "\u00A7",
-  "\u00A8", "\u00A9", "\u00AA", "\u00AB", "\u00AC", "\u00AD", "\u00AE", "\u00AF",
-  "\u00B0", "\u00B1", "\u00B2", "\u00B3", "\u00B4", "\u00B5", "\u00B6", "\u00B7",
-  "\u00B8", "\u00B9", "\u00BA", "\u00BB", "\u00BC", "\u00BD", "\u00BE", "\u00BF",
-
-  "\u00C0", "\u00C1", "\u00C2", "\u00C3", "\u00C4", "\u00C5", "\u00C6", "\u00C7",
-  "\u00C8", "\u00C9", "\u00CA", "\u00CB", "\u00CC", "\u00CD", "\u00CE", "\u00CF",
-  "\u00D0", "\u00D1", "\u00D2", "\u00D3", "\u00D4", "\u00D5", "\u00D6", "\u00D7",
-  "\u00D8", "\u00D9", "\u00DA", "\u00DB", "\u00DC", "\u00DD", "\u00DE", "\u00DF",
-
-  "\u00E0", "\u00E1", "\u00E2", "\u00E3", "\u00E4", "\u00E5", "\u00E6", "\u00E7",
-  "\u00E8", "\u00E9", "\u00EA", "\u00EB", "\u00EC", "\u00ED", "\u00EE", "\u00EF",
-  "\u00F0", "\u00F1", "\u00F2", "\u00F3", "\u00F4", "\u00F5", "\u00F6", "\u00F7",
-  "\u00F8", "\u00F9", "\u00FA", "\u00FB", "\u00FC", "\u00FD", "\u00FE", "\u00FF"
-];
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z"
+]
+// TODO: Add another set of chars for ECI data (e.g UTF-8)
 
 function generateDataForLength(length: number, mode: DataEncodingMode): string {
     let chars = "";
@@ -1077,7 +1631,9 @@ function generateDataForLength(length: number, mode: DataEncodingMode): string {
             }
             break;
         case DATA_ENCODING_MODES.KANJI:
-            chars = kanjiChars.slice(0, length).join("");
+            for (let i = 0; i < length; i++) {
+                chars += kanjiChars[i % kanjiChars.length];
+            }
             break;
         case DATA_ENCODING_MODES.BYTE:
             for (let i = 0; i < length; i++) {
@@ -1085,7 +1641,7 @@ function generateDataForLength(length: number, mode: DataEncodingMode): string {
             }
             break;
         default:
-            throw new Error("Unsupported data encoding mode");
+            throw new Error("Unsupported data encoding mode: " + mode);
     }
 
     return chars;
@@ -1099,4 +1655,9 @@ function splitInt(num: number, divisor: number) {
     groups.push(...new Array(divisor - remainder).fill(quotient));
     
     return groups;
+}
+
+function getDataSizeForVersion(version: QRVersions, eccLevel: ECCLevelCode): number {
+    const eccLevelKey = Object.entries(ECC_LEVEL_CODES).find(([key, value]) => value === eccLevel)?.[0];
+    return qrDataCapacityBits[version][eccLevelKey!].data;
 }
