@@ -1,0 +1,38 @@
+========================
+Tests:
+
+Data Encoding:
+[*] encodeISO-8859
+[*] encodeUTF-8
+[*] encodeAlphanumeric
+[*] encodeBinary
+[*] encodeKanji
+[*] encodeNumeric
+
+Determinational Functions
+[*] determineEncodingMode
+[] determineMinQRVersion
+[] determinePenaltyScore
+
+Main functions:
+[] encodeWithModeSwitching
+[*] encodeWithSingleMode
+[] generateECCStream
+[] generateMatrix
+[] generateImageCanvasFromMatrix
+
+Orchestarator Functions
+[] generateFullQR
+[] generateImageFromQRMatrix
+[] generateQRMatrix
+
+Helpers:
+[] defineConfig
+[] optimizeCrossCompatSegments
+[*] Utils
+[] maskingFunctions
+[] GF256_Arithmetic
+
+
+========================
+Misc:
