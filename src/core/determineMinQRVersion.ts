@@ -7,8 +7,6 @@ import prepareDatastream from "./prepareDatastream";
 import { encodeWithSingleMode } from "./encodeWithSingleMode";
 import optimizeCrossCompatibleSegments from "./optimizeCrossCompatSegments";
 
-// TODO: Update to account for alphanumeric/numeric normalization when in auto mode and consolidating takes up less space
-
 export default function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingModes = "disabled", modeSwitchingMode: ModeSwitchingModes, minPrefferedVersion: QRVersions | null = null): QRVersions {
     let bestVersion: QRVersions | null = null; // Stores best version found through iterations (eventuall the best version)
 
@@ -43,7 +41,7 @@ export default function determineMinQRVersion(encodedData: Array<EncodedDataSegm
     if (bestVersion === null || bestVersion > 40) {
         // TODO: Replace with proper error rather than debug error
         const dataStreamSize = prepareDatastream(encodedData, 40, eciSwitchingMode, modeSwitchingMode).reduce((sum, codeWord) => sum + codeWord.length, 0) / 8; // Just to see the size of the prepared datastream for version 40
-        throw new Error(`No suitable QR code version found for the provided data and ECC level. Plain Data: \"${encodedData.map(segment => segment.plainTextData).join("")}\". Binary Data: ${encodedData.map(segment => segment.encodedData)}. Size: ${dataStreamSize} bytes. ECC Level: ${eccLevel}. ECI Switching Mode: ${eciSwitchingMode}.`);
+        // throw new Error(`No suitable QR code version found for the provided data and ECC level. Plain Data: \"${encodedData.map(segment => segment.plainTextData).join("")}\". Binary Data: ${encodedData.map(segment => segment.encodedData)}. Size: ${dataStreamSize} bytes. ECC Level: ${eccLevel}. ECI Switching Mode: ${eciSwitchingMode}.`);
     }
 
     return bestVersion;

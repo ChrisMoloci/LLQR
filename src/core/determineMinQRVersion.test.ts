@@ -3,11 +3,12 @@ import { DATA_ENCODING_MODES, DataEncodingMode, ECC_LEVEL_CODES } from "../enums
 import { ECCLevelCode } from "../../dist";
 import { ECISwitchingModes, EncodedDataSegment, ModeSwitchingModes, QRVersions } from "../types";
 import unicodeToShiftJIS from "../datasets/unicode_to_shiftjis";
-import determineMinQRVersion from "./determineMinQRVersion";
+import determineMinQRVersion, { getCharCountIndicatorLength } from "./determineMinQRVersion";
 import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { encodeWithModeSwitching } from "./encodeWithModeSwitching";
 import prepareDatastream from "./prepareDatastream";
 import { encodeWithSingleMode } from "./encodeWithSingleMode";
+import { skip } from "node:test";
 
 const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVersions, number>>> = {
     // Max char capacity for numeric encoding
@@ -960,11 +961,9 @@ describe("Determine the minimum version for a QR Code with single mode", () => {
 
                 for (let i = prevCapacity + 1; i <= capacity + 10; i++) {
                     it(`should determine version ${version} is required for charCount: ${i} with mode: ${mode} chars at ECC level ${eccLevel}`, () => {
-                        const data = generateDataForLength(i, mode as DataEncodingMode);
+                        const data = generateDataForLength(i, mode as DataEncodingMode, version);
     
                         const encodedData = encodeWithSingleMode(data, mode as DataEncodingMode);
-
-                        if (encodedData.reduce((sum, segment) => sum + segment.encodedData.length, 0) > capacity * 8``) {
                         
                         if (version === 40 && i > capacity) return; // Skip test if exceeding max capacity
 
@@ -990,7 +989,7 @@ describe("Determine the minimum version for a QR Code with single mode", () => {
                             if (version > 1) {
                                 // Test with a lower preferred version
                                 const preferredVersion = version - 1 as QRVersions;
-                                const determinedVersionWithLowerPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", preferredVersion);
+                                const determinedVersionWithLowerPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", preferredVersion);
                                 expect(determinedVersionWithLowerPref).toBe(version); // Should be the version we are checking for
                                 expect(determinedVersionWithLowerPref).not.toBe(preferredVersion); // Should not be the lower preferred version
                             }
@@ -1616,8 +1615,10 @@ const byteChars = [
 ]
 // TODO: Add another set of chars for ECI data (e.g UTF-8)
 
-function generateDataForLength(length: number, mode: DataEncodingMode): string {
+function generateDataForLength(length: number, mode: DataEncodingMode, version: QRVersions): string {
     let chars = "";
+
+    length = getSizeForModeAndVersion(length, version, mode); // Get the size in chars needed to reach the desired byte length for the highest version (since it has the largest char count indicator and thus largest header size)
 
     switch (mode) {
         case DATA_ENCODING_MODES.NUMERIC:
@@ -1645,6 +1646,30 @@ function generateDataForLength(length: number, mode: DataEncodingMode): string {
     }
 
     return chars;
+}
+
+function getSizeForModeAndVersion(byteSize: number, version: QRVersions, mode: DataEncodingMode): number {
+    let headerSize = 4 + getCharCountIndicatorLength(mode, version)
+    let availableBits = (byteSize * 8) - headerSize;
+
+    switch (mode) {
+        case DATA_ENCODING_MODES.ALPHANUMERIC:
+            // 2 chars = 11 bits, 1 char = 6 bits
+            const alphaPairs = Math.floor(availableBits / 11);
+            const alphaRemainder = availableBits - alphaPairs * 11;
+            return alphaPairs * 2 + (alphaRemainder >= 6 ? 1 : 0);
+        case DATA_ENCODING_MODES.NUMERIC:
+            // 3 digits = 10 bits, 2 digits = 7 bits, 1 digit = 4 bits
+            const numericTriples = Math.floor(availableBits / 10);
+            const numericRemainder = availableBits - numericTriples * 10;
+            return numericTriples * 3 + (numericRemainder >= 7 ? 2 : numericRemainder >= 4 ? 1 : 0);
+        case DATA_ENCODING_MODES.KANJI:
+            // 1 char = 13 bits
+            return Math.floor(availableBits / 13);
+        case DATA_ENCODING_MODES.BYTE:
+            // 1 byte = 8 bits
+            return Math.floor(availableBits / 8);
+    }
 }
 
 function splitInt(num: number, divisor: number) {
