@@ -4,8 +4,8 @@ import { QRSpecs } from "../types";
 
 // Stores the current global configuration for QR code generation
 let qrConfigs: QRConfigs = {
-    qrConfig: DEFAULT_QR_SPECS,
-    imageConfig: DEFAULT_IMAGE_SPECS
+    qrConfig: structuredClone(DEFAULT_QR_SPECS),
+    imageConfig: structuredClone(DEFAULT_IMAGE_SPECS)
 }
 
 // Allows the developer to define global configuration for QR code generation

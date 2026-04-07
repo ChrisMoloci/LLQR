@@ -1,6 +1,5 @@
 import { ECC_LEVEL_CODES, QRELEMENTSHAPES } from "./enums";
-import { QRSpecs } from "./types";
-import { ImageSpecs } from "./types";
+import { ImageSpecs, QRSpecs } from "./types";
 
 // Used for default QR Specs
 export const QR_DEFAULTS = {
@@ -77,3 +76,4 @@ export const DEFAULT_IMAGE_SPECS: ImageSpecs = {
     roundness: IMAGE_DEFAULTS.ROUNDNESS,
     gridStrokeWidth: IMAGE_DEFAULTS.GRID_STROKE_WIDTH
 }
+

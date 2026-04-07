@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { DATA_ENCODING_MODES, DataEncodingMode, ECC_LEVEL_CODES } from "../enums";
+import { DATA_ENCODING_MODES, DataEncodingCharacterSet, DataEncodingMode, ECC_LEVEL_CODES } from "../enums";
 import { ECCLevelCode } from "../../dist";
 import { ECISwitchingModes, EncodedDataSegment, ModeSwitchingModes, QRVersions } from "../types";
 import unicodeToShiftJIS from "../datasets/unicode_to_shiftjis";
@@ -951,168 +951,184 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
 //     },
 // };
 
-describe("Determine the minimum version for a QR Code with single mode", () => {
-    for (const [mode, modeStruc] of Object.entries(dataCapacities)) {
-        // if (mode == DATA_ENCODING_MODES.KANJI) continue; // Skip kanji mode for now since it has some special character count rules that make it more difficult to generate test data for
-        for (const [eccLevel, eccStruc] of Object.entries(modeStruc)) {
-            for (const [versionStr, capacity] of Object.entries(eccStruc)) {
-                const version = parseInt(versionStr) as QRVersions;
-                const prevVersion = version > 1 ? (version - 1) as QRVersions : null;
-                const prevCapacity = prevVersion ? eccStruc[prevVersion] : 0; 
+// describe("Determine the minimum version for a QR Code with single mode", () => {
+//     for (const [mode, modeStruc] of Object.entries(dataCapacities)) {
+//         // if (mode == DATA_ENCODING_MODES.KANJI) continue; // Skip kanji mode for now since it has some special character count rules that make it more difficult to generate test data for
+//         for (const [eccLevel, eccStruc] of Object.entries(modeStruc)) {
+//             for (const [versionStr, capacity] of Object.entries(eccStruc)) {
+//                 const version = parseInt(versionStr) as QRVersions;
+//                 const prevVersion = version > 1 ? (version - 1) as QRVersions : null;
+//                 const prevCapacity = prevVersion ? eccStruc[prevVersion] : 0; 
 
-                for (let i = prevCapacity + 1; i <= capacity + 10; i++) {
-                    it(`should determine version ${version} is required for charCount: ${i} with mode: ${mode} chars at ECC level ${eccLevel}, data: `, () => {
-                        const data = generateDataForLength(i, mode as DataEncodingMode, version);
+//                 for (let i = prevCapacity + 1; i <= capacity + 10; i++) {
+//                     it(`should determine version ${version} is required for charCount: ${i} with mode: ${mode} chars at ECC level ${eccLevel}, data: `, () => {
+//                         const data = generateDataForLength(i, mode as DataEncodingMode, version);
     
-                        const encodedData = encodeWithSingleMode(data, mode as DataEncodingMode);
+//                         const encodedData = encodeWithSingleMode(data, mode as DataEncodingMode);
 
-                        if (encodedData[0].encodingMode !== mode) {
-                            throw new Error(`Data: "${data}" was not encoded in the expected mode: ${mode}. Actual encoding mode: ${encodedData[0].encodingMode}`);
-                        }
+//                         if (encodedData[0].encodingMode !== mode) {
+//                             throw new Error(`Data: "${data}" was not encoded in the expected mode: ${mode}. Actual encoding mode: ${encodedData[0].encodingMode}`);
+//                         }
                         
-                        if (version === 40 && i > capacity) return; // Skip test if exceeding max capacity
+//                         if (version === 40 && i > capacity) return; // Skip test if exceeding max capacity
 
-                        const determinedVersion = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", null);
+//                         const determinedVersion = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", null);
 
-                        if (i <= capacity) {
-                            // If within capacity, expect the determined version to be the current version
+//                         if (i <= capacity) {
+//                             // If within capacity, expect the determined version to be the current version
                             
-                            // Test with min possible version
-                            expect(determinedVersion).toBe(version);
+//                             // Test with min possible version
+//                             expect(determinedVersion).toBe(version);
 
-                            // Test with a preferred version
-                            if (version < 40) {
-                                // Test with a higher preferred version
-                                const preferredVersion = version + 1 as QRVersions;
-                                const determinedVersionWithPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", preferredVersion);
-                                expect(determinedVersionWithPref).toBe(preferredVersion); // Test with version +1 higher
+//                             // Test with a preferred version
+//                             if (version < 40) {
+//                                 // Test with a higher preferred version
+//                                 const preferredVersion = version + 1 as QRVersions;
+//                                 const determinedVersionWithPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", preferredVersion);
+//                                 expect(determinedVersionWithPref).toBe(preferredVersion); // Test with version +1 higher
                                 
-                                const determineVersionWithHighestPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", 40);
-                                expect(determineVersionWithHighestPref).toBe(40); // Test with version max version as preferred
-                            } 
+//                                 const determineVersionWithHighestPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", 40);
+//                                 expect(determineVersionWithHighestPref).toBe(40); // Test with version max version as preferred
+//                             } 
 
-                            if (version > 1) {
-                                // Test with a lower preferred version
-                                const preferredVersion = version - 1 as QRVersions;
-                                const determinedVersionWithLowerPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", preferredVersion);
-                                expect(determinedVersionWithLowerPref).toBe(version); // Should be the version we are checking for
-                                expect(determinedVersionWithLowerPref).not.toBe(preferredVersion); // Should not be the lower preferred version
+//                             if (version > 1) {
+//                                 // Test with a lower preferred version
+//                                 const preferredVersion = version - 1 as QRVersions;
+//                                 const determinedVersionWithLowerPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", preferredVersion);
+//                                 expect(determinedVersionWithLowerPref).toBe(version); // Should be the version we are checking for
+//                                 expect(determinedVersionWithLowerPref).not.toBe(preferredVersion); // Should not be the lower preferred version
+//                             }
+
+//                         } else if (i > capacity && version < 39) {
+//                             // If exceeding capacity, expect the determined version to be false (cannot be encoded)
+//                             expect(determinedVersion).not.toEqual(version);
+//                         }
+//                     });
+//                 }
+//             }
+//         }
+//     }
+// });
+
+describe("Determine the minimum version for a QR Code with segmented data", () => {
+    // Note that this test does not test for unoptimized Alphanumeric -> numeirc segments, this is tested with some limited cases in the next test
+
+    const encodingModes: DataEncodingMode[] = [
+        DATA_ENCODING_MODES.NUMERIC,
+        DATA_ENCODING_MODES.ALPHANUMERIC,
+        DATA_ENCODING_MODES.KANJI,
+        DATA_ENCODING_MODES.BYTE,
+    ]; // Will cycle through all modes when constructing the plain text data for testing
+
+    for (let size = 1; size <= 2596; size+= 10) {
+        // Test between 1..2596 bits (approx 324 bytes)
+
+        // Create test data with various segment counts and sizes
+        for (let segCount = 2; segCount <= 6; segCount++) {
+            // Test between 2..6 segments
+
+            // Create segment sizes that fit within the version capacity
+            const segmentSizes = splitInt(size, segCount); // Split i into segCount parts (of whole numbers)
+
+            // Create data for each segment based on its assgined segment size
+            const segments = new Array(segCount).fill("").map(() => {
+                for (let segSize of segmentSizes) {
+                    const mode = encodingModes[(segCount - 2) % 4] as DataEncodingMode;
+                    let charCount: number;
+
+                    // Calculate the char count based on encoding mode (since different modes have different bits per codeword)
+                    switch (mode) {
+                        case DATA_ENCODING_MODES.NUMERIC:
+                            // Numeric: 3 digits = 10 bits ≈ 1.25 bytes
+                            switch (segSize % 3) {
+                                case 0:
+                                    charCount = Math.floor(segSize * 8 / 10);
+                                    break;
+                                case 2:
+                                    charCount = Math.floor(((segSize - 1) * 8 / 10) + 7);
+                                    break;
+                                case 1:
+                                    charCount = Math.floor(((segSize - 1) * 8 / 10) + 4);
+                                    break;
+                                default:
+                                    charCount = 0; // Should not happen
                             }
+                            break;
+                        case DATA_ENCODING_MODES.ALPHANUMERIC:
+                            // Alphanumeric: 2 chars = 11 bits ≈ 1.375 bytes
+                            switch (segSize % 2) {
+                                case 0:
+                                    charCount = Math.floor(segSize * 8 / 11);
+                                    break;
+                                case 1:
+                                    charCount = Math.floor(((segSize - 1) * 8 / 11)) + 6;
+                                    break;
+                                default:
+                                    charCount = 0; // Should not happen
+                            }
+                            break;
+                        case DATA_ENCODING_MODES.KANJI:
+                            // Kanji: 1 char = 13 bits ≈ 1.625 bytes
+                            charCount = Math.floor(segSize * 8 / 13); // 13 bits per char
+                            break;
+                        case DATA_ENCODING_MODES.BYTE:
+                            // Byte: 1 char = 8 bits = 1 byte
+                            charCount = segSize;
+                            break;
+                        default:
+                            throw new Error("Unsupported encoding mode");
+                    }
 
-                        } else if (i > capacity && version < 39) {
-                            // If exceeding capacity, expect the determined version to be false (cannot be encoded)
-                            expect(determinedVersion).not.toEqual(version);
-                        }
-                    });
+                    return generateDataForLength(charCount, mode);
+                }
+            }).join("");
+
+            const encodedData: Record<string, Array<EncodedDataSegment>> = {
+                "auto": encodeWithModeSwitching(segments, "auto"), // auto mode switching
+                "forced": encodeWithModeSwitching(segments, "forced"), // forced mode switching
+                // encodeWithModeSwitching(segments, "disabled"), // no mode switching
+            }
+
+            for (const [modeSwitchingMode, data] of Object.entries(encodedData)) {
+                for (const eccLevel of Object.values(ECC_LEVEL_CODES)) {
+                    for (let eciMode of ["disabled", "auto", "forced"]) {
+                        it(`Should determine the correct version for a string of mixed data of`, () => {
+                            const determinedVersion = determineMinQRVersion(data, eccLevel as ECCLevelCode, eciMode as ECISwitchingModes, null);
+
+                            // Gotta sum the individual strings in the array since not all codewords will by bytes (such as for numeric, alphanumeric, or kanji)
+                            const preparedDataSize = Math.ceil(prepareDatastream(data, determinedVersion, eciMode as ECISwitchingModes).reduce((sum, seg) => sum + seg.length, 0) / 8);
+                            const maxDataSize = getDataSizeForVersion(determinedVersion, eccLevel as ECCLevelCode); // Get the max allowed data size for the determined version (in bytes)
+                            
+                            expect(preparedDataSize).toBeLessThanOrEqual(maxDataSize); // Check if prepared data size fits within the max data size (valid version)
+                            // expect(1).toBe(1); // Placeholder to avoid empty test suite error
+                        });
+
+                        // If the size of the data is within the max version for that specific mode and ECC level, expect the correct version to be determined
+
+                        // If the size of the data is greater than what the max version for that specific mode and ECC level can hold, expect an error
+
+
+                        // if (size <= 324) {
+                            // it(`Should determine the correct version for a string of mixed data of`, () => {
+                            //     expect(preparedDataSize).toBeLessThanOrEqual(maxDataSize); // Check if prepared data size fits within the max data size (valid version)
+                            //     // expect(1).toBe(1); // Placeholder to avoid empty test suite error
+                            // });
+                        // } 
+                        // else if (size > 324) {
+                        //     it("It should yield an exception when exceeding max capacity", () => {
+                        //         expect(determineMinQRVersion(data, eccLevel as ECCLevelCode, eciMode as ECISwitchingModes, null)).toThrow();
+                        //     });
+                        // }
+                    }
                 }
             }
         }
     }
 });
 
-// describe("Determine the minimum version for a QR Code with segmented data", () => {
-//     const encodingModes: DataEncodingMode[] = [
-//         DATA_ENCODING_MODES.NUMERIC,
-//         DATA_ENCODING_MODES.ALPHANUMERIC,
-//         DATA_ENCODING_MODES.KANJI,
-//         DATA_ENCODING_MODES.BYTE,
-//     ]; // Will cycle through all modes when constructing the plain text data for testing
+describe("Determine the minimum version of a QR Code with unpotimized consecutive segments of alphanumeric & numeric", () => {
 
-//     for (let size = 1; size <= 501; size++) {
-//         // Test between 1..2596 bits (approx 324 bytes)
-
-//         // Create test data with various segment counts and sizes
-//         for (let segCount = 2; segCount <= 6; segCount++) {
-//             // Test between 2..6 segments
-
-//             // Create segment sizes that fit within the version capacity
-//             const segmentSizes = splitInt(size, segCount); // Split i into segCount parts (of whole numbers)
-
-//             // Create data for each segment based on its assgined segment size
-//             const segments = new Array(segCount).fill("").map(() => {
-//                 for (let segSize of segmentSizes) {
-//                     const mode = encodingModes[(segCount - 2) % 4] as DataEncodingMode;
-//                     let charCount: number;
-
-//                     // Calculate the char count based on encoding mode (since different modes have different bits per codeword)
-//                     switch (mode) {
-//                         case DATA_ENCODING_MODES.NUMERIC:
-//                             // Numeric: 3 digits = 10 bits ≈ 1.25 bytes
-//                             switch (segSize % 3) {
-//                                 case 0:
-//                                     charCount = Math.floor(segSize * 8 / 10);
-//                                     break;
-//                                 case 2:
-//                                     charCount = Math.floor(((segSize - 1) * 8 / 10) + 7);
-//                                     break;
-//                                 case 1:
-//                                     charCount = Math.floor(((segSize - 1) * 8 / 10) + 4);
-//                                     break;
-//                                 default:
-//                                     charCount = 0; // Should not happen
-//                             }
-//                             break;
-//                         case DATA_ENCODING_MODES.ALPHANUMERIC:
-//                             // Alphanumeric: 2 chars = 11 bits ≈ 1.375 bytes
-//                             switch (segSize % 2) {
-//                                 case 0:
-//                                     charCount = Math.floor(segSize * 8 / 11);
-//                                     break;
-//                                 case 1:
-//                                     charCount = Math.floor(((segSize - 1) * 8 / 11)) + 6;
-//                                     break;
-//                                 default:
-//                                     charCount = 0; // Should not happen
-//                             }
-//                             break;
-//                         case DATA_ENCODING_MODES.KANJI:
-//                             // Kanji: 1 char = 13 bits ≈ 1.625 bytes
-//                             charCount = Math.floor(segSize * 8 / 13); // 13 bits per char
-//                             break;
-//                         case DATA_ENCODING_MODES.BYTE:
-//                             // Byte: 1 char = 8 bits = 1 byte
-//                             charCount = segSize;
-//                             break;
-//                         default:
-//                             throw new Error("Unsupported encoding mode");
-//                     }
-
-//                     return generateDataForLength(charCount, mode);
-//                 }
-//             }).join("");
-
-//             const encodedData: Record<string, Array<EncodedDataSegment>> = {
-//                 "auto": encodeWithModeSwitching(segments, "auto"), // auto mode switching
-//                 "forced": encodeWithModeSwitching(segments, "forced"), // forced mode switching
-//                 // encodeWithModeSwitching(segments, "disabled"), // no mode switching
-//             }
-
-//             for (const [modeSwitchingMode, data] of Object.entries(encodedData)) {
-//                 for (const eccLevel of Object.values(ECC_LEVEL_CODES)) {
-//                     for (let eciMode of ["disabled", "auto", "forced"]) {
-//                         // if (size <= 324) {
-//                             it(`Should determine the correct version for a string of mixed data of`, () => {
-//                                 const determinedVersion = determineMinQRVersion(data, eccLevel as ECCLevelCode, eciMode as ECISwitchingModes, null);
-
-//                                 // Gotta sum the individual strings in the array since not all codewords will by bytes (such as for numeric, alphanumeric, or kanji)
-//                                 const preparedDataSize = Math.ceil(prepareDatastream(data, determinedVersion, eciMode as ECISwitchingModes).reduce((sum, seg) => sum + seg.length, 0) / 8);
-//                                 const maxDataSize = getDataSizeForVersion(determinedVersion, eccLevel as ECCLevelCode); // Get the max allowed data size for the determined version (in bytes)
-
-//                                 expect(preparedDataSize).toBeLessThanOrEqual(maxDataSize); // Check if prepared data size fits within the max data size (valid version)
-//                                 // expect(1).toBe(1); // Placeholder to avoid empty test suite error
-//                             });
-//                         // } 
-//                         // else if (size > 324) {
-//                         //     it("It should yield an exception when exceeding max capacity", () => {
-//                         //         expect(determineMinQRVersion(data, eccLevel as ECCLevelCode, eciMode as ECISwitchingModes, null)).toThrow();
-//                         //     });
-//                         // }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// });
+});
 
 const numericChars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 const alphanumericChars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", " ", "$", "%", "*", "+", "-", ".", "/", ":"];

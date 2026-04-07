@@ -17,6 +17,8 @@ export type QRSpecs = {
     preferBOM: boolean
 }
 
+export type PublicQRSpecs = Partial<QRSpecs>; // For user input, all fields are optional since we have defaults
+
 // Defines the rules for generating an image from a QR matrix
 export type ImageSpecs = {
     // Colors
@@ -43,6 +45,8 @@ export type ImageSpecs = {
     roundness: number, // 0-1 for rounded shapes
     gridStrokeWidth: number, // 0-1 for percent
 }
+
+export type PublicImageSpecs = Partial<ImageSpecs>; // For user input, all fields are optional since we have defaults
 
 export type QRConfigs = {
     qrConfig: QRSpecs,
