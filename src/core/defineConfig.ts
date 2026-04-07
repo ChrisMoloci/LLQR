@@ -16,6 +16,13 @@ export default function defineConfig(qrConfig: Partial<QRSpecs> | null, imageCon
     console.log("Defined new QR Configs:", qrConfigs);
 }
 
+export function resetConfigToDefaults() {
+    qrConfigs.qrConfig = structuredClone(DEFAULT_QR_SPECS);
+    qrConfigs.imageConfig = structuredClone(DEFAULT_IMAGE_SPECS);
+
+    console.log("Reset QR Configs to defaults:", qrConfigs);
+}
+
 // Merges new configuration with old configuration
 function mergeConfig<T extends QRSpecs | ImageSpecs>(newConfig: Partial<T>, oldConfig: T): T {
     return {...oldConfig, ...newConfig};
