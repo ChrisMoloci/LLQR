@@ -11,8 +11,6 @@ export const QR_DEFAULTS = {
     MASK_PATTERN: null,
     USE_MODE_SWITCHING: "auto" as const,
     USE_ECI_SWITCHING: "auto" as const,
-    // PREFER_ECI: false as const,
-    // PREFER_BOM: false as const
 } as const;
 
 export type QRDefault = typeof QR_DEFAULTS[keyof typeof QR_DEFAULTS];
@@ -25,8 +23,6 @@ export const DEFAULT_QR_SPECS: QRSpecs = {
     maskPattern: QR_DEFAULTS.MASK_PATTERN,
     useModeSwitching: QR_DEFAULTS.USE_MODE_SWITCHING,
     useECISwitching: QR_DEFAULTS.USE_ECI_SWITCHING,
-    // preferECI: QR_DEFAULTS.PREFER_ECI,
-    // preferBOM: QR_DEFAULTS.PREFER_BOM
 };
 
 // Used for default Image Specs

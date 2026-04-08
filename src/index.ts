@@ -17,7 +17,7 @@ import generateImageFromQRMatrix from "./internal/generateImageFromQRMatrix";
 
 // Helper functions
 import defineConfig from "./core/helpers/defineConfig";
-import { resetConfigToDefaults, getCurrentConfigs } from "./core/helpers/defineConfig";
+import { resetConfigToDefaults, getCurrentConfig } from "./core/helpers/defineConfig";
 
 /**
  * Exporting functions out of the library
@@ -31,5 +31,5 @@ export {
     // Helper functions
     defineConfig,
     resetConfigToDefaults,
-    getCurrentConfigs
+    getCurrentConfig
 }

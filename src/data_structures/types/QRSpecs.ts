@@ -12,8 +12,6 @@ export type QRSpecs = {
     maskPattern: MaskPatternCode | null, // Null means auto
     useModeSwitching: ModeSwitchingStrategy,
     useECISwitching: ECISwitchingStrategy,
-    // preferECI: boolean,
-    // preferBOM: boolean
 }
 
 export type PublicQRSpecs = Partial<QRSpecs>; // For user input, all fields are optional since we have defaults

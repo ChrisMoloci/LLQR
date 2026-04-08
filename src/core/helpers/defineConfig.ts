@@ -30,6 +30,6 @@ function mergeConfig<T extends QRSpecs | ImageSpecs>(newConfig: Partial<T>, oldC
 }
 
 // Returns the current global configuration for QR code generation
-export function getCurrentConfigs() {
+export function getCurrentConfig() {
     return qrConfigs
 }

@@ -1,4 +1,4 @@
-import { getCurrentConfigs } from "../helpers/defineConfig";
+import { getCurrentConfig } from "../helpers/defineConfig";
 import { QR_ELEMENT_SHAPE } from "../../data_structures/enums/QR_ELEMENT_SHAPE";
 import { ImageSpecs } from "../../data_structures/types/ImageSpecs";
 import { alignmentPatternLocations } from "../../datasets/alignmentPatternLocations";
@@ -7,7 +7,7 @@ let finderPatterns: { x: number, y: number, x2: number, y2: number }[]
 let alignmentPatterns : { x: number, y: number, x2: number, y2: number }[];
 
 function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, pixelSize: number): HTMLCanvasElement {
-    const imageSpecs: ImageSpecs = getCurrentConfigs().imageConfig;
+    const imageSpecs: ImageSpecs = getCurrentConfig().imageConfig;
     console.log("Generating Image from QR Matrix with Image Specs:", imageSpecs);
     
     // -- 1. Initial Calculations --

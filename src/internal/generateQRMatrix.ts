@@ -2,8 +2,7 @@
 import prepareDatastream from "../core/matrix_generation/prepareDatastream";
 
 import generateMatrix from "../core/matrix_generation/generateMatrix";
-import { getCurrentConfigs } from "../core/helpers/defineConfig";
-
+import { getCurrentConfig } from "../core/helpers/defineConfig";
 import { encodeWithModeSwitching } from "../core/matrix_generation/encodeWithModeSwitching";
 import { QRSpecs } from "../data_structures/types/QRSpecs";
 import determineMode from "../core/matrix_generation/determineEncodingMode";
@@ -16,7 +15,7 @@ import { DATA_ENCODING_MODE } from "../data_structures/enums/DATA_ENCODING_MODE"
 
 function generateQRMatrix(data: string): Array<Array<number>> {
     // -- 1. Get Current QR Configurations --
-    const qrSpecs: QRSpecs = getCurrentConfigs().qrConfig;
+    const qrSpecs: QRSpecs = getCurrentConfig().qrConfig;
     console.log("Generating QR Code with specs:", qrSpecs);
 
     // -- 2. Determine Mode (or use Byte if forced) --
