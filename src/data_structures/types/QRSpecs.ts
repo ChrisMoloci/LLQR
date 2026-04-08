@@ -4,14 +4,12 @@ import { MaskPatternCode } from "./QRSpecTypes/MaskPatternCode";
 import { ModeSwitchingStrategy } from "./QRSpecTypes/ModeSwitchingStrategy";
 import { QRVersion } from "./QRSpecTypes/QRVersion";
 
-// TODO: Update ModeSwitchingStrategy, ECISwitchingStrategy, and QRVersions to be enum settable for better consistency
-
 // Defines the rules for generating a QR code
 export type QRSpecs = {
     eccLevel: ECCLevelCode, // ENUM type
-    minPreferredVersion: QRVersion, // Null means auto
+    minPreferredVersion: QRVersion,
     forceByteEncoding: boolean,
-    maskPattern: MaskPatternCode | null, // Null means auto
+    maskPattern: MaskPatternCode,
     useModeSwitching: ModeSwitchingStrategy,
     useECISwitching: ECISwitchingStrategy,
 }
