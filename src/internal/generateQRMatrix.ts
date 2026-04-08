@@ -12,6 +12,7 @@ import determineMinQRVersion from "../core/matrix_generation/determineMinQRVersi
 import generateECCStream from "../core/matrix_generation/generateECCStream";
 import { DataEncodingMode } from "../data_structures/types/EnumTypes/DataEncodingMode";
 import { DATA_ENCODING_MODE } from "../data_structures/enums/DATA_ENCODING_MODE";
+import { MODE_SWITCHING_STRATEGY } from "../data_structures/enums/MODE_SWITCHING_STRATEGY";
 
 function generateQRMatrix(data: string): Array<Array<number>> {
     // -- 1. Get Current QR Configurations --
@@ -26,11 +27,11 @@ function generateQRMatrix(data: string): Array<Array<number>> {
     let encodedData: Array<EncodedDataSegment> | null = null;
 
     // -- 3. Encode Data to Binary as EncodedSegmentDraft --
-    if (qrSpecs.useModeSwitching === "disabled") {
+    if (qrSpecs.useModeSwitching === MODE_SWITCHING_STRATEGY.DISABLED) {
         // Encode using a single mode
         console.log("Encoding data using single mode:", mode);
         encodedData = encodeWithSingleMode(data, mode);
-    } else if (qrSpecs.useModeSwitching === "auto" || qrSpecs.useModeSwitching === "forced") {
+    } else if (qrSpecs.useModeSwitching === MODE_SWITCHING_STRATEGY.AUTO || qrSpecs.useModeSwitching === MODE_SWITCHING_STRATEGY.FORCED) {
         console.log("Encoding data using mode switching:", qrSpecs.useModeSwitching);
         // Encode using mode switching
         encodedData = encodeWithModeSwitching(data, qrSpecs.useModeSwitching);

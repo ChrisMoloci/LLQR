@@ -1,20 +1,21 @@
 import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
+import { ECI_SWITCHING_STRATEGY } from "../../data_structures/enums/ECI_SWITCHING_STRATEGY";
 import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
 import { DataEncodingCharacterSet } from "../../data_structures/types/EnumTypes/DataEncodingCharacterSet";
 import { DataEncodingMode } from "../../data_structures/types/EnumTypes/DataEncodingMode";
 import { qrDataCapacityBits } from "../../datasets/qrDataCapacityBits";
 import { qrEncodingCharCounts } from "../../datasets/qrEncodingCharCounts";
-import { ECC_LEVEL_CODE } from "../../exports/constants";
-import { ECCLevelCode, ECISwitchingStrategy, ModeSwitchingStrategy, QRVersions } from "../../exports/types";
+import { ECC_LEVEL_CODE, QR_VERSION } from "../../exports/constants";
+import { ECCLevelCode, ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion } from "../../exports/types";
 import optimizeCrossCompatibleSegments from "../helpers/optimizeCrossCompatSegments";
 import prepareDatastream from "./prepareDatastream";
 
 
-export default function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingStrategy = "disabled", modeSwitchingMode: ModeSwitchingStrategy, minPrefferedVersion: QRVersions | null = null): QRVersions {
-    let bestVersion: QRVersions | null = null; // Stores best version found through iterations (eventuall the best version)
+export default function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy, minPrefferedVersion: QRVersion | null = null): QRVersions {
+    let bestVersion: QRVersion | null = null; // Stores best version found through iterations (eventuall the best version)
 
     // Loop through all QR versions from 1 to 40
-    for (let version: QRVersions = 1; version <= 40; version++) {
+    for (let version: QRVersion = QR_VERSION.V1; version <= QR_VERSION.V40; version++) {
         // Create a copy of encodedData so it can be mutated without affecting the original data
         const workingEncodedData = [...encodedData];
 
@@ -23,7 +24,7 @@ export default function determineMinQRVersion(encodedData: Array<EncodedDataSegm
         const capacity = qrDataCapacityBits[version][eccLevelKey!].data; // Get info about a particullar QR Code version
 
         // -- 1. Calculate the total bits needed to encode all the data for a particullar version
-        let dataStreamSize = computeTheoreticalSizeOfDataForVersion(workingEncodedData, version as QRVersions, eciSwitchingMode, modeSwitchingMode);
+        let dataStreamSize = computeTheoreticalSizeOfDataForVersion(workingEncodedData, version as QRVersion, eciSwitchingMode, modeSwitchingMode);
 
         // Calculate for terminator and byte alignment
         dataStreamSize += Math.min(4, Math.max(0, (capacity * 8) - dataStreamSize)); // Terminator (up to 4 bits)
@@ -31,7 +32,7 @@ export default function determineMinQRVersion(encodedData: Array<EncodedDataSegm
 
         // -- 2. When we find a version that can hold the data, return it
         if (capacity >= Math.ceil(dataStreamSize / 8)) {
-            bestVersion = version as QRVersions;
+            bestVersion = version as QRVersion;
             break; // Found a suitable version
         }
     }
@@ -51,7 +52,7 @@ export default function determineMinQRVersion(encodedData: Array<EncodedDataSegm
 }
 
 // Helper functions for determinVersion()
-function computeTheoreticalSizeOfDataForVersion(encodedData: Array<EncodedDataSegment>, version: QRVersions, eciSwitchingMode: ECISwitchingStrategy, modeSwitchingMode: ModeSwitchingStrategy): number {
+function computeTheoreticalSizeOfDataForVersion(encodedData: Array<EncodedDataSegment>, version: QRVersion, eciSwitchingMode: ECISwitchingStrategy, modeSwitchingMode: ModeSwitchingStrategy): number {
     let encodingModeState: DataEncodingMode | null = null; // Holds current encoding mode state for mode switching
     let eciModeAssignmentNumberState: DataEncodingCharacterSet | null = null; // Holds current ECI mode state for mode switching
 
@@ -69,7 +70,7 @@ function computeTheoreticalSizeOfDataForVersion(encodedData: Array<EncodedDataSe
         const crossCompatSegments: Array<EncodedDataSegment> = [];
 
         // Only attempt consolidation if mode switching is "auto" and current segment is alphanumeric or numeric
-        if (modeSwitchingMode === "auto" && remainingOptimizedSegmentCount === 0 && (encodingMode === DATA_ENCODING_MODE.ALPHANUMERIC || encodingMode === DATA_ENCODING_MODE.NUMERIC)) {
+        if (modeSwitchingMode === ECI_SWITCHING_STRATEGY.AUTO && remainingOptimizedSegmentCount === 0 && (encodingMode === DATA_ENCODING_MODE.ALPHANUMERIC || encodingMode === DATA_ENCODING_MODE.NUMERIC)) {
             crossCompatSegments.push(segment!); // Add current segment to cross-compatible segments
 
             for (let j = i + 1; j < encodedData.length; j++) {
@@ -104,12 +105,12 @@ function computeTheoreticalSizeOfDataForVersion(encodedData: Array<EncodedDataSe
         if (encodingModeState !== segment.encodingMode ||
             (
                 // Always add mode indicator + char count indicator size if ECI switching is forced since it must acompany every ECI mode indicator + assignment number
-                eciSwitchingMode === "forced" &&
+                eciSwitchingMode === ECI_SWITCHING_STRATEGY.FORCED &&
                 segment.encodingMode == DATA_ENCODING_MODE.BYTE
             ) ||
             (
                 // Add a mode indicator + char count indicator size if ECI switching is "auto" and adjacent byte segments have different ECI assignment numbers
-                eciSwitchingMode === "auto" &&
+                eciSwitchingMode === ECI_SWITCHING_STRATEGY.AUTO &&
                 segment.encodingMode === DATA_ENCODING_MODE.BYTE &&
                 eciModeAssignmentNumberState !== segment.charSetAssignmentNumber
             )
@@ -117,13 +118,13 @@ function computeTheoreticalSizeOfDataForVersion(encodedData: Array<EncodedDataSe
             totalSize += 4; // Mode indicator size
 
             // Get length indicator size for this segment based on version
-            totalSize += getCharCountIndicatorLength(segment.encodingMode, version as QRVersions);
+            totalSize += getCharCountIndicatorLength(segment.encodingMode, version as QRVersion);
 
             // Update encoding mode state
             encodingModeState = segment.encodingMode;
         }
 
-        if (eciSwitchingMode === "forced" && segment.encodingMode == DATA_ENCODING_MODE.BYTE) {
+        if (eciSwitchingMode === ECI_SWITCHING_STRATEGY.FORCED && segment.encodingMode == DATA_ENCODING_MODE.BYTE) {
             // ECI indicator + assignment number for every byte instance if ECI switching is "forced"
             totalSize += 4; // ECI Mode Indicator size
 
@@ -135,7 +136,7 @@ function computeTheoreticalSizeOfDataForVersion(encodedData: Array<EncodedDataSe
             eciModeAssignmentNumberState = segment.charSetAssignmentNumber;
         }
 
-        else if (eciSwitchingMode === "auto" && segment.encodingMode === DATA_ENCODING_MODE.BYTE && eciModeAssignmentNumberState !== segment.charSetAssignmentNumber) {
+        else if (eciSwitchingMode === ECI_SWITCHING_STRATEGY.AUTO && segment.encodingMode === DATA_ENCODING_MODE.BYTE && eciModeAssignmentNumberState !== segment.charSetAssignmentNumber) {
             // ECI indicator + assignment number based on state change if ECI switching is "auto"
             totalSize += 4; // ECI Mode Indicator size
 
@@ -158,7 +159,7 @@ function computeTheoreticalSizeOfDataForVersion(encodedData: Array<EncodedDataSe
     return totalSize;
 }
 
-export function getCharCountIndicatorLength(mode: DataEncodingMode, version: QRVersions): number {
+export function getCharCountIndicatorLength(mode: DataEncodingMode, version: QRVersion): number {
     // console.log(`Getting Character Count Indicator Length for mode ${mode} and version ${version}`);
     // ternary is used to convert ECI to Byte mode for lookup table
     // While encoding for the two work a little different, char count remains the same 

@@ -11,7 +11,11 @@
  */
 // Spec ENUMS (not of enum type)
 import { ECC_LEVEL_CODE } from "../data_structures/enums/ECC_LEVEL_CODE";
+import { QR_VERSION } from "../data_structures/enums/QR_VERSION";
 import { MASK_PATTERN_CODE } from "../data_structures/enums/MASK_PATTERN_CODE";
+import { MODE_SWITCHING_STRATEGY } from "../data_structures/enums/MODE_SWITCHING_STRATEGY";
+import { ECI_SWITCHING_STRATEGY } from "../data_structures/enums/ECI_SWITCHING_STRATEGY";
+
 import { QR_ELEMENT_SHAPE } from "../data_structures/enums/QR_ELEMENT_SHAPE";
 
 // Default Config ENUMS (not of enum type)
@@ -25,7 +29,11 @@ import { IMAGE_DEFAULTS } from "../const";
 export {
     // Spec enums
     ECC_LEVEL_CODE,
+    QR_VERSION,
     MASK_PATTERN_CODE,
+    MODE_SWITCHING_STRATEGY,
+    ECI_SWITCHING_STRATEGY,
+
     QR_ELEMENT_SHAPE,
 
     // Default spec enum

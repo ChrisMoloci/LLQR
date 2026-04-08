@@ -8,15 +8,16 @@ import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegme
 import { ModeSwitchingStrategy } from "../../exports/types";
 import { encodeWithSingleMode } from "./encodeWithSingleMode";
 import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
+import { MODE_SWITCHING_STRATEGY } from "../../data_structures/enums/MODE_SWITCHING_STRATEGY";
 
 
 // TODO: Cleanup code in this function by splitting some logic into helper functions
 
-export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwitchingStrategy = "auto"): Array<EncodedDataSegment> {
+export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwitchingStrategy = MODE_SWITCHING_STRATEGY.AUTO): Array<EncodedDataSegment> {
     const segments: Array<EncodedDataSegment> = [];
 
     // Make sure function is not called with disabled mode
-    if (useModeSwitching === "disabled") throw new Error("Mode switching is disabled, use encodeWithSingleMode instead.");
+    if (useModeSwitching === MODE_SWITCHING_STRATEGY.DISABLED) throw new Error("Mode switching is disabled, use encodeWithSingleMode instead.");
 
     /* 
      * When auto or forced mode switching is enabled, this function breaks data up using the following priority:
@@ -34,7 +35,7 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
 
     // Defines the minimum char count for a segment based on auto or forced mode switching
     // const minSegmentSize = useModeSwitching === "auto" ? 4 : 1;
-    const minKanjiSegmentSize = useModeSwitching === "auto" ? 2 : 1; // Kanji segments should be at least 2 characters in auto mode
+    const minKanjiSegmentSize = useModeSwitching === MODE_SWITCHING_STRATEGY.AUTO ? 2 : 1; // Kanji segments should be at least 2 characters in auto mode
 
     // Use a while loop i will be changed based on data removed
     let i = 0; // Create the starting index
@@ -96,7 +97,7 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
             default:
                 // console.log("Encoding Byte Segment:");
                 switch (useModeSwitching) {
-                    case "auto":
+                    case MODE_SWITCHING_STRATEGY.AUTO:
                         // Efficient segmentation
                         // console.log("Encoding Byte Segment using efficient segmentation.");
 
@@ -142,7 +143,7 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
                         
                         i = j; // Move index forward since we've collected byte data
                         break;
-                    case "forced":
+                    case MODE_SWITCHING_STRATEGY.FORCED:
                         // Inefficient segmentation based on priority defined above
                         // console.log("Encoding Byte Segment using forced segmentation.");
 
@@ -214,7 +215,7 @@ function segmentInvalidKanjiCandidate(data: string, useModeSwitching: ModeSwitch
 
         // Encode the slice based on whether its kanji or byte and the mode switching settings
         if (isFirstCharKanji) {
-            if (useModeSwitching === "forced" || useModeSwitching === "auto" && dataSlice.length >= 2) {
+            if (useModeSwitching === MODE_SWITCHING_STRATEGY.FORCED || useModeSwitching === MODE_SWITCHING_STRATEGY.AUTO && dataSlice.length >= 2) {
                 // Encode kanji segment if its valid and meets min size and is auto mode
                 segments.push(encodeKanji(dataSlice)!);
             } else {

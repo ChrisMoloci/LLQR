@@ -6,8 +6,10 @@ import { MaskPatternCode } from "../../exports/types";
 import { QRMatrixCanvas } from "../../data_structures/types/QRMatrixCanvas";
 import { MaskedQRMatrix } from "../../data_structures/types/MaskedQRMatrix";
 import { MASK_PATTERN_CODE } from "../../exports/constants";
+import { QRVersion } from "../../data_structures/types/QRSpecTypes/QRVersion"
+import { QR_VERSION } from "../../data_structures/enums/QR_VERSION";
 
-function generateMatrix(dataStream: Array<string>, version: number, eccLevel: string, maskPattern: MaskPatternCode | null): Array<Array<number>> {
+function generateMatrix(dataStream: Array<string>, version: QRVersion, eccLevel: string, maskPattern: MaskPatternCode | null): Array<Array<number>> {
     // dataStream = [];
     // const matrix: Array<Array<number>> = []; // Will store the finalized matrix
     // const reservedAreas: Array<Array<boolean>> = []; // Stores the areas that data should not be placed into
@@ -41,7 +43,7 @@ function generateMatrix(dataStream: Array<string>, version: number, eccLevel: st
     console.log("QR Matrix Canvas after reserving Format Information:", qrMatrixCanvas);
 
     // -- 7. Add version information if version >= 7 --
-    if (version >= 7) qrMatrixCanvas = addVersionInformation(qrMatrixCanvas, version, size);
+    if (version >= QR_VERSION.V7) qrMatrixCanvas = addVersionInformation(qrMatrixCanvas, version, size);
     console.log("QR Matrix Canvas after adding Version Information:", qrMatrixCanvas);
 
     // -- 8. Place data bits into the matrix, skipping reserved areas --
@@ -148,7 +150,7 @@ function addTimingPatterns(qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatr
     return qrMatrixCanvas;
 }
 
-function addAlignmentPatterns(qrMatrixCanvas: QRMatrixCanvas, version: number, size: number): QRMatrixCanvas {
+function addAlignmentPatterns(qrMatrixCanvas: QRMatrixCanvas, version: QRVersion, size: number): QRMatrixCanvas {
     const alignmentPatternTemplate: Array<Array<number>> = [
         [1, 1, 1, 1, 1],
         [1, 0, 0, 0, 1],
@@ -228,7 +230,7 @@ function reserveFormatInformation(qrMatrixCanvas: QRMatrixCanvas, size: number):
     return qrMatrixCanvas;
 }
 
-function addVersionInformation(qrMatrixCanvas: QRMatrixCanvas, version: number, size: number): QRMatrixCanvas {
+function addVersionInformation(qrMatrixCanvas: QRMatrixCanvas, version: QRVersion, size: number): QRMatrixCanvas {
     // version = 7;
 
     // -- 1. Compute the version information (With ECC) - With (18,6) Golay Code

@@ -8,7 +8,7 @@ import { encodeWithModeSwitching } from "./encodeWithModeSwitching";
 import prepareDatastream from "./prepareDatastream";
 import { ECCLevelCode } from "../../data_structures/enums/ECC_LEVEL_CODE";
 import { ECC_LEVEL_CODE } from "../../data_structures/enums/ECC_LEVEL_CODE";
-import { QRVersions } from "../../data_structures/types/QRSpecTypes/QRVersions";
+import { QRVersions } from "../../data_structures/types/QRSpecTypes/QRVersion";
 import { ECISwitchingStrategy } from "../../exports/types";
 
 const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVersions, number>>> = {

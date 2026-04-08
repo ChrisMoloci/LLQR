@@ -1,16 +1,19 @@
 import { ECC_LEVEL_CODE } from "./data_structures/enums/ECC_LEVEL_CODE";
+import { ECI_SWITCHING_STRATEGY } from "./data_structures/enums/ECI_SWITCHING_STRATEGY";
+import { MODE_SWITCHING_STRATEGY } from "./data_structures/enums/MODE_SWITCHING_STRATEGY";
 import { QR_ELEMENT_SHAPE } from "./data_structures/enums/QR_ELEMENT_SHAPE";
 import { ImageSpecs } from "./data_structures/types/ImageSpecs";
 import { QRSpecs } from "./data_structures/types/QRSpecs";
+import { QR_VERSION } from "./data_structures/enums/QR_VERSION";
 
 // Used for default QR Specs
 export const QR_DEFAULTS = {
     ECC_LEVEL: ECC_LEVEL_CODE.M,
-    MIN_PREFERRED_VERSION: null,
+    MIN_PREFERRED_VERSION: QR_VERSION.AUTO,
     FORCE_BYTE_ENCODING: false as const,
     MASK_PATTERN: null,
-    USE_MODE_SWITCHING: "auto" as const,
-    USE_ECI_SWITCHING: "auto" as const,
+    USE_MODE_SWITCHING: MODE_SWITCHING_STRATEGY.AUTO,
+    USE_ECI_SWITCHING: ECI_SWITCHING_STRATEGY.AUTO,
 } as const;
 
 export type QRDefault = typeof QR_DEFAULTS[keyof typeof QR_DEFAULTS];

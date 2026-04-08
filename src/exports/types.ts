@@ -16,7 +16,7 @@ import { PublicImageSpecs as ImageSpecs } from "../data_structures/types/ImageSp
 
 // Config Variable Property Types
 import { ECCLevelCode } from "../data_structures/types/QRSpecTypes/ECCLevelCode";
-import { QRVersions } from "../data_structures/types/QRSpecTypes/QRVersions";
+import { QRVersion } from "../data_structures/types/QRSpecTypes/QRVersion";
 import { MaskPatternCode } from "../data_structures/types/QRSpecTypes/MaskPatternCode";
 import { ModeSwitchingStrategy } from "../data_structures/types/QRSpecTypes/ModeSwitchingStrategy";
 import { ECISwitchingStrategy } from "../data_structures/types/QRSpecTypes/ECISwitchingStrategy";
@@ -33,7 +33,7 @@ export type {
 
     // Config variable property types
     ECCLevelCode,
-    QRVersions,
+    QRVersion,
     MaskPatternCode,
     ModeSwitchingStrategy,
     ECISwitchingStrategy,

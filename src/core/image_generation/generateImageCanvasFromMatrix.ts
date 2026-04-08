@@ -2,6 +2,7 @@ import { getCurrentConfig } from "../helpers/defineConfig";
 import { QR_ELEMENT_SHAPE } from "../../data_structures/enums/QR_ELEMENT_SHAPE";
 import { ImageSpecs } from "../../data_structures/types/ImageSpecs";
 import { alignmentPatternLocations } from "../../datasets/alignmentPatternLocations";
+import { QRVersion } from "../../exports/types";
 
 let finderPatterns: { x: number, y: number, x2: number, y2: number }[]
 let alignmentPatterns : { x: number, y: number, x2: number, y2: number }[];
@@ -12,7 +13,7 @@ function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, pixelSize: 
     
     // -- 1. Initial Calculations --
     const size = matrix.length;
-    const version = (size - 21) / 4 + 1; // Compute the version (for convenience so it doesn't have to be passed in)
+    const version = (size - 21) / 4 + 1 as QRVersion; // Compute the version (for convenience so it doesn't have to be passed in)
     console.log("Generating Image for QR Version:", version, "Matrix Size:", size);
     const moduleSize = Math.floor(pixelSize / (size + 8)); // 8 for quiet zone (4 per side)
     const safeAreaPixelSize = moduleSize * 4; // Total size including quiet zone
@@ -175,7 +176,7 @@ function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, size: number,
     return matrixCtx.canvas;
 }
 
-function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number, version: number): HTMLCanvasElement {
+function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number, version: QRVersion): HTMLCanvasElement {
     if (!finderPatterns) {
         finderPatterns = computeFinderPatternsLocations(size);
         console.log("Computed Finder Patterns:", finderPatterns);
@@ -287,7 +288,7 @@ function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: numb
     return matrixCtx.canvas;
 }
 
-function renderDataStream(matrix: Array<Array<number>>, matrixCtx: CanvasRenderingContext2D, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number, version: number): HTMLCanvasElement {
+function renderDataStream(matrix: Array<Array<number>>, matrixCtx: CanvasRenderingContext2D, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number, version: QRVersion): HTMLCanvasElement {
     const dataColor = imageSpecs.moduleColor;
     const bgColor = imageSpecs.backgroundColor;
 
@@ -431,7 +432,7 @@ function drawCircleModule(ctx: CanvasRenderingContext2D, x: number, y: number, r
 }
 
 // Checks if an area is reserved (that means that that part was already drawn)
-function isReserved(x: number, y: number, size: number, version: number): boolean {
+function isReserved(x: number, y: number, size: number, version: QRVersion): boolean {
     if (!finderPatterns) {
         finderPatterns = computeFinderPatternsLocations(size);
         console.log("Computed Finder Patterns:", finderPatterns);
@@ -471,7 +472,7 @@ function computeFinderPatternsLocations(size: number): { x: number, y: number, x
     ];
 }
 
-function computeAlignmentPatternsLocations(size: number, version: number): { x: number, y: number, x2: number, y2: number }[] {
+function computeAlignmentPatternsLocations(size: number, version: QRVersion): { x: number, y: number, x2: number, y2: number }[] {
     const alignmentPatterns = alignmentPatternLocations[version]?.flatMap(coord1 => {
         return alignmentPatternLocations[version]!
             .filter(coord2 =>
