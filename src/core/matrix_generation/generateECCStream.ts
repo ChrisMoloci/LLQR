@@ -1,7 +1,7 @@
-import { ECC_LEVEL_CODES, ECCLevelCode } from "../enums";
-import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
-import { QRVersions } from "../types";
-import { gfMultiply, gfXor } from "./GF256_Arithmetic";
+import { ECC_LEVEL_CODES, ECCLevelCode } from "../../data_structures/enums/ECC_LEVEL_CODES";
+import { QRVersions } from "../../data_structures/types/QRSpecs";
+import { qrDataCapacityBits } from "../../datasets/qrDataCapacityBits";
+import { gfMultiply, gfXor } from "../helpers/GF256_Arithmetic";
 
 function generateECCStream(encodedData: Array<string>, qrVersion: QRVersions, eccLevelCode: ECCLevelCode): Array<string> {
     const eccLevel = Object.entries(ECC_LEVEL_CODES).find(([key, value]) => value === eccLevelCode)?.[0];

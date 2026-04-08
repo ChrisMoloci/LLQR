@@ -1,9 +1,10 @@
-import { DATA_ENCODING_MODES, DataEncodingMode } from "../enums";
-import { EncodedDataSegment } from "../types";
-import encodeAlphanumeric from "./encoders/encodeAlphanumeric";
-import encodeBinary from "./encoders/encodeBinary";
-import encodeKanji from "./encoders/encodeKanji";
-import encodeNumeric from "./encoders/encodeNumeric";
+import { DATA_ENCODING_MODES, DataEncodingMode } from "../../data_structures/enums/DATA_ENCODING_MODES";
+import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
+import encodeAlphanumeric from "../encoders/encodeAlphanumeric";
+import encodeBinary from "../encoders/encodeBinary";
+import encodeKanji from "../encoders/encodeKanji";
+import encodeNumeric from "../encoders/encodeNumeric";
+
 
 export function encodeWithSingleMode(data: string, mode: DataEncodingMode): Array<EncodedDataSegment> {
     // Encodes all data using a single specified mode thats compatible

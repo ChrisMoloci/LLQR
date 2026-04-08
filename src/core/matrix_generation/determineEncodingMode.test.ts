@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { DATA_ENCODING_MODES } from "../enums";
 import determineMode from "./determineEncodingMode";
+import { DATA_ENCODING_MODES } from "../../data_structures/enums/DATA_ENCODING_MODES";
+
 
 const numericData = "0123456789";
 const alphanumericData = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:";

@@ -1,12 +1,13 @@
-import unicodeToShiftJIS from "../datasets/unicode_to_shiftjis";
-import { DATA_ENCODING_MODES } from "../enums";
-import { EncodedDataSegment, ModeSwitchingModes } from "../types";
+import unicodeToShiftJIS from "../../datasets/unicode_to_shiftjis";
 import determineMode from "./determineEncodingMode";
-import encodeAlphanumeric from "./encoders/encodeAlphanumeric";
-import encodeBinary from "./encoders/encodeBinary";
-import encodeKanji from "./encoders/encodeKanji";
-import encodeNumeric from "./encoders/encodeNumeric";
+import encodeAlphanumeric from "../encoders/encodeAlphanumeric";
+import encodeBinary from "../encoders/encodeBinary";
+import encodeKanji from "../encoders/encodeKanji";
+import encodeNumeric from "../encoders/encodeNumeric";
+import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
+import { ModeSwitchingModes } from "../../data_structures/types/QRSpecs";
 import { encodeWithSingleMode } from "./encodeWithSingleMode";
+import { DATA_ENCODING_MODES } from "../../data_structures/enums/DATA_ENCODING_MODES";
 
 // TODO: Cleanup code in this function by splitting some logic into helper functions
 

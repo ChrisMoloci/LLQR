@@ -1,4 +1,5 @@
-import { DATA_ENCODING_CHARACTER_SETS } from "../../../enums";
+
+import { DATA_ENCODING_CHARACTER_SETS } from "../../../data_structures/enums/DATA_ENCODING_CHARACTER_SETS";
 import encodeISO_8859_1 from "./ISO_IEC_8859/encodeISO-8859-1";
 import encodeUTF8 from "./unicode/encodeUTF-8";
 

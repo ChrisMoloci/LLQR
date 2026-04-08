@@ -1,17 +1,11 @@
-import { MASK_PATTERN_CODES, MaskPatternCode } from "../enums";
-import { alignmentPatternLocations } from "../datasets/alignmentPatternLocations";
-import { QRMatrixCanvas } from "../types";
+import { alignmentPatternLocations } from "../../datasets/alignmentPatternLocations";
 import determinePenaltyScore from "./determinePenaltyScore";
-import maskQR from "./maskingFunctions"; 
-
-import { getBitLength } from "./utils";
-
-
-export interface MaskedQRMatrix {
-    matrix: Array<Array<number>>,
-    maskPattern: MaskPatternCode,
-    penaltyScore?: number,
-}
+import maskQR from "../helpers/maskingFunctions"; 
+import { getBitLength } from "../helpers/getBitLength";
+import { MaskPatternCode } from "../../data_structures/enums/MASK_PATTERN_CODES";
+import { QRMatrixCanvas } from "../../data_structures/types/QRMatrixCanvas";
+import { MaskedQRMatrix } from "../../data_structures/types/MaskedQRMatrix";
+import { MASK_PATTERN_CODES } from "../..";
 
 function generateMatrix(dataStream: Array<string>, version: number, eccLevel: string, maskPattern: MaskPatternCode | null): Array<Array<number>> {
     // dataStream = [];

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { encodeWithModeSwitching } from './encodeWithModeSwitching';
-import { EncodedDataSegment } from '../types';
+import { EncodedDataSegment } from '../../data_structures/types/EncodedDataSegment';
 
 const forcedModeTestData: Record<string, Array<EncodedDataSegment>> = {
     // Numeric

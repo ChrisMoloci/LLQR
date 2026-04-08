@@ -1,11 +1,13 @@
-import { DATA_ENCODING_MODES, DataEncodingCharacterSet, DataEncodingMode } from "../enums";
-import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
-import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
-import { ECC_LEVEL_CODES, ECCLevelCode } from "../enums";
-import { ECISwitchingModes, EncodedDataSegment, ModeSwitchingModes, QRVersions } from "../types";
+import { ECC_LEVEL_CODES } from "../..";
+import { DataEncodingCharacterSet } from "../../data_structures/enums/DATA_ENCODING_CHARACTER_SETS";
+import { DATA_ENCODING_MODES, DataEncodingMode } from "../../data_structures/enums/DATA_ENCODING_MODES";
+import { ECCLevelCode } from "../../data_structures/enums/ECC_LEVEL_CODES";
+import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
+import { ECISwitchingModes, ModeSwitchingModes, QRVersions } from "../../data_structures/types/QRSpecs";
+import { qrDataCapacityBits } from "../../datasets/qrDataCapacityBits";
+import { qrEncodingCharCounts } from "../../datasets/qrEncodingCharCounts";
+import optimizeCrossCompatibleSegments from "../helpers/optimizeCrossCompatSegments";
 import prepareDatastream from "./prepareDatastream";
-import { encodeWithSingleMode } from "./encodeWithSingleMode";
-import optimizeCrossCompatibleSegments from "./optimizeCrossCompatSegments";
 
 export default function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingModes = "disabled", modeSwitchingMode: ModeSwitchingModes, minPrefferedVersion: QRVersions | null = null): QRVersions {
     let bestVersion: QRVersions | null = null; // Stores best version found through iterations (eventuall the best version)

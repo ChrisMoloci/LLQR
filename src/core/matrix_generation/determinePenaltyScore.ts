@@ -1,4 +1,4 @@
-import { MaskedQRMatrix } from "./generateMatrix";
+import { MaskedQRMatrix } from "../../data_structures/types/MaskedQRMatrix";
 
 export default function determinePenaltyScore(maskedQRMatrix: MaskedQRMatrix): Array<Array<number>> {
     let penaltyScore = 0;

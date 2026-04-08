@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getBitLength } from "./utils";
+import { getBitLength } from "./getBitLength";
 
 // Test getBitLength function
 describe("Get Bit Length", () => {

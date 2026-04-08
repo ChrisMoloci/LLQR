@@ -19,7 +19,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { ECISwitchingModes } from '../types';
+import { ECISwitchingModes } from '../../data_structures/types/QRSpecs';
+
 
 /**
  * Data to generate variations for

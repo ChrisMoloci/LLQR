@@ -1,7 +1,9 @@
-import { DATA_ENCODING_MODES, DataEncodingCharacterSet, DataEncodingMode } from "../enums";
-import { ECISwitchingModes, EncodedDataSegment, ModeSwitchingModes, QRVersions } from "../types";
 import { getCharCountIndicatorLength } from "./determineMinQRVersion";
-import optimizeCrossCompatibleSegments from "./optimizeCrossCompatSegments";
+import optimizeCrossCompatibleSegments from "../helpers/optimizeCrossCompatSegments";
+import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
+import { ECISwitchingModes, ModeSwitchingModes, QRVersions } from "../../data_structures/types/QRSpecs";
+import { DATA_ENCODING_MODES, DataEncodingMode } from "../../data_structures/enums/DATA_ENCODING_MODES";
+import { DataEncodingCharacterSet } from "../../data_structures/enums/DATA_ENCODING_CHARACTER_SETS";
 
 // TODO: Add a alphanumeric/numeric normalizer that combines the segments in specific situations where their length and mode indicators will cause them to be longer when split than when consolidated (remember to also update determine version to account for consolidation as well) when in auto mode
 

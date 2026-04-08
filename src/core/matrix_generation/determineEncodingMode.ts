@@ -1,4 +1,4 @@
-import { DATA_ENCODING_MODES, DataEncodingMode } from "../enums";
+import { DATA_ENCODING_MODES, DataEncodingMode } from "../../data_structures/enums/DATA_ENCODING_MODES";
 
 // Determines the most efficient encoding mode required to encode the whole data (mode switching is handled later)
 export default function determineMode(data: string): DataEncodingMode {

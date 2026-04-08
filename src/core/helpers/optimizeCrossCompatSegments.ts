@@ -1,7 +1,9 @@
-import { DATA_ENCODING_MODES } from "../enums";
-import { EncodedDataSegment, QRVersions } from "../types";
-import { getCharCountIndicatorLength } from "./determineMinQRVersion";
-import { encodeWithSingleMode } from "./encodeWithSingleMode";
+import { DATA_ENCODING_MODES } from "../../data_structures/enums/DATA_ENCODING_MODES";
+import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
+import { QRVersions } from "../../data_structures/types/QRSpecs";
+import { getCharCountIndicatorLength } from "../matrix_generation/determineMinQRVersion";
+import { encodeWithSingleMode } from "../matrix_generation/encodeWithSingleMode";
+
 
 // Helper functions to determine size of alphanumeric and numeric data
 const determineSizeForAlphanumericData = (size: number): number => 

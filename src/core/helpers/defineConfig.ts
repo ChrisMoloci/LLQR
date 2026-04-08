@@ -1,6 +1,7 @@
-import { DEFAULT_IMAGE_SPECS, DEFAULT_QR_SPECS } from "../const"
-import { ImageSpecs, QRConfigs } from "../types";
-import { QRSpecs } from "../types";
+import { DEFAULT_IMAGE_SPECS, DEFAULT_QR_SPECS } from "../../const"
+import { ImageSpecs } from "../../data_structures/types/ImageSpecs";
+import { QRConfigs } from "../../data_structures/types/QRConfigs";
+import { QRSpecs } from "../../data_structures/types/QRSpecs";
 
 // Stores the current global configuration for QR code generation
 let qrConfigs: QRConfigs = {

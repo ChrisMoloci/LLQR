@@ -1,14 +1,14 @@
 import { describe, it, expect } from "vitest";
-import { DATA_ENCODING_MODES, DataEncodingCharacterSet, DataEncodingMode, ECC_LEVEL_CODES } from "../enums";
-import { ECCLevelCode } from "../../dist";
-import { ECISwitchingModes, EncodedDataSegment, ModeSwitchingModes, QRVersions } from "../types";
-import unicodeToShiftJIS from "../datasets/unicode_to_shiftjis";
+import { skip } from "node:test";
+import { DATA_ENCODING_MODES, DataEncodingMode } from "../../data_structures/enums/DATA_ENCODING_MODES";
+import { ECISwitchingModes, QRVersions } from "../../data_structures/types/QRSpecs";
+import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
 import determineMinQRVersion, { getCharCountIndicatorLength } from "./determineMinQRVersion";
-import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
+import { qrDataCapacityBits } from "../../datasets/qrDataCapacityBits";
 import { encodeWithModeSwitching } from "./encodeWithModeSwitching";
 import prepareDatastream from "./prepareDatastream";
-import { encodeWithSingleMode } from "./encodeWithSingleMode";
-import { skip } from "node:test";
+import { ECCLevelCode } from "../../data_structures/enums/ECC_LEVEL_CODES";
+import { ECC_LEVEL_CODES } from "../..";
 
 const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVersions, number>>> = {
     // Max char capacity for numeric encoding

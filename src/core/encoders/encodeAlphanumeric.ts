@@ -1,5 +1,6 @@
-import { DATA_ENCODING_MODES } from "../../enums";
-import { EncodedDataSegment } from "../../types";
+import { DATA_ENCODING_MODES } from "../../data_structures/enums/DATA_ENCODING_MODES";
+import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
+
 
 function encodeAlphanumeric(data: string): EncodedDataSegment {
     if (!/^[0-9A-Z $%*+\-./:]+$/.test(data)) {

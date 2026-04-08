@@ -1,6 +1,8 @@
-import { MASK_PATTERN_FUNCTIONS, MaskPatternCode } from "../enums";
-import { QRMatrixCanvas } from "../types";
-import { MaskedQRMatrix } from "./generateMatrix";
+
+import { MaskPatternCode } from "../../data_structures/enums/MASK_PATTERN_CODES";
+import { MASK_PATTERN_FUNCTIONS } from "../../data_structures/enums/MASK_PATTERN_FUNCTIONS";
+import { QRMatrixCanvas } from "../../data_structures/types/QRMatrixCanvas";
+import { MaskedQRMatrix } from "../matrix_generation/generateMatrix";
 
 // Mask Functions union type
 // export type MaskFunctions = typeof mask0 | typeof mask1 | typeof mask2 | typeof mask3 | typeof mask4 | typeof mask5 | typeof mask6 | typeof mask7;

@@ -1,5 +1,3 @@
-import { DEFAULT_IMAGE_SPECS } from "../const";
-import { ImageSpecs } from "../types";
 import generateImageFromQRMatrix from "./generateImageFromQRMatrix";
 import generateQRMatrix from "./generateQRMatrix";
 

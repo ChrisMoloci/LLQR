@@ -1,13 +1,17 @@
-import { DATA_ENCODING_MODES, DataEncodingMode } from "../enums";
-import { EncodedDataSegment, QRSpecs } from "../types";
-import determineMode from "../core/determineEncodingMode";
-import determineMinQRVersion from "../core/determineMinQRVersion";
-import prepareDatastream from "../core/prepareDatastream";
-import generateECCStream from "../core/generateECCStream";
-import generateMatrix from "../core/generateMatrix";
-import { getCurrentConfigs } from "../core/defineConfig";
-import { encodeWithSingleMode } from "../core/encodeWithSingleMode";
-import { encodeWithModeSwitching } from "../core/encodeWithModeSwitching";
+
+import prepareDatastream from "../core/matrix_generation/prepareDatastream";
+
+import generateMatrix from "../core/matrix_generation/generateMatrix";
+import { getCurrentConfigs } from "../core/helpers/defineConfig";
+
+import { encodeWithModeSwitching } from "../core/matrix_generation/encodeWithModeSwitching";
+import { QRSpecs } from "../data_structures/types/QRSpecs";
+import { DATA_ENCODING_MODES, DataEncodingMode } from "../data_structures/enums/DATA_ENCODING_MODES";
+import determineMode from "../core/matrix_generation/determineEncodingMode";
+import { EncodedDataSegment } from "../data_structures/types/EncodedDataSegment";
+import { encodeWithSingleMode } from "../core/matrix_generation/encodeWithSingleMode";
+import determineMinQRVersion from "../core/matrix_generation/determineMinQRVersion";
+import generateECCStream from "../core/matrix_generation/generateECCStream";
 
 function generateQRMatrix(data: string): Array<Array<number>> {
     // -- 1. Get Current QR Configurations --
