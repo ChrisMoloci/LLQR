@@ -1,0 +1,1 @@
+export type ModeSwitchingStrategy = "disabled" | "auto" | "forced";

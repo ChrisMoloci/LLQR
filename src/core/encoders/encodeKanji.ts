@@ -1,4 +1,4 @@
-import { DATA_ENCODING_MODES } from "../../data_structures/enums/DATA_ENCODING_MODES";
+import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
 import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
 import unicodeToShiftJIS from "../../datasets/unicode_to_shiftjis";
 
@@ -15,7 +15,7 @@ function encodeKanji(data: string): EncodedDataSegment | null {
     // console.log(`Encoding kanji data: ${data}`);
 
     const encodedDataSegment: EncodedDataSegment = {
-        encodingMode: DATA_ENCODING_MODES.KANJI,
+        encodingMode: DATA_ENCODING_MODE.KANJI,
         charCount: data.length,
         plainTextData: data,
         encodedData: []

@@ -2,10 +2,10 @@ import { alignmentPatternLocations } from "../../datasets/alignmentPatternLocati
 import determinePenaltyScore from "./determinePenaltyScore";
 import maskQR from "../helpers/maskingFunctions"; 
 import { getBitLength } from "../helpers/getBitLength";
-import { MaskPatternCode } from "../../data_structures/enums/MASK_PATTERN_CODES";
+import { MaskPatternCode } from "../../exports/types";
 import { QRMatrixCanvas } from "../../data_structures/types/QRMatrixCanvas";
 import { MaskedQRMatrix } from "../../data_structures/types/MaskedQRMatrix";
-import { MASK_PATTERN_CODES } from "../..";
+import { MASK_PATTERN_CODE } from "../../exports/constants";
 
 function generateMatrix(dataStream: Array<string>, version: number, eccLevel: string, maskPattern: MaskPatternCode | null): Array<Array<number>> {
     // dataStream = [];
@@ -333,14 +333,14 @@ function maskAllMatrices(qrMatrixCanvas: QRMatrixCanvas, size: number): Array<Ma
     const maskedMatrices: Array<MaskedQRMatrix> = [];
 
     // Important to clone the qrMatrixCanvas for each mask passing the ref
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[0], structuredClone(qrMatrixCanvas), size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[1], structuredClone(qrMatrixCanvas), size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[2], structuredClone(qrMatrixCanvas), size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[3], structuredClone(qrMatrixCanvas), size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[4], structuredClone(qrMatrixCanvas), size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[5], structuredClone(qrMatrixCanvas), size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[6], structuredClone(qrMatrixCanvas), size));
-    maskedMatrices.push(maskQR(MASK_PATTERN_CODES[7], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODE[0], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODE[1], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODE[2], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODE[3], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODE[4], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODE[5], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODE[6], structuredClone(qrMatrixCanvas), size));
+    maskedMatrices.push(maskQR(MASK_PATTERN_CODE[7], structuredClone(qrMatrixCanvas), size));
 
     return maskedMatrices;
 }

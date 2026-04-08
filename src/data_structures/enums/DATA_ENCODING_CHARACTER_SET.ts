@@ -1,4 +1,4 @@
-export const DATA_ENCODING_CHARACTER_SETS = {
+export const DATA_ENCODING_CHARACTER_SET = {
     // Key = character set
     // Value = ECI assignment number
 
@@ -44,5 +44,3 @@ export const DATA_ENCODING_CHARACTER_SETS = {
     "JIS X 0208": 23, // !NOT IMPLEMENTED YET
     "JIS X 0212": 24, // !NOT IMPLEMENTED YET
 }
-
-export type DataEncodingCharacterSet = typeof DATA_ENCODING_CHARACTER_SETS[keyof typeof DATA_ENCODING_CHARACTER_SETS];

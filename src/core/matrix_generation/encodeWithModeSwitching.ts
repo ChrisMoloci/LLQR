@@ -5,13 +5,14 @@ import encodeBinary from "../encoders/encodeBinary";
 import encodeKanji from "../encoders/encodeKanji";
 import encodeNumeric from "../encoders/encodeNumeric";
 import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
-import { ModeSwitchingModes } from "../../data_structures/types/QRSpecs";
+import { ModeSwitchingStrategy } from "../../exports/types";
 import { encodeWithSingleMode } from "./encodeWithSingleMode";
-import { DATA_ENCODING_MODES } from "../../data_structures/enums/DATA_ENCODING_MODES";
+import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
+
 
 // TODO: Cleanup code in this function by splitting some logic into helper functions
 
-export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwitchingModes = "auto"): Array<EncodedDataSegment> {
+export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwitchingStrategy = "auto"): Array<EncodedDataSegment> {
     const segments: Array<EncodedDataSegment> = [];
 
     // Make sure function is not called with disabled mode
@@ -161,7 +162,7 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
 }
 
 // When an a kanjiCandidate fails to encode, we must try to segment it into smaller kanji and byte segments (or just create a byte segment if all chars are invalid)
-function segmentInvalidKanjiCandidate(data: string, useModeSwitching: ModeSwitchingModes): Array<EncodedDataSegment> {
+function segmentInvalidKanjiCandidate(data: string, useModeSwitching: ModeSwitchingStrategy): Array<EncodedDataSegment> {
     const segments: Array<EncodedDataSegment> = [];
 
     /*
@@ -269,7 +270,7 @@ function mergeAdjacentSegments(segments: Array<EncodedDataSegment>): Array<Encod
 
             if (nextSegment.encodingMode === currentMode) {
                 // If the next segment has the same encoding mode as the current segment, we may be able to merge them
-                if (currentMode === DATA_ENCODING_MODES.BYTE) {
+                if (currentMode === DATA_ENCODING_MODE.BYTE) {
                     // For byte mode, we need to also check if they are using the same char set (e.g Latin-1, UTF-8, etc)
                     if (currentSegment.charSetAssignmentNumber !== nextSegment.charSetAssignmentNumber) {
                         break; // Different charsets, cannot merge;

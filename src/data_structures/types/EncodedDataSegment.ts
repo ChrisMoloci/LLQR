@@ -1,5 +1,5 @@
-import { DATA_ENCODING_MODES } from "../enums/DATA_ENCODING_MODES";
-import { DataEncodingCharacterSet } from "../enums/DATA_ENCODING_CHARACTER_SETS";
+import { DATA_ENCODING_MODES } from "../enums/DATA_ENCODING_MODE";
+import { DataEncodingCharacterSet } from "../enums/DATA_ENCODING_CHARACTER_SET";
 
 export type EncodedDataSegment = 
     // Segment type used for Numeric

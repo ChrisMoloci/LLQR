@@ -1,0 +1,1 @@
+export type ECISwitchingStrategy = "disabled" | "auto" | "forced";

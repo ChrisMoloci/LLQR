@@ -1,5 +1,6 @@
-import { DATA_ENCODING_MODES, DataEncodingMode } from "../../data_structures/enums/DATA_ENCODING_MODES";
+import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
 import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
+import { DataEncodingMode } from "../../data_structures/types/EnumTypes/DataEncodingMode";
 import encodeAlphanumeric from "../encoders/encodeAlphanumeric";
 import encodeBinary from "../encoders/encodeBinary";
 import encodeKanji from "../encoders/encodeKanji";
@@ -11,13 +12,13 @@ export function encodeWithSingleMode(data: string, mode: DataEncodingMode): Arra
     const segments: Array<EncodedDataSegment> = [];
 
     switch(mode) {
-        case DATA_ENCODING_MODES.NUMERIC:
+        case DATA_ENCODING_MODE.NUMERIC:
             segments.push(encodeNumeric(data));
             break;
-        case DATA_ENCODING_MODES.ALPHANUMERIC:
+        case DATA_ENCODING_MODE.ALPHANUMERIC:
             segments.push(encodeAlphanumeric(data));
             break;
-        case DATA_ENCODING_MODES.KANJI:
+        case DATA_ENCODING_MODE.KANJI:
             // Try to encode in kanji mode
             const kanjiSegment = encodeKanji(data);
             if (kanjiSegment) {

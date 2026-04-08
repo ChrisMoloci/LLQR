@@ -1,6 +1,6 @@
-import { DATA_ENCODING_MODES } from "../../data_structures/enums/DATA_ENCODING_MODES";
+import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
 import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
-import { QRVersions } from "../../data_structures/types/QRSpecs";
+import { QRVersions } from "../../exports/types";
 import { getCharCountIndicatorLength } from "../matrix_generation/determineMinQRVersion";
 import { encodeWithSingleMode } from "../matrix_generation/encodeWithSingleMode";
 
@@ -40,13 +40,13 @@ function optimizeCrossCompatibleSegments(segments: Array<EncodedDataSegment>, ve
     type ConsolidatedSegmentPrototype = {
         start: number,
         end: number,
-        mode: typeof DATA_ENCODING_MODES.ALPHANUMERIC | typeof DATA_ENCODING_MODES.NUMERIC
+        mode: typeof DATA_ENCODING_MODE.ALPHANUMERIC | typeof DATA_ENCODING_MODE.NUMERIC
     }
 
     // Calculates the full cost (payload + CCI + mode indicator) for a single consolidated segment.
-    function consolidatedSegmentCost(length: number, mode: typeof DATA_ENCODING_MODES.ALPHANUMERIC | typeof DATA_ENCODING_MODES.NUMERIC): number {
+    function consolidatedSegmentCost(length: number, mode: typeof DATA_ENCODING_MODE.ALPHANUMERIC | typeof DATA_ENCODING_MODE.NUMERIC): number {
         const payloadBits =
-        mode === DATA_ENCODING_MODES.ALPHANUMERIC
+        mode === DATA_ENCODING_MODE.ALPHANUMERIC
             ? determineSizeForAlphanumericData(length)
             : determineSizeForNumericData(length);
 
@@ -80,11 +80,11 @@ function optimizeCrossCompatibleSegments(segments: Array<EncodedDataSegment>, ve
             const chunkLength = currentChunk.reduce((sum, seg) => sum + seg.plainTextData.length, 0);
 
             // Check if it's numeric (if not its alphanumeric which is backwards compatible with numeric)
-            const isNumeric = currentChunk.every(seg => seg.encodingMode === DATA_ENCODING_MODES.NUMERIC);
+            const isNumeric = currentChunk.every(seg => seg.encodingMode === DATA_ENCODING_MODE.NUMERIC);
 
             // This allows us to iterate over modes for currentChunk to create cleaner logic the conditional statements everywhere
-            const possibleEncodingModes: Array<typeof DATA_ENCODING_MODES.ALPHANUMERIC | typeof DATA_ENCODING_MODES.NUMERIC> = isNumeric ? 
-                [DATA_ENCODING_MODES.ALPHANUMERIC, DATA_ENCODING_MODES.NUMERIC] : [DATA_ENCODING_MODES.ALPHANUMERIC];
+            const possibleEncodingModes: Array<typeof DATA_ENCODING_MODE.ALPHANUMERIC | typeof DATA_ENCODING_MODE.NUMERIC> = isNumeric ? 
+                [DATA_ENCODING_MODE.ALPHANUMERIC, DATA_ENCODING_MODE.NUMERIC] : [DATA_ENCODING_MODE.ALPHANUMERIC];
 
             for (const mode of possibleEncodingModes) {
                 const chunkCost = consolidatedSegmentCost(chunkLength, mode); // Get the cost of consolidating the current chunk in this mode

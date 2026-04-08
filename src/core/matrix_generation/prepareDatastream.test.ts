@@ -19,8 +19,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { ECISwitchingModes } from '../../data_structures/types/QRSpecs';
-
+import { ECISwitchingStrategy } from '../../exports/types';
 
 /**
  * Data to generate variations for
@@ -61,15 +60,15 @@ import { ECISwitchingModes } from '../../data_structures/types/QRSpecs';
 // TODO: To generate the correct data, we need to make sure determineMinQRVersion is fully tested
 
 const singularModeData = {
-    ["disabled" as ECISwitchingModes]: [],
-    ["auto" as ECISwitchingModes]: [],
-    ["forced" as ECISwitchingModes]: [] // Forced and auto should behave the same with no encoding mode switching
+    ["disabled" as ECISwitchingStrategy]: [],
+    ["auto" as ECISwitchingStrategy]: [],
+    ["forced" as ECISwitchingStrategy]: [] // Forced and auto should behave the same with no encoding mode switching
 };
 
 const modeSwitchingData = {
-    ["disabled" as ECISwitchingModes]: [],
-    ["auto" as ECISwitchingModes]: [],
-    ["forced" as ECISwitchingModes]: []
+    ["disabled" as ECISwitchingStrategy]: [],
+    ["auto" as ECISwitchingStrategy]: [],
+    ["forced" as ECISwitchingStrategy]: []
 };
 
 describe("prepareDataStream", () => {

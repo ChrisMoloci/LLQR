@@ -6,12 +6,13 @@ import { getCurrentConfigs } from "../core/helpers/defineConfig";
 
 import { encodeWithModeSwitching } from "../core/matrix_generation/encodeWithModeSwitching";
 import { QRSpecs } from "../data_structures/types/QRSpecs";
-import { DATA_ENCODING_MODES, DataEncodingMode } from "../data_structures/enums/DATA_ENCODING_MODES";
 import determineMode from "../core/matrix_generation/determineEncodingMode";
 import { EncodedDataSegment } from "../data_structures/types/EncodedDataSegment";
 import { encodeWithSingleMode } from "../core/matrix_generation/encodeWithSingleMode";
 import determineMinQRVersion from "../core/matrix_generation/determineMinQRVersion";
 import generateECCStream from "../core/matrix_generation/generateECCStream";
+import { DataEncodingMode } from "../data_structures/types/EnumTypes/DataEncodingMode";
+import { DATA_ENCODING_MODE } from "../data_structures/enums/DATA_ENCODING_MODE";
 
 function generateQRMatrix(data: string): Array<Array<number>> {
     // -- 1. Get Current QR Configurations --
@@ -19,7 +20,7 @@ function generateQRMatrix(data: string): Array<Array<number>> {
     console.log("Generating QR Code with specs:", qrSpecs);
 
     // -- 2. Determine Mode (or use Byte if forced) --
-    const mode: DataEncodingMode = qrSpecs.forceByteEncoding ? DATA_ENCODING_MODES.BYTE : determineMode(data);
+    const mode: DataEncodingMode = qrSpecs.forceByteEncoding ? DATA_ENCODING_MODE.BYTE : determineMode(data);
     if (!mode) throw new Error("Unable to determine encoding mode for the provided data."); 
     
     // Will hold the encoded data segments

@@ -1,4 +1,4 @@
-import { DATA_ENCODING_MODES } from "../../data_structures/enums/DATA_ENCODING_MODES";
+import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
 import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
 
 
@@ -10,7 +10,7 @@ function encodeAlphanumeric(data: string): EncodedDataSegment {
     // console.log(`Encoding alphanumeric data: ${data}`);
 
     const encodedDataSegment: EncodedDataSegment = {
-        encodingMode: DATA_ENCODING_MODES.ALPHANUMERIC,
+        encodingMode: DATA_ENCODING_MODE.ALPHANUMERIC,
         charCount: data.length,
         plainTextData: data,
         encodedData: []

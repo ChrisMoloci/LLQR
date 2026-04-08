@@ -1,6 +1,7 @@
 
-import { DATA_ENCODING_CHARACTER_SETS, DataEncodingCharacterSet } from "../../data_structures/enums/DATA_ENCODING_CHARACTER_SETS";
-import { DATA_ENCODING_MODES } from "../../data_structures/enums/DATA_ENCODING_MODES";
+import { DATA_ENCODING_CHARACTER_SET } from "../../data_structures/enums/DATA_ENCODING_CHARACTER_SET";
+import { DataEncodingCharacterSet } from "../../data_structures/types/EnumTypes/DataEncodingCharacterSet";
+import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
 import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
 import BINARY_ENCODER_FUNCTION_MAPPINGS from "./byteEncoders/binaryEncoderFunctionMappings";
 
@@ -21,7 +22,7 @@ function encodeBinary(data: string): EncodedDataSegment {
 
     // -- 3. Prepare the encoded segment draft --
     const encodedDataSegment: EncodedDataSegment = {
-        encodingMode: DATA_ENCODING_MODES.BYTE,
+        encodingMode: DATA_ENCODING_MODE.BYTE,
         charSetAssignmentNumber: charSetAssignmentNumber,
         charCount: data.length,
         plainTextData: data,
@@ -46,14 +47,14 @@ function getCharSet(plainDataChars: Array<string>): DataEncodingCharacterSet {
 
     // Define compatible charsets for binary encoding (order determines priority)
     const compatibleCharsets: Array<DataEncodingCharacterSet> = [
-        DATA_ENCODING_CHARACTER_SETS["ISO-8859-1"], // Priority 1
-        DATA_ENCODING_CHARACTER_SETS["UTF-8"] // Priority 2
+        DATA_ENCODING_CHARACTER_SET["ISO-8859-1"], // Priority 1
+        DATA_ENCODING_CHARACTER_SET["UTF-8"] // Priority 2
     ];
 
     // Check each charset for compatibility
     for (const charset of compatibleCharsets) {
         if (checkCharsetCompatibility(plainDataChars, charset)) {
-            console.log(`Using character set ${Object.keys(DATA_ENCODING_CHARACTER_SETS).find(key => DATA_ENCODING_CHARACTER_SETS[key] === charset)} for binary encoding.`);
+            console.log(`Using character set ${Object.keys(DATA_ENCODING_CHARACTER_SET).find(key => DATA_ENCODING_CHARACTER_SET[key] === charset)} for binary encoding.`);
             return charset; // Return the first compatible charset found
         }
     }
@@ -74,12 +75,12 @@ function getCharSet(plainDataChars: Array<string>): DataEncodingCharacterSet {
 
             // Test for incompatibility based on provided charset
             switch (charset) {
-                case DATA_ENCODING_CHARACTER_SETS["ISO-8859-1"]:
+                case DATA_ENCODING_CHARACTER_SET["ISO-8859-1"]:
                     if (cp < 0x00 || cp > 0xFF) {
                         return false; // Character not compatible with ISO-8859-1
                     }
                     break;
-                case DATA_ENCODING_CHARACTER_SETS["UTF-8"]:
+                case DATA_ENCODING_CHARACTER_SET["UTF-8"]:
                     if (cp < 0x00 || cp > 0x10FFFF) {
                         return false; // Character not compatible with UTF-8
                     }

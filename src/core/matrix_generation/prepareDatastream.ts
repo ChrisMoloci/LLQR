@@ -1,13 +1,14 @@
 import { getCharCountIndicatorLength } from "./determineMinQRVersion";
 import optimizeCrossCompatibleSegments from "../helpers/optimizeCrossCompatSegments";
 import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
-import { ECISwitchingModes, ModeSwitchingModes, QRVersions } from "../../data_structures/types/QRSpecs";
-import { DATA_ENCODING_MODES, DataEncodingMode } from "../../data_structures/enums/DATA_ENCODING_MODES";
-import { DataEncodingCharacterSet } from "../../data_structures/enums/DATA_ENCODING_CHARACTER_SETS";
+import { ECISwitchingStrategy, ModeSwitchingStrategy, QRVersions } from "../../exports/types";
+import { DataEncodingMode } from "../../data_structures/types/EnumTypes/DataEncodingMode";
+import { DataEncodingCharacterSet } from "../../data_structures/types/EnumTypes/DataEncodingCharacterSet";
+import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
 
 // TODO: Add a alphanumeric/numeric normalizer that combines the segments in specific situations where their length and mode indicators will cause them to be longer when split than when consolidated (remember to also update determine version to account for consolidation as well) when in auto mode
 
-function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: QRVersions, eciSwitchingMode: ECISwitchingModes = "disabled", modeSwitchingMode: ModeSwitchingModes): Array<string> {
+function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: QRVersions, eciSwitchingMode: ECISwitchingStrategy = "disabled", modeSwitchingMode: ModeSwitchingStrategy): Array<string> {
     const dataStream: Array<string> = []; // Will hold the final data stream (as an array of codewords)
 
     // Store Encoding Mode and ECI Assignment Number states for mode switching checks
@@ -29,7 +30,7 @@ function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: 
 
         // Only attempt consolidation if mode switching is "auto" and current segment is alphanumeric or numeric
         if (modeSwitchingMode === "auto" && remainingOptimizedSegmentsCount === 0 && (
-            segment.encodingMode === DATA_ENCODING_MODES.ALPHANUMERIC || segment.encodingMode === DATA_ENCODING_MODES.NUMERIC
+            segment.encodingMode === DATA_ENCODING_MODE.ALPHANUMERIC || segment.encodingMode === DATA_ENCODING_MODE.NUMERIC
         )) {
             crossCompatibleSegments.push(segment); // Add the current segment to the list of cross compatible segments
 
@@ -39,7 +40,7 @@ function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: 
                 const followingSegment = encodedSegments[j]; // Next segment to check
                 const followingEncodingMode = followingSegment?.encodingMode; // Next segment's encoding mode
 
-                if (followingSegment && (followingEncodingMode === DATA_ENCODING_MODES.ALPHANUMERIC || followingEncodingMode === DATA_ENCODING_MODES.NUMERIC)) {
+                if (followingSegment && (followingEncodingMode === DATA_ENCODING_MODE.ALPHANUMERIC || followingEncodingMode === DATA_ENCODING_MODE.NUMERIC)) {
                     // If the following segment is cross-compatible, add it to the collection
                     crossCompatibleSegments.push(followingSegment!); // Add to cross-compatible segments
                     // i = j; // Move index forward since we've collected this segment
@@ -65,12 +66,12 @@ function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: 
         // -- 2. 
 
         // ECI headers
-        if (eciSwitchingMode === "forced" && segment.encodingMode === DATA_ENCODING_MODES.BYTE) {
+        if (eciSwitchingMode === "forced" && segment.encodingMode === DATA_ENCODING_MODE.BYTE) {
             // Always add ECI Indicator and Assignment Number for Byte mode segments if ECI switching is forced
             const eciStream = generateECIIndicatorAndAssignmentNumber(segment.charSetAssignmentNumber);
             dataStream.push(...eciStream); // Append ECI indicator and assignment number to the data stream
             console.log("Added ECI Segment to data stream (forced):", eciStream);
-        } else if (eciSwitchingMode === "auto" && segment.encodingMode === DATA_ENCODING_MODES.BYTE && eciModeAssignmentNumberState !== segment.charSetAssignmentNumber) {
+        } else if (eciSwitchingMode === "auto" && segment.encodingMode === DATA_ENCODING_MODE.BYTE && eciModeAssignmentNumberState !== segment.charSetAssignmentNumber) {
             // Add ECI Indicator and Assignment Number for Byte mode segments if ECI switching is "auto" and charset has changed
             const eciStream = generateECIIndicatorAndAssignmentNumber(segment.charSetAssignmentNumber);
             dataStream.push(...eciStream); // Append ECI indicator and assignment number to the data stream
@@ -83,12 +84,12 @@ function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: 
             (
                 // Always add mode indicator + char count indicator if ECI switching is forced since it must acompany every ECI mode indicator + assignment number
                 eciSwitchingMode === "forced" &&
-                segment.encodingMode == DATA_ENCODING_MODES.BYTE
+                segment.encodingMode == DATA_ENCODING_MODE.BYTE
             ) ||
             (
                 // Add a mode indicator + char count indicator if ECI switching is "auto" and adjacent byte segments have different ECI assignment numbers
                 eciSwitchingMode === "auto" &&
-                segment.encodingMode === DATA_ENCODING_MODES.BYTE &&
+                segment.encodingMode === DATA_ENCODING_MODE.BYTE &&
                 eciModeAssignmentNumberState !== segment.charSetAssignmentNumber
             )
         ) {

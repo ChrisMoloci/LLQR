@@ -1,14 +1,13 @@
-
-import { MaskPatternCode } from "../../data_structures/enums/MASK_PATTERN_CODES";
-import { MASK_PATTERN_FUNCTIONS } from "../../data_structures/enums/MASK_PATTERN_FUNCTIONS";
+import { MaskPatternCode } from "../../exports/types";
+import { MASK_PATTERN_FUNCTION } from "../../data_structures/enums/MASK_PATTERN_FUNCTION";
+import { MaskedQRMatrix } from "../../data_structures/types/MaskedQRMatrix";
 import { QRMatrixCanvas } from "../../data_structures/types/QRMatrixCanvas";
-import { MaskedQRMatrix } from "../matrix_generation/generateMatrix";
 
 // Mask Functions union type
 // export type MaskFunctions = typeof mask0 | typeof mask1 | typeof mask2 | typeof mask3 | typeof mask4 | typeof mask5 | typeof mask6 | typeof mask7;
 
 export default function maskQR(maskCode: MaskPatternCode, qrMatrixCanvas: QRMatrixCanvas, size: number): MaskedQRMatrix {
-    const maskFunction = MASK_PATTERN_FUNCTIONS[maskCode!];
+    const maskFunction = MASK_PATTERN_FUNCTION[maskCode!];
 
     for (let col = size - 1; col >= 0; col--) {
         if (col === 6) col--;

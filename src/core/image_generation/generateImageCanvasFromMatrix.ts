@@ -1,7 +1,7 @@
-import { getCurrentConfigs } from "../core/helpers/defineConfig";
-import { QR_ELEMENT_SHAPES } from "../data_structures/enums/QR_ELEMENT_SHAPES";
-import { ImageSpecs } from "../data_structures/types/ImageSpecs";
-import { alignmentPatternLocations } from "../datasets/alignmentPatternLocations";
+import { getCurrentConfigs } from "../helpers/defineConfig";
+import { QR_ELEMENT_SHAPE } from "../../data_structures/enums/QR_ELEMENT_SHAPE";
+import { ImageSpecs } from "../../data_structures/types/ImageSpecs";
+import { alignmentPatternLocations } from "../../datasets/alignmentPatternLocations";
 
 let finderPatterns: { x: number, y: number, x2: number, y2: number }[]
 let alignmentPatterns : { x: number, y: number, x2: number, y2: number }[];
@@ -84,7 +84,7 @@ function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, size: number,
 
         // Draw the outline and background
         switch (imageSpecs.finderPatternOutlineShapes[i]) {
-            case QR_ELEMENT_SHAPES.SQUARE:
+            case QR_ELEMENT_SHAPE.SQUARE:
                 drawSquareModule(
                     matrixCtx, 
                     finderPatternLocation.x * moduleSize,
@@ -92,7 +92,7 @@ function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, size: number,
                     moduleSize * 7
                 );
                 break;
-            case QR_ELEMENT_SHAPES.CIRCLE:
+            case QR_ELEMENT_SHAPE.CIRCLE:
                 drawCircleModule(
                     matrixCtx, 
                     finderPatternLocation.x * moduleSize,
@@ -100,7 +100,7 @@ function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, size: number,
                     moduleSize * 7 / 2,
                 );
                 break;
-            case QR_ELEMENT_SHAPES.ROUNDED:
+            case QR_ELEMENT_SHAPE.ROUNDED:
                 drawRoundedModule(
                     matrixCtx, 
                     finderPatternLocation.x * moduleSize,
@@ -114,7 +114,7 @@ function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, size: number,
         // Draw finder pattern inner background
         matrixCtx.fillStyle = imageSpecs.finderPatternInnerBackgroundColor[i];
         switch (imageSpecs.finderPatternInnerBackgroundShapes[i]) {
-            case QR_ELEMENT_SHAPES.SQUARE:
+            case QR_ELEMENT_SHAPE.SQUARE:
                 drawSquareModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + moduleSize,
@@ -122,7 +122,7 @@ function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, size: number,
                     moduleSize * 5
                 );
                 break;
-            case QR_ELEMENT_SHAPES.CIRCLE:
+            case QR_ELEMENT_SHAPE.CIRCLE:
                 drawCircleModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + moduleSize,
@@ -130,7 +130,7 @@ function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, size: number,
                     moduleSize * 5 / 2,
                 );
                 break;
-            case QR_ELEMENT_SHAPES.ROUNDED:
+            case QR_ELEMENT_SHAPE.ROUNDED:
                 drawRoundedModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + moduleSize,
@@ -144,7 +144,7 @@ function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, size: number,
         // Draw the inner area of the finder patterns
         matrixCtx.fillStyle = innerColor[i];
         switch (imageSpecs.finderPatternInnerShapes[i]) {
-            case QR_ELEMENT_SHAPES.SQUARE:
+            case QR_ELEMENT_SHAPE.SQUARE:
                 drawSquareModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + (2 * moduleSize),
@@ -152,7 +152,7 @@ function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, size: number,
                     moduleSize * 3
                 );
                 break;
-            case QR_ELEMENT_SHAPES.CIRCLE:
+            case QR_ELEMENT_SHAPE.CIRCLE:
                 drawCircleModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + (2 * moduleSize),
@@ -160,7 +160,7 @@ function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, size: number,
                     (moduleSize * 3) / 2,
                 );
                 break;
-            case QR_ELEMENT_SHAPES.ROUNDED:
+            case QR_ELEMENT_SHAPE.ROUNDED:
                 drawRoundedModule(
                     matrixCtx, 
                     (finderPatternLocation.x * moduleSize) + (2 * moduleSize),
@@ -196,7 +196,7 @@ function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: numb
         // Draw the outline
         matrixCtx.fillStyle = outlineColor; // Set to outline color
         switch (imageSpecs.alignmentPatternOutlineShapes) {
-            case QR_ELEMENT_SHAPES.SQUARE:
+            case QR_ELEMENT_SHAPE.SQUARE:
                 drawSquareModule(
                     matrixCtx, 
                     alignmentPatternLocation.x * moduleSize,
@@ -204,7 +204,7 @@ function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: numb
                     moduleSize * 5
                 );
                 break;
-            case QR_ELEMENT_SHAPES.CIRCLE:
+            case QR_ELEMENT_SHAPE.CIRCLE:
                 drawCircleModule(
                     matrixCtx, 
                     alignmentPatternLocation.x * moduleSize,
@@ -212,7 +212,7 @@ function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: numb
                     moduleSize * 5 / 2,
                 );
                 break;
-            case QR_ELEMENT_SHAPES.ROUNDED:
+            case QR_ELEMENT_SHAPE.ROUNDED:
                 drawRoundedModule(
                     matrixCtx, 
                     alignmentPatternLocation.x * moduleSize,
@@ -226,7 +226,7 @@ function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: numb
         // Draw the inner background
         matrixCtx.fillStyle = backgroundColor; // Set to background color
         switch (imageSpecs.alignmentPatternInnerBackgroundShapes) {
-            case QR_ELEMENT_SHAPES.SQUARE:
+            case QR_ELEMENT_SHAPE.SQUARE:
                 drawSquareModule(
                     matrixCtx, 
                     (alignmentPatternLocation.x * moduleSize) + moduleSize,
@@ -234,7 +234,7 @@ function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: numb
                     moduleSize * 3
                 );
                 break;
-            case QR_ELEMENT_SHAPES.CIRCLE:
+            case QR_ELEMENT_SHAPE.CIRCLE:
                 drawCircleModule(
                     matrixCtx, 
                     (alignmentPatternLocation.x * moduleSize) + moduleSize,
@@ -242,7 +242,7 @@ function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: numb
                     moduleSize * 3 / 2,
                 );
                 break;
-            case QR_ELEMENT_SHAPES.ROUNDED:
+            case QR_ELEMENT_SHAPE.ROUNDED:
                 drawRoundedModule(
                     matrixCtx, 
                     (alignmentPatternLocation.x * moduleSize) + moduleSize,
@@ -256,7 +256,7 @@ function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: numb
         // Draw the inner area
         matrixCtx.fillStyle = innerColor; // Set to inner color
         switch (imageSpecs.alignmentPatternInnerShapes) {
-            case QR_ELEMENT_SHAPES.SQUARE:
+            case QR_ELEMENT_SHAPE.SQUARE:
                 drawSquareModule(
                     matrixCtx, 
                     (alignmentPatternLocation.x * moduleSize) + (2 * moduleSize),
@@ -264,7 +264,7 @@ function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: numb
                     moduleSize * 1
                 );
                 break;
-            case QR_ELEMENT_SHAPES.CIRCLE:
+            case QR_ELEMENT_SHAPE.CIRCLE:
                 drawCircleModule(
                     matrixCtx, 
                     (alignmentPatternLocation.x * moduleSize) + (2 * moduleSize),
@@ -272,7 +272,7 @@ function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, size: numb
                     (moduleSize * 1) / 2,
                 );
                 break;
-            case QR_ELEMENT_SHAPES.ROUNDED:
+            case QR_ELEMENT_SHAPE.ROUNDED:
                 drawRoundedModule(
                     matrixCtx, 
                     (alignmentPatternLocation.x * moduleSize) + (2 * moduleSize),
@@ -292,7 +292,7 @@ function renderDataStream(matrix: Array<Array<number>>, matrixCtx: CanvasRenderi
     const bgColor = imageSpecs.backgroundColor;
 
     switch (imageSpecs.moduleShape) {
-        case QR_ELEMENT_SHAPES.SQUARE:
+        case QR_ELEMENT_SHAPE.SQUARE:
             // Draw square modules
             for (let row = 0; row < size; row++) {
                 for (let col = 0; col < size; col++) {
@@ -308,7 +308,7 @@ function renderDataStream(matrix: Array<Array<number>>, matrixCtx: CanvasRenderi
                 }
             }
             break;
-        case QR_ELEMENT_SHAPES.CIRCLE:
+        case QR_ELEMENT_SHAPE.CIRCLE:
             // Draw circle modules
             for (let row = 0; row < size; row++) {
                 for (let col = 0; col < size; col++) {
@@ -324,7 +324,7 @@ function renderDataStream(matrix: Array<Array<number>>, matrixCtx: CanvasRenderi
                 }
             }
             break;
-        case QR_ELEMENT_SHAPES.ROUNDED:
+        case QR_ELEMENT_SHAPE.ROUNDED:
             for (let row = 0; row < size; row++) {
                 for (let col = 0; col < size; col++) {
                     if (!isReserved(col, row, size, version)) {

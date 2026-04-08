@@ -9,6 +9,18 @@
     ".": {
       "require": "./dist/index.cjs",
       "import": "./dist/index.mjs"
+    },
+    "./types": {
+      "require": "./dist/types.cjs",
+      "import": "./dist/types.mjs"
+    },
+    "./constants": {
+      "require": "./dist/constants.cjs",
+      "import": "./dist/constants.mjs"
+    },
+    "./api": {
+      "require": "./dist/api.cjs",
+      "import": "./dist/api.mjs"
     }
   },
   "scripts": {
