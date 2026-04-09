@@ -1,7 +1,7 @@
 import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
 import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
-import { QRVersions } from "../../exports/types";
-import { getCharCountIndicatorLength } from "../matrix_generation/determineMinQRVersion";
+import { QRVersion } from "../../exports/types";
+import { getCharCountIndicatorLength } from "../helpers/getCharCountIndicatorLength";
 import { encodeWithSingleMode } from "../matrix_generation/encodeWithSingleMode";
 
 
@@ -18,7 +18,7 @@ const determineSizeForNumericData = (size: number): number => {
 }
 
 // Optimizes a run of cross-compatible segments (alphanumeric/numeric) by checking if consolidation saves space and returns the optimized size in bits
-function optimizeCrossCompatibleSegments(segments: Array<EncodedDataSegment>, version: QRVersions): Array<EncodedDataSegment> {
+function optimizeCrossCompatibleSegments(segments: Array<EncodedDataSegment>, version: QRVersion): Array<EncodedDataSegment> {
     /** 
      * We are not storing segments as those are more complex since they need to be recomputed each time they merge.
      * we will just create theoretical partitions with theoretical ConsolidatedSegmentPrototypes.

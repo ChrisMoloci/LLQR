@@ -1,7 +1,5 @@
-
 import prepareDatastream from "../core/matrix_generation/prepareDatastream";
-
-import generateMatrix from "../core/matrix_generation/generateMatrix";
+import generateMatrix from "../core/matrix_generation/matrix/generateMatrix";
 import { getCurrentConfig } from "../core/helpers/defineConfig";
 import { encodeWithModeSwitching } from "../core/matrix_generation/encodeWithModeSwitching";
 import { QRSpecs } from "../data_structures/types/QRSpecs";
@@ -9,7 +7,7 @@ import determineMode from "../core/matrix_generation/determineEncodingMode";
 import { EncodedDataSegment } from "../data_structures/types/EncodedDataSegment";
 import { encodeWithSingleMode } from "../core/matrix_generation/encodeWithSingleMode";
 import determineMinQRVersion from "../core/matrix_generation/determineMinQRVersion";
-import generateECCStream from "../core/matrix_generation/generateECCStream";
+import generateECCStream from "../core/matrix_generation/ecc/generateECCStream";
 import { DataEncodingMode } from "../data_structures/types/EnumTypes/DataEncodingMode";
 import { DATA_ENCODING_MODE } from "../data_structures/enums/DATA_ENCODING_MODE";
 import { MODE_SWITCHING_STRATEGY } from "../data_structures/enums/MODE_SWITCHING_STRATEGY";

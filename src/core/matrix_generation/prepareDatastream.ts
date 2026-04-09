@@ -1,4 +1,4 @@
-import { getCharCountIndicatorLength } from "./determineMinQRVersion";
+import { getCharCountIndicatorLength } from "../helpers/getCharCountIndicatorLength";
 import optimizeCrossCompatibleSegments from "../helpers/optimizeCrossCompatSegments";
 import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
 import { ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion } from "../../exports/types";
@@ -6,6 +6,8 @@ import { DataEncodingMode } from "../../data_structures/types/EnumTypes/DataEnco
 import { DataEncodingCharacterSet } from "../../data_structures/types/EnumTypes/DataEncodingCharacterSet";
 import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
 import { ECI_SWITCHING_STRATEGY } from "../../data_structures/enums/ECI_SWITCHING_STRATEGY";
+import generateLengthIndicator from "../helpers/generateLengthIndicator";
+import generateECIIndicatorAndAssignmentNumber from "../helpers/generateECIIndicatorAndAssignmentNumber";
 
 // TODO: Add a alphanumeric/numeric normalizer that combines the segments in specific situations where their length and mode indicators will cause them to be longer when split than when consolidated (remember to also update determine version to account for consolidation as well) when in auto mode
 
@@ -121,35 +123,6 @@ function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: 
 
     // Return the prepared data stream
     return dataStream;
-}
-
-// Creates a length indicator based on data length, mode, and char count indicator length
-function generateLengthIndicator(unencodedData: string, encodedData: Array<string>, charCountIndicatorLength: number, mode: DataEncodingMode) {
-    // If byte mode, use the encoded byte length; otherwise use the unencoded character length
-    const length = mode === "0100" ? encodedData.length : unencodedData.length;
-    // const length = unencodedData.length; // Use unencoded data length for all modes
-
-    return length.toString(2).padStart(charCountIndicatorLength, '0'); // Return the length as a binary string
-}
-
-// Generates the ECI Mode Indicator and Assignment Number binary strings to be added to the data stream
-function generateECIIndicatorAndAssignmentNumber(assignmentNumber: number): Array<string> {
-    // ECI Mode Indicator is always '0111'
-    const eciModeIndicator = '0111';
-
-    // Convert assignment number to binary (8 bits for 0-127, 16 bits for 128-16383)
-    let assignmentNumberBinary: string;
-    if (assignmentNumber >= 0 && assignmentNumber <= 127) {
-        assignmentNumberBinary = assignmentNumber.toString(2).padStart(8, '0');
-    } else if (assignmentNumber >= 128 && assignmentNumber <= 16383) {
-        assignmentNumberBinary = assignmentNumber.toString(2).padStart(16, '0');
-    } else if (assignmentNumber >= 16384 && assignmentNumber <= 999999) {
-        assignmentNumberBinary = assignmentNumber.toString(2).padStart(24, '0');
-    } else {
-        throw new Error("ECI Assignment Number out of range (0-999999).");
-    }
-
-    return [eciModeIndicator, assignmentNumberBinary];
 }
 
 export default prepareDatastream;
