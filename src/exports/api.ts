@@ -17,6 +17,7 @@ import determineMinQRVersion from "../core/matrix_generation/determineMinQRVersi
 import prepareDatastream from "../core/matrix_generation/prepareDatastream";
 import generateECCStream from "../core/matrix_generation/ecc/generateECCStream";
 import generateMatrix from "../core/matrix_generation/matrix/generateMatrix";
+import generateImageCanvasFromMatrix from "../core/image_generation/generateImageCanvasFromMatrix";
 
 // Helper functions
 import encodeNumeric from "../core/encoders/encodeNumeric";
@@ -49,6 +50,17 @@ import addDataToMatrix from "../core/matrix_generation/matrix/addDataToMatrix";
 import maskAllMatrices from "../core/matrix_generation/matrix/maskAllMatrices";
 import addFormatInformationToMatrix from "../core/matrix_generation/matrix/addFormatInformationToMatrix";
 import determineOptimalMaskPattern from "../core/matrix_generation/matrix/determineOptimalMaskPattern";
+
+import computeFinderPatternsLocations from "../core/image_generation/computeFinderPatternLocations";
+import computeAlignmentPatternsLocations from "../core/image_generation/computeAlignmentPatternLocations";
+import renderFinderPatterns from "../core/image_generation/renderFinderPatterns";
+import renderAlignmentPatterns from "../core/image_generation/renderAlignmentPatterns";
+import isReserved from "../core/image_generation/isReserved";
+import renderDataStream from "../core/image_generation/renderDatastream";
+
+import drawCircleModule from "../core/image_generation/drawCircleModule";
+import drawSquareModule from "../core/image_generation/drawSquareModule";
+import drawRoundedModule from "../core/image_generation/drawRoundedModule";
 
 /**
  * Exporting types out of the library
