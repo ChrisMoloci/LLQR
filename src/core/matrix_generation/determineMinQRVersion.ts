@@ -13,7 +13,7 @@ import optimizeCrossCompatibleSegments from "../helpers/optimizeCrossCompatSegme
 import prepareDatastream from "./prepareDatastream";
 
 
-export default function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy, minPrefferedVersion: QRVersion | null = null): QRVersions {
+export default function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy, minPrefferedVersion: QRVersion | null = null): QRVersion {
     let bestVersion: QRVersion | null = null; // Stores best version found through iterations (eventuall the best version)
 
     // Loop through all QR versions from 1 to 40

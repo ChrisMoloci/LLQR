@@ -1,4 +1,4 @@
-import { MaskPatternCode } from "../enums/MASK_PATTERN_CODE";
+import { MaskPatternCode } from "../types/QRSpecTypes/MaskPatternCode";
 
 export type MaskedQRMatrix = {
     matrix: Array<Array<number>>,

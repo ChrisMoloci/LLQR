@@ -47,8 +47,11 @@ function generateQRMatrix(data: string): Array<Array<number>> {
      */
     const version = determineMinQRVersion(encodedData, qrSpecs.eccLevel, qrSpecs.useECISwitching, qrSpecs.useModeSwitching, qrSpecs.minPreferredVersion);
 
+    if (version === null) {
+        throw new Error("Unable to determine a suitable QR code version for the provided data and ECC level.");
+    }
+
     console.log("Determined Minimum QR Version:", version);
-    // console.log("Character Count Indicator Length:", charCountIndicatorLength);
 
     // -- 5. Prepare data stream for ECC generation (add mode, length indicators, etc.) --
     const preparedDataStream: Array<string> = prepareDatastream(encodedData, version, qrSpecs.useECISwitching, qrSpecs.useModeSwitching);

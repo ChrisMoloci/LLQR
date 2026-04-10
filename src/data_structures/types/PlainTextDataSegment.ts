@@ -1,4 +1,4 @@
-import { DataEncodingMode } from "../enums/DATA_ENCODING_MODE";
+import { DataEncodingMode } from "../types/EnumTypes/DataEncodingMode";
 
 // Stores plain text
 export interface PlainTextDataSegment {

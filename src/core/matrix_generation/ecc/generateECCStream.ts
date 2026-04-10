@@ -1,20 +1,32 @@
 
 import { qrDataCapacityBits } from "../../../datasets/qrDataCapacityBits";
 import { ECC_LEVEL_CODE } from "../../../exports/constants";
-import { ECCLevelCode, QRVersion } from "../../../exports/types";
-import { gfMultiply, gfXor } from "../../helpers/GF256_Arithmetic";
 import computeECC from "./computeECC";
+import { QRVersion } from "../../../data_structures/types/QRSpecTypes/QRVersion"
+import { ECCLevelCode, ECCLevelKey } from "../../../data_structures/types/QRSpecTypes/ECCLevelCode";
 import groupDataAndBlocks from "./groupDataAndBlocks";
 import interleaveData from "./interleaveData";
 import normalizeDataStream from "./normalizeDataStream";
 import padECCZeroBytesToBlocks from "./padECCZeroBytesToBlocks";
 
 function generateECCStream(encodedData: Array<string>, qrVersion: QRVersion, eccLevelCode: ECCLevelCode): Array<string> {
-    const eccLevel = Object.entries(ECC_LEVEL_CODE).find(([key, value]) => value === eccLevelCode)?.[0];
-    const groupingObj = qrDataCapacityBits[qrVersion][eccLevel!];
-    const dataCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevel].data * 8;
-    const eccCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevel].ecc * 8;
-    const generatorPolynomial: Array<number> = qrDataCapacityBits[qrVersion][eccLevel].generator;
+    if (qrVersion == null) {
+        throw new Error("Version cannot be null when generating ECC stream.");
+    }
+    if (eccLevelCode == undefined) {
+        throw new Error("ECC Level Code cannot be null when generating ECC stream.");
+    }
+
+    const eccLevelKey = Object.entries(ECC_LEVEL_CODE).find(([key, value]) => value === eccLevelCode)?.[0];
+
+    if (eccLevelKey === undefined) {
+        throw new Error("Invalid ECC Level Code provided for ECC stream generation.");
+    }
+
+    const groupingObj = qrDataCapacityBits[qrVersion][eccLevelKey];
+    const dataCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevelKey].data * 8;
+    const eccCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevelKey].ecc * 8;
+    const generatorPolynomial: Array<number> = qrDataCapacityBits[qrVersion][eccLevelKey].generator;
 
     // -- 1. Restructure data stream with padding, and empty ECC bytes as an array --
     const normalizedDataStream = normalizeDataStream(encodedData, dataCodewordBufferSize);
