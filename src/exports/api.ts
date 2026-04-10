@@ -65,3 +65,15 @@ import drawRoundedModule from "../core/image_generation/drawRoundedModule";
 /**
  * Exporting types out of the library
  */
+
+export {
+    // Core functions
+    determineMode,
+    encodeWithSingleMode,
+    encodeWithModeSwitching,
+    determineMinQRVersion,
+    prepareDatastream,
+    generateECCStream,
+    generateMatrix,
+    generateImageCanvasFromMatrix,
+}

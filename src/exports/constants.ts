@@ -22,6 +22,12 @@ import { QR_ELEMENT_SHAPE } from "../data_structures/enums/QR_ELEMENT_SHAPE";
 import { QR_DEFAULTS } from "../const";
 import { IMAGE_DEFAULTS } from "../const";
 
+// Other constants
+import { Color } from "../data_structures/enums/COLOR";
+import { DATA_ENCODING_MODE } from "../data_structures/enums/DATA_ENCODING_MODE";
+import { DATA_ENCODING_CHARACTER_SET } from "../data_structures/enums/DATA_ENCODING_CHARACTER_SET";
+import { MASK_PATTERN_FUNCTION } from "../data_structures/enums/MASK_PATTERN_FUNCTION";
+
 /**
  * Exporting types out of the library
  */
@@ -38,5 +44,12 @@ export {
 
     // Default spec enum
     QR_DEFAULTS,
-    IMAGE_DEFAULTS
+    IMAGE_DEFAULTS,
+
+    // Other constants
+    // Color,
+    DATA_ENCODING_MODE,
+    DATA_ENCODING_CHARACTER_SET,
+    MASK_PATTERN_FUNCTION
+
 }

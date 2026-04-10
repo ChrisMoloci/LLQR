@@ -23,6 +23,18 @@ import { ECISwitchingStrategy } from "../data_structures/types/QRSpecTypes/ECISw
 
 import { QRElementShape } from "../data_structures/types/ImageSpecTypes/QRElementShape";
 
+// Other types
+import { DataEncodingCharacterSet } from "../data_structures/types/EnumTypes/DataEncodingCharacterSet";
+import { DataEncodingMode } from "../data_structures/types/EnumTypes/DataEncodingMode";
+import { MaskPatternFunction } from "../data_structures/types/EnumTypes/MaskPatternFunction";
+import { EncodedDataSegment } from "../data_structures/types/EncodedDataSegment";
+import { MaskedQRMatrix } from "../data_structures/types/MaskedQRMatrix";
+import { PlainTextDataSegment } from "../data_structures/types/PlainTextDataSegment";
+import { QRConfigs } from "../data_structures/types/QRConfigs";
+import { QRMatrixCanvas } from "../data_structures/types/QRMatrixCanvas";
+import { Radiuses } from "../data_structures/types/Radiuses";
+import { ShapeLocation } from "../data_structures/types/ShapeLocation";
+
 /**
  * Exporting types out of the library
  */
@@ -39,4 +51,16 @@ export type {
     ECISwitchingStrategy,
 
     QRElementShape,
+
+    // Other types
+    DataEncodingCharacterSet,
+    DataEncodingMode,
+    MaskPatternFunction,
+    EncodedDataSegment,
+    MaskedQRMatrix,
+    PlainTextDataSegment,
+    QRConfigs,
+    QRMatrixCanvas,
+    Radiuses,
+    ShapeLocation
 }
