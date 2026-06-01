@@ -54,7 +54,7 @@ function getCharSet(plainDataChars: Array<string>): DataEncodingCharacterSet {
     // Check each charset for compatibility
     for (const charset of compatibleCharsets) {
         if (checkCharsetCompatibility(plainDataChars, charset)) {
-            console.log(`Using character set ${Object.keys(DATA_ENCODING_CHARACTER_SET).find(key => DATA_ENCODING_CHARACTER_SET[key] === charset)} for binary encoding.`);
+            console.log(`Using character set ${(Object.keys(DATA_ENCODING_CHARACTER_SET) as Array<keyof typeof DATA_ENCODING_CHARACTER_SET>).find(key => DATA_ENCODING_CHARACTER_SET[key] === charset)} for binary encoding.`);
             return charset; // Return the first compatible charset found
         }
     }

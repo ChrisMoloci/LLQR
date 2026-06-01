@@ -21,6 +21,10 @@
     "./api": {
       "require": "./dist/api.cjs",
       "import": "./dist/api.mjs"
+    },
+    "./datasets": {
+      "require": "./dist/datasets.cjs",
+      "import": "./dist/datasets.mjs"
     }
   },
   "scripts": {

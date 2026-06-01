@@ -11,7 +11,7 @@ import { ModeSwitchingStrategy } from "../../data_structures/types/QRSpecTypes/M
 import { getECIAssignmentNumberSize } from "./getECIAssignmentNumberSize";
 
 // Helper functions for determinVersion()
-export function computeTheoreticalSizeOfDataForVersion(encodedData: Array<EncodedDataSegment>, version: QRVersion, eciSwitchingMode: ECISwitchingStrategy, modeSwitchingMode: ModeSwitchingStrategy): number {
+export function  computeTheoreticalSizeOfDataForVersion(encodedData: Array<EncodedDataSegment>, version: QRVersion, eciSwitchingMode: ECISwitchingStrategy, modeSwitchingMode: ModeSwitchingStrategy): number {
     let encodingModeState: DataEncodingMode | null = null; // Holds current encoding mode state for mode switching
     let eciModeAssignmentNumberState: DataEncodingCharacterSet | null = null; // Holds current ECI mode state for mode switching
 

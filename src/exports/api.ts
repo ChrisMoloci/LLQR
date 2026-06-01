@@ -24,6 +24,8 @@ import encodeNumeric from "../core/encoders/encodeNumeric";
 import encodeAlphanumeric from "../core/encoders/encodeAlphanumeric";
 import encodeKanji from "../core/encoders/encodeKanji";
 import encodeBinary from "../core/encoders/encodeBinary";
+import encodeISO_8859_1 from "../core/encoders/byteEncoders/ISO_IEC_8859/encodeISO-8859-1";
+import encodeUTF8 from "../core/encoders/byteEncoders/unicode/encodeUTF-8";
 
 import { computeTheoreticalSizeOfDataForVersion } from "../core/helpers/computeTheoreticalSizeOfDataForVersion";
 import optimizeCrossCompatibleSegments from "../core/helpers/optimizeCrossCompatSegments";
@@ -76,4 +78,18 @@ export {
     generateECCStream,
     generateMatrix,
     generateImageCanvasFromMatrix,
+
+    // Individual Encoders
+    encodeNumeric,
+    encodeAlphanumeric,
+    encodeKanji,
+    encodeBinary,
+    encodeISO_8859_1,
+    encodeUTF8,
+
+    // Helper functions
+    computeTheoreticalSizeOfDataForVersion,
+    optimizeCrossCompatibleSegments,
+    getCharCountIndicatorLength,
+    getECIAssignmentNumberSize,
 }

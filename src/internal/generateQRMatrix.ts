@@ -25,7 +25,7 @@ function generateQRMatrix(data: string): Array<Array<number>> {
     let encodedData: Array<EncodedDataSegment> | null = null;
 
     // -- 3. Encode Data to Binary as EncodedSegmentDraft --
-    if (qrSpecs.useModeSwitching === MODE_SWITCHING_STRATEGY.DISABLED) {
+    if (qrSpecs.useModeSwitching === MODE_SWITCHING_STRATEGY.DISABLED || mode === DATA_ENCODING_MODE.BYTE) {
         // Encode using a single mode
         console.log("Encoding data using single mode:", mode);
         encodedData = encodeWithSingleMode(data, mode);
