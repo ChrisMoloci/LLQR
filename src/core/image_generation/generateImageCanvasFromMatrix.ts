@@ -11,6 +11,8 @@ import renderDataStream from "./renderDatastream";
 
 // TODO: Move other helper functions to their own files
 
+// TODO: Future versions, expirement with OffscreenCanvas for performance and multithreading.
+
 function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, pixelSize: number): HTMLCanvasElement {
     const imageSpecs: ImageSpecs = getCurrentConfig().imageConfig;
     console.log("Generating Image from QR Matrix with Image Specs:", imageSpecs);

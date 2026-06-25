@@ -25,7 +25,7 @@ function generateQRMatrix(data: string): Array<Array<number>> {
     let encodedData: Array<EncodedDataSegment> | null = null;
 
     // -- 3. Encode Data to Binary as EncodedSegmentDraft --
-    if (qrSpecs.useModeSwitching === MODE_SWITCHING_STRATEGY.DISABLED || mode === DATA_ENCODING_MODE.BYTE) {
+    if (qrSpecs.useModeSwitching === MODE_SWITCHING_STRATEGY.DISABLED || qrSpecs.forceByteEncoding) {
         // Encode using a single mode
         console.log("Encoding data using single mode:", mode);
         encodedData = encodeWithSingleMode(data, mode);
@@ -64,6 +64,7 @@ function generateQRMatrix(data: string): Array<Array<number>> {
 
     // -- 7. Generate the matrix using the ecc data stream --
     const matrix: Array<Array<number>> = generateMatrix(eccStream, version, qrSpecs.eccLevel, qrSpecs.maskPattern);
+    // const matrix: Array<Array<number>> = generateMatrix([], version, qrSpecs.eccLevel, qrSpecs.maskPattern);
     console.log("Generated QR Matrix:", matrix);
 
     // -- 8. Return the generated matrix --
