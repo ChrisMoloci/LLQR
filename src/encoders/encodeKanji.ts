@@ -1,6 +1,6 @@
-import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
-import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
-import unicodeToShiftJIS from "../../datasets/unicode_to_shiftjis";
+import { DATA_ENCODING_MODE } from "../data_structures/enums/DATA_ENCODING_MODE";
+import { EncodedDataSegment } from "../data_structures/types/EncodedDataSegment";
+import unicodeToShiftJIS from "../datasets/unicode_to_shiftjis";
 
 function encodeKanji(data: string): EncodedDataSegment | null {
     // Validate that the data is possibly kanji characters

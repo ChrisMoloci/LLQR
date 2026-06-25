@@ -1,9 +1,9 @@
 /**
- * This file is used to export all public facing api functions in the library.
+ * This file is used to export all public facing public functions in the library.
  * DO NOT EXPORT TYPES, VARIABLES, CONSTANTS, OR ANYTHING OTHER THAN CONSTANTS FROM THIS FILE.
  * 
  * These functions are accessed like this:
- * import { determineMode } from "qr-code-generator-library/api";
+ * import { determineMode } from "qr-code-generator-library/public";
  */
 
 /**
@@ -20,12 +20,12 @@ import generateMatrix from "../core/matrix_generation/matrix/generateMatrix";
 import generateImageCanvasFromMatrix from "../core/image_generation/generateImageCanvasFromMatrix";
 
 // Helper functions
-import encodeNumeric from "../core/encoders/encodeNumeric";
-import encodeAlphanumeric from "../core/encoders/encodeAlphanumeric";
-import encodeKanji from "../core/encoders/encodeKanji";
-import encodeBinary from "../core/encoders/encodeBinary";
-import encodeISO_8859_1 from "../core/encoders/byteEncoders/ISO_IEC_8859/encodeISO-8859-1";
-import encodeUTF8 from "../core/encoders/byteEncoders/unicode/encodeUTF-8";
+import encodeNumeric from "../encoders/encodeNumeric";
+import encodeAlphanumeric from "../encoders/encodeAlphanumeric";
+import encodeKanji from "../encoders/encodeKanji";
+import encodeBinary from "../encoders/encodeBinary";
+import encodeISO_8859_1 from "../encoders/byteEncoders/ISO_IEC_8859/encodeISO-8859-1";
+import encodeUTF8 from "../encoders/byteEncoders/unicode/encodeUTF-8";
 
 import { computeTheoreticalSizeOfDataForVersion } from "../core/helpers/computeTheoreticalSizeOfDataForVersion";
 import optimizeCrossCompatibleSegments from "../core/helpers/optimizeCrossCompatSegments";

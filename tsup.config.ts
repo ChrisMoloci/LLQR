@@ -8,7 +8,7 @@ export default defineConfig({
     api: 'src/exports/api.ts',
     datasets: 'src/exports/datasets.ts'
   },  
-  // ['src/index.ts', 'src/exports/types.ts', 'src/exports/api.ts'],
+  // ['src/index.ts', 'src/exports/types.ts', 'src/exports/public.ts'],
   format: ['cjs', 'esm'],
   dts: true,
   sourcemap: true,

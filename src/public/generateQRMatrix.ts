@@ -1,6 +1,6 @@
 import prepareDatastream from "../core/matrix_generation/prepareDatastream";
 import generateMatrix from "../core/matrix_generation/matrix/generateMatrix";
-import { getCurrentConfig } from "../core/helpers/defineConfig";
+import { getCurrentConfig } from "../config/defineConfig";
 import { encodeWithModeSwitching } from "../core/matrix_generation/encodeWithModeSwitching";
 import { QRSpecs } from "../data_structures/types/QRSpecs";
 import determineMode from "../core/matrix_generation/determineEncodingMode";

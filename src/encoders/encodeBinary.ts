@@ -1,8 +1,8 @@
 
-import { DATA_ENCODING_CHARACTER_SET } from "../../data_structures/enums/DATA_ENCODING_CHARACTER_SET";
-import { DataEncodingCharacterSet } from "../../data_structures/types/EnumTypes/DataEncodingCharacterSet";
-import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
-import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
+import { DATA_ENCODING_CHARACTER_SET } from "../data_structures/enums/DATA_ENCODING_CHARACTER_SET";
+import { DataEncodingCharacterSet } from "../data_structures/types/EnumTypes/DataEncodingCharacterSet";
+import { DATA_ENCODING_MODE } from "../data_structures/enums/DATA_ENCODING_MODE";
+import { EncodedDataSegment } from "../data_structures/types/EncodedDataSegment";
 import BINARY_ENCODER_FUNCTION_MAPPINGS from "./byteEncoders/binaryEncoderFunctionMappings";
 
 function encodeBinary(data: string): EncodedDataSegment {

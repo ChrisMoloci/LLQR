@@ -2,8 +2,8 @@ import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegme
 import unicodeToShiftJIS from "../../datasets/unicode_to_shiftjis";
 import { MODE_SWITCHING_STRATEGY } from "../../data_structures/enums/MODE_SWITCHING_STRATEGY";
 import { ModeSwitchingStrategy } from "../../data_structures/types/QRSpecTypes/ModeSwitchingStrategy"
-import encodeKanji from "../encoders/encodeKanji";
-import encodeBinary from "../encoders/encodeBinary";
+import encodeKanji from "../../encoders/encodeKanji";
+import encodeBinary from "../../encoders/encodeBinary";
 import determineMode from "../matrix_generation/determineEncodingMode";
 import { encodeWithSingleMode } from "../matrix_generation/encodeWithSingleMode";
 

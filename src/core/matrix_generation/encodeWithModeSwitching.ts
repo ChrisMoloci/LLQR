@@ -1,9 +1,9 @@
 import unicodeToShiftJIS from "../../datasets/unicode_to_shiftjis";
 import determineMode from "./determineEncodingMode";
-import encodeAlphanumeric from "../encoders/encodeAlphanumeric";
-import encodeBinary from "../encoders/encodeBinary";
-import encodeKanji from "../encoders/encodeKanji";
-import encodeNumeric from "../encoders/encodeNumeric";
+import encodeAlphanumeric from "../../encoders/encodeAlphanumeric";
+import encodeBinary from "../../encoders/encodeBinary";
+import encodeKanji from "../../encoders/encodeKanji";
+import encodeNumeric from "../../encoders/encodeNumeric";
 import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
 import { ModeSwitchingStrategy } from "../../exports/types";
 import { encodeWithSingleMode } from "./encodeWithSingleMode";

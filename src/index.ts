@@ -11,13 +11,13 @@
  */
 
 // Core functions
-import generateFullQR from "./internal/generateFullQR";
-import generateQRMatrix from "./internal/generateQRMatrix";
-import generateImageFromQRMatrix from "./internal/generateImageFromQRMatrix";
+import generateFullQR from "././public/generateFullQR";
+import generateQRMatrix from "././public/generateQRMatrix";
+import generateImageFromQRMatrix from "././public/generateImageFromQRMatrix";
 
 // Helper functions
-import defineConfig from "./core/helpers/defineConfig";
-import { resetConfigToDefaults, getCurrentConfig } from "./core/helpers/defineConfig";
+import defineConfig from "./config/defineConfig";
+import { resetConfigToDefaults, getCurrentConfig } from "./config/defineConfig";
 
 /**
  * Exporting functions out of the library

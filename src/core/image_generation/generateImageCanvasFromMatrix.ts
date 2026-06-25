@@ -1,4 +1,4 @@
-import { getCurrentConfig } from "../helpers/defineConfig";
+import { getCurrentConfig } from "../../config/defineConfig";
 import { ImageSpecs } from "../../data_structures/types/ImageSpecs";
 import { QRVersion } from "../../exports/types";
 import { ShapeLocation } from "../../data_structures/types/ShapeLocation";

@@ -1,5 +1,5 @@
-import { DATA_ENCODING_MODE } from "../../data_structures/enums/DATA_ENCODING_MODE";
-import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
+import { DATA_ENCODING_MODE } from "../data_structures/enums/DATA_ENCODING_MODE";
+import { EncodedDataSegment } from "../data_structures/types/EncodedDataSegment";
 
 
 function encodeNumeric(data: string): EncodedDataSegment {

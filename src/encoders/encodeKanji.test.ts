@@ -1,5 +1,5 @@
 import { describe, it, expect, onTestFailed } from "vitest";
-import unicodeToShiftJIS from "../../datasets/unicode_to_shiftjis";
+import unicodeToShiftJIS from "../datasets/unicode_to_shiftjis";
 import encodeKanji from "./encodeKanji";
 
 const unicodeKanjiValues = Object.keys(unicodeToShiftJIS).map((key) => String.fromCharCode(parseInt(key)));
