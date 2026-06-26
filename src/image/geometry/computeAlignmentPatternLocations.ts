@@ -1,8 +1,12 @@
-import { ShapeLocation } from "../../types/ShapeLocation";
-import { alignmentPatternLocations } from "../../datasets/alignmentPatternLocations";
-import { QRVersion } from "../../api/exports/types";
+// import { ShapeLocation } from "../../types/ShapeLocation";
+// import { alignmentPatternLocations } from "../../datasets/alignmentPatternLocations";
+// import { QRVersion } from "../../api/exports/types";
 
-function computeAlignmentPatternsLocations(size: number, version: QRVersion): Array<ShapeLocation> {
+import {QRVersion} from "../../types/constantTypes";
+import {ShapeLocation} from "../../types";
+import {alignmentPatternLocations} from "../../datasets";
+
+export function computeAlignmentPatternsLocations(size: number, version: QRVersion): Array<ShapeLocation> {
     const alignmentPatterns = alignmentPatternLocations[version]?.flatMap(coord1 => {
         return alignmentPatternLocations[version]!
             .filter(coord2 =>

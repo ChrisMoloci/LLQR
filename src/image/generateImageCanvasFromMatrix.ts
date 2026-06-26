@@ -1,10 +1,20 @@
-import { getCurrentConfig } from "../config/defineConfig";
-import { ImageSpecs } from "../types/ImageSpecs";
-import { QRVersion } from "../api/exports/types";
-import { ShapeLocation } from "../types/ShapeLocation";
-import renderFinderPatterns from "./render/renderFinderPatterns";
+// import { getCurrentConfig } from "../config/defineConfig";
+// import { ImageSpecs } from "../types/ImageSpecs";
+// import { QRVersion } from "../api/exports/types";
+// import { ShapeLocation } from "../types/ShapeLocation";
+// import renderFinderPatterns from "./render/renderFinderPatterns";
+// import computeFinderPatternsLocations from "./geometry/computeFinderPatternLocations";
+// import computeAlignmentPatternsLocations from "./geometry/computeAlignmentPatternLocations";
+// import renderAlignmentPatterns from "./render/renderAlignmentPatterns";
+// import isReserved from "./geometry/isReserved";
+// import renderDataStream from "./render/renderDatastream";
+
+import {ImageSpecs, ShapeLocation} from "../types";
+import {getCurrentConfig} from "../config";
+import {QRVersion} from "../types/constantTypes";
 import computeFinderPatternsLocations from "./geometry/computeFinderPatternLocations";
 import computeAlignmentPatternsLocations from "./geometry/computeAlignmentPatternLocations";
+import renderFinderPatterns from "./render/renderFinderPatterns";
 import renderAlignmentPatterns from "./render/renderAlignmentPatterns";
 import isReserved from "./geometry/isReserved";
 import renderDataStream from "./render/renderDatastream";
@@ -13,7 +23,7 @@ import renderDataStream from "./render/renderDatastream";
 
 // TODO: Future versions, expirement with OffscreenCanvas for performance and multithreading.
 
-function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, pixelSize: number): HTMLCanvasElement {
+export function generateImageCanvasFromMatrix(matrix: Array<Array<number>>, pixelSize: number): HTMLCanvasElement {
     const imageSpecs: ImageSpecs = getCurrentConfig().imageConfig;
     console.log("Generating Image from QR Matrix with Image Specs:", imageSpecs);
     

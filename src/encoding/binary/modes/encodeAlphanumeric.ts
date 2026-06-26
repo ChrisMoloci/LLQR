@@ -1,8 +1,7 @@
-import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
-import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
+import {EncodedDataSegment} from "../../../types";
+import {DATA_ENCODING_MODE} from "../../../constants";
 
-
-function encodeAlphanumeric(data: string): EncodedDataSegment {
+export function encodeAlphanumeric(data: string): EncodedDataSegment {
     if (!/^[0-9A-Z $%*+\-./:]+$/.test(data)) {
         throw new Error("Data must be alphanumeric for alphanumeric encoding.");
     }

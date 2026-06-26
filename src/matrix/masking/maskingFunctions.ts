@@ -1,12 +1,13 @@
-import { MaskPatternCode } from "../../api/exports/types";
-import { MASK_PATTERN_FUNCTION } from "../../constants/MASK_PATTERN_FUNCTION";
-import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
-import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
+// import { MaskPatternCode } from "../../api/exports/types";
+// import { MASK_PATTERN_FUNCTION } from "../../constants/MASK_PATTERN_FUNCTION";
+// import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
+// import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
 
-// Mask Functions union type
-// export type MaskFunctions = typeof mask0 | typeof mask1 | typeof mask2 | typeof mask3 | typeof mask4 | typeof mask5 | typeof mask6 | typeof mask7;
+import {MaskedQRMatrix, QRMatrixCanvas} from "../../types";
+import {MaskPattern} from "../../types/constantTypes";
+import {MASK_PATTERN_FUNCTION} from "../../constants";
 
-export default function maskQR(maskCode: MaskPatternCode, qrMatrixCanvas: QRMatrixCanvas, size: number): MaskedQRMatrix {
+export function maskQR(maskCode: MaskPattern, qrMatrixCanvas: QRMatrixCanvas, size: number): MaskedQRMatrix {
     const maskFunction = MASK_PATTERN_FUNCTION[maskCode!];
 
     for (let col = size - 1; col >= 0; col--) {
@@ -57,3 +58,5 @@ export function mask6(matrix: Array<Array<number>>, row: number, col: number): n
 export function mask7(matrix: Array<Array<number>>, row: number, col: number): number {
     return matrix[row]![col]! ^ ((((row + col) % 2) + (row * col) % 3) % 2 === 0 ? 1 : 0);
 }
+
+export default maskQR;

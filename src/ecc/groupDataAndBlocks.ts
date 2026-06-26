@@ -1,4 +1,4 @@
-function groupDataAndBlocks(dataStream: Array<number>, groupingObj: Object) {
+export function groupDataAndBlocks(dataStream: Array<number>, groupingObj: Object) {
     // Create the unnormalized groups with data from all blocks in each group
     const group1 = dataStream.slice(0, (groupingObj.blocks.g1.numBlocks * groupingObj.blocks.g1.dataCodewordsPerBlock));
     const group2 = dataStream.slice((groupingObj.blocks.g1.numBlocks * groupingObj.blocks.g1.dataCodewordsPerBlock), ((groupingObj.blocks.g1.numBlocks * groupingObj.blocks.g1.dataCodewordsPerBlock)) + ((groupingObj.blocks.g2.numBlocks * groupingObj.blocks.g2.dataCodewordsPerBlock)));

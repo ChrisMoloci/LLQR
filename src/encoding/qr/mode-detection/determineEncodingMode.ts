@@ -1,8 +1,8 @@
-import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
-import { DataEncodingMode } from "../../../types/constantTypes/DataEncodingMode";
+import {DataEncodingMode} from "../../../types/constantTypes";
+import {DATA_ENCODING_MODE} from "../../../constants";
 
 // Determines the most efficient encoding mode required to encode the whole data (mode switching is handled later)
-function determineMode(data: string): DataEncodingMode {
+export function determineMode(data: string): DataEncodingMode {
     if(/^\d+$/.test(data)) {
         return DATA_ENCODING_MODE.NUMERIC; // Numeric mode
     } else if (/^[0-9A-Z $%*+\-./:]+$/.test(data)) {
@@ -13,5 +13,3 @@ function determineMode(data: string): DataEncodingMode {
         return DATA_ENCODING_MODE.BYTE; // Byte mode
     }
 }
-
-export default determineMode;

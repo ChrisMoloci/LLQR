@@ -1,5 +1,5 @@
 // Function to pad zero bytes for ECC codewords in each block
-function padECCZeroBytesToBlocks(groupedData: Array<Array<Array<number>>>, groupingObj: Object, eccCodewordBufferSize: number): Array<Array<Array<number>>> {
+export function padECCZeroBytesToBlocks(groupedData: Array<Array<Array<number>>>, groupingObj: Object, eccCodewordBufferSize: number): Array<Array<Array<number>>> {
     const paddedGroupedData: Array<Array<Array<number>>> = groupedData.map((group, groupIndex) => {
         const numOfBlocks = groupingObj.blocks[`g${groupIndex + 1}`].numBlocks;
         if (group instanceof Array && numOfBlocks > 0) {

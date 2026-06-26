@@ -1,7 +1,7 @@
-import { DATA_ENCODING_MODE } from "../constants/DATA_ENCODING_MODE";
-import { DataEncodingCharacterSet } from "./constantTypes/DataEncodingCharacterSet";
+import { DATA_ENCODING_MODE } from "../constants";
+import { DataEncodingCharacterSet } from "./constantTypes";
 
-type EncodedDataSegment =
+export type EncodedDataSegment =
     // Segment type used for Numeric
     | {encodingMode: typeof DATA_ENCODING_MODE.NUMERIC, charCount: number, plainTextData: string, encodedData: Array<string> }
     // Segment type used for Alphanumeric

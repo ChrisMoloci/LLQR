@@ -1,8 +1,12 @@
-import { ShapeLocation } from "../../types/ShapeLocation";
-import { QRVersion } from "../../api/exports/types";
+// import { ShapeLocation } from "../../types/ShapeLocation";
+// import { QRVersion } from "../../api/exports/types";
+
+
+import {QRVersion} from "../../types/constantTypes";
+import {ShapeLocation} from "../../types";
 
 // Checks if an area is reserved (that means that that part was already drawn)
-function isReserved(x: number, y: number, size: number, version: QRVersion, finderPatterns: Array<ShapeLocation>, alignmentPatterns: Array<ShapeLocation>): boolean {
+export function isReserved(x: number, y: number, size: number, version: QRVersion, finderPatterns: Array<ShapeLocation>, alignmentPatterns: Array<ShapeLocation>): boolean {
     // Check finder patterns
     if (finderPatterns.some(finderPattern => {
         return x >= finderPattern.x && x <= finderPattern.x2 && 

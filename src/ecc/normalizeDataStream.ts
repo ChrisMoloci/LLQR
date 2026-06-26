@@ -1,4 +1,4 @@
-function normalizeDataStream(encodedData: Array<string>, dataCodewordBufferSize: number): Array<string> {
+export function normalizeDataStream(encodedData: Array<string>, dataCodewordBufferSize: number): Array<string> {
     // Normalize data stream into a stringto join different size codewords
     let encodedDataString: string = encodedData.join('');
     console.log("Encoded Data String:", encodedDataString);

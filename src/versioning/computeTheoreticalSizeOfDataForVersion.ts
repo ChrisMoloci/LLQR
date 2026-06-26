@@ -1,17 +1,30 @@
-import { DATA_ENCODING_MODE } from "../constants/DATA_ENCODING_MODE";
-import { EncodedDataSegment } from "../types/EncodedDataSegment";
-import { DataEncodingCharacterSet } from "../types/constantTypes/DataEncodingCharacterSet";
-import { DataEncodingMode } from "../types/constantTypes/DataEncodingMode";
-import { ECI_SWITCHING_STRATEGY } from "../constants/ECI_SWITCHING_STRATEGY";
-import { QRVersion } from "../types/constantTypes/QRVersion";
-import { ECISwitchingStrategy } from "../types/constantTypes/ECISwitchingStrategy";
-import { getCharCountIndicatorLength } from "../encoding/qr/segmentation/getCharCountIndicatorLength";
-import optimizeCrossCompatibleSegments from "../encoding/qr/segmentation/optimizeCrossCompatSegments";
-import { ModeSwitchingStrategy } from "../types/constantTypes/ModeSwitchingStrategy";
-import { getECIAssignmentNumberSize } from "../encoding/qr/eci/getECIAssignmentNumberSize";
+// import { DATA_ENCODING_MODE } from "../constants/DATA_ENCODING_MODE";
+// import { EncodedDataSegment } from "../types/EncodedDataSegment";
+// import { DataEncodingCharacterSet } from "../types/constantTypes/DataEncodingCharacterSet";
+// import { DataEncodingMode } from "../types/constantTypes/DataEncodingMode";
+// import { ECI_SWITCHING_STRATEGY } from "../constants/ECI_SWITCHING_STRATEGY";
+// import { QRVersion } from "../types/constantTypes/QRVersion";
+// import { ECISwitchingStrategy } from "../types/constantTypes/ECISwitchingStrategy";
+// import { getCharCountIndicatorLength } from "../encoding/qr/segmentation/getCharCountIndicatorLength";
+// import optimizeCrossCompatibleSegments from "../encoding/qr/segmentation/optimizeCrossCompatSegments";
+// import { ModeSwitchingStrategy } from "../types/constantTypes/ModeSwitchingStrategy";
+// import { getECIAssignmentNumberSize } from "../encoding/qr/eci/getECIAssignmentNumberSize";
+
+
 
 // Helper functions for determinVersion()
-function computeTheoreticalSizeOfDataForVersion(encodedData: Array<EncodedDataSegment>, version: QRVersion, eciSwitchingMode: ECISwitchingStrategy, modeSwitchingMode: ModeSwitchingStrategy): number {
+import {EncodedDataSegment} from "../types";
+import {
+    DataEncodingCharacterSet,
+    DataEncodingMode,
+    ECISwitchingStrategy,
+    ModeSwitchingStrategy,
+    QRVersion
+} from "../types/constantTypes";
+import {DATA_ENCODING_MODE, ECI_SWITCHING_STRATEGY} from "../constants";
+import {getCharCountIndicatorLength, getECIAssignmentNumberSize, optimizeCrossCompatibleSegments} from "../encoding";
+
+export function computeTheoreticalSizeOfDataForVersion(encodedData: Array<EncodedDataSegment>, version: QRVersion, eciSwitchingMode: ECISwitchingStrategy, modeSwitchingMode: ModeSwitchingStrategy): number {
     let encodingModeState: DataEncodingMode | null = null; // Holds current encoding mode state for mode switching
     let eciModeAssignmentNumberState: DataEncodingCharacterSet | null = null; // Holds current ECI mode state for mode switching
 

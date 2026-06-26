@@ -1,17 +1,33 @@
-import { getCharCountIndicatorLength } from "../segmentation/getCharCountIndicatorLength";
-import optimizeCrossCompatibleSegments from "../segmentation/optimizeCrossCompatSegments";
-import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
-import { ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion } from "../../../api/exports/types";
-import { DataEncodingMode } from "../../../types/constantTypes/DataEncodingMode";
-import { DataEncodingCharacterSet } from "../../../types/constantTypes/DataEncodingCharacterSet";
-import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
-import { ECI_SWITCHING_STRATEGY } from "../../../constants/ECI_SWITCHING_STRATEGY";
-import generateLengthIndicator from "./generateLengthIndicator";
-import generateECIIndicatorAndAssignmentNumber from "../eci/generateECIIndicatorAndAssignmentNumber";
+// import { getCharCountIndicatorLength } from "../segmentation/getCharCountIndicatorLength";
+// import optimizeCrossCompatibleSegments from "../segmentation/optimizeCrossCompatSegments";
+// import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
+// import { ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion } from "../../../api/exports/types";
+// import { DataEncodingMode } from "../../../types/constantTypes/DataEncodingMode";
+// import { DataEncodingCharacterSet } from "../../../types/constantTypes/DataEncodingCharacterSet";
+// import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
+// import { ECI_SWITCHING_STRATEGY } from "../../../constants/ECI_SWITCHING_STRATEGY";
+// import generateLengthIndicator from "./generateLengthIndicator";
+// import generateECIIndicatorAndAssignmentNumber from "../eci/generateECIIndicatorAndAssignmentNumber";
+
+import {EncodedDataSegment} from "../../../types";
+import {
+    DataEncodingCharacterSet,
+    DataEncodingMode,
+    ECISwitchingStrategy,
+    ModeSwitchingStrategy,
+    QRVersion
+} from "../../../types/constantTypes";
+import {DATA_ENCODING_MODE, ECI_SWITCHING_STRATEGY} from "../../../constants";
+import {
+    optimizeCrossCompatibleSegments,
+    generateECIIndicatorAndAssignmentNumber,
+    generateLengthIndicator,
+    getCharCountIndicatorLength
+} from "../.";
 
 // TODO: Add a alphanumeric/numeric normalizer that combines the segments in specific situations where their length and mode indicators will cause them to be longer when split than when consolidated (remember to also update determine version to account for consolidation as well) when in auto mode
 
-function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: QRVersion, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy): Array<string> {
+export function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, version: QRVersion, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy): Array<string> {
     const dataStream: Array<string> = []; // Will hold the final data stream (as an array of codewords)
 
     // Store Encoding Mode and ECI Assignment Number states for mode switching checks

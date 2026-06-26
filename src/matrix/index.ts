@@ -1,45 +1,21 @@
 // Main
-import addDataToMatrix from "./addDataToMatrix";
-import generateMatrix from "./generateMatrix";
-import initializeMatrices from "./initializeMatrices";
+export * from "./addDataToMatrix";
+export * from "./generateMatrix";
+export * from "./initializeMatrices";
 
 // Format
-import addFormatInformationToMatrix from "./format/addFormatInformationToMatrix";
-import addVersionInformation from "./format/addVersionInformation";
-import reserveFormatInformation from "./format/reserveFormatInformation";
+export * from "./format/addFormatInformationToMatrix";
+export * from "./format/addVersionInformation";
+export * from "./format/reserveFormatInformation";
 
 // Masking
-import determineOptimalMaskPattern from "./masking/determineOptimalMaskPattern";
-import * as penaltyScoreFunctions from "./masking/determinePenaltyScore";
-import maskAllMatrices from "./masking/maskAllMatrices";
-import * as maskingFunctions from "./masking/maskingFunctions";
+export * from "./masking/determineOptimalMaskPattern";
+export * from "./masking/determinePenaltyScore";
+export * from "./masking/maskAllMatrices";
+export * from "./masking/maskingFunctions";
 
 // Patterns
-import addAlignmentPatterns from "./patterns/addAlignmentPatterns";
-import addDarkModule from "./patterns/addDarkModule";
-import addFinderPatterns from "./patterns/addFinderPatterns";
-import addTimingPatterns from "./patterns/addTimingPatterns";
-
-export {
-    // Main
-    addDataToMatrix,
-    generateMatrix,
-    initializeMatrices,
-
-    // format
-    addFormatInformationToMatrix,
-    addVersionInformation,
-    reserveFormatInformation,
-
-    // Masking
-    determineOptimalMaskPattern,
-    penaltyScoreFunctions,
-    maskAllMatrices,
-    maskingFunctions,
-
-    // Patterns
-    addAlignmentPatterns,
-    addDarkModule,
-    addFinderPatterns,
-    addTimingPatterns,
-}
+export * from "./patterns/addAlignmentPatterns";
+export * from "./patterns/addDarkModule";
+export * from "./patterns/addFinderPatterns";
+export * from "./patterns/addTimingPatterns";

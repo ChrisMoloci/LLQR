@@ -1,5 +1,4 @@
-import generateImageFromQRMatrix from "./generateImageFromQRMatrix";
-import generateQRMatrix from "./generateQRMatrix";
+import {generateImageFromQRMatrix, generateQRMatrix} from "./index";
 
 function generateFullQR(data: string, size: number = 512): HTMLImageElement {
     // -- 1. Generate the QR Matrix --

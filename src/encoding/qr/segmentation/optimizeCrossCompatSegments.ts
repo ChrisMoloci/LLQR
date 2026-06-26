@@ -1,11 +1,15 @@
-import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
-import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
-import { QRVersion } from "../../../api/exports/types";
-import { getCharCountIndicatorLength } from "./getCharCountIndicatorLength";
-import { encodeWithSingleMode } from "../encodeWithSingleMode";
-
+// import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
+// import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
+// import { QRVersion } from "../../../api/exports/types";
+// import { getCharCountIndicatorLength } from "./getCharCountIndicatorLength";
+// import { encodeWithSingleMode } from "../encodeWithSingleMode";
 
 // Helper functions to determine size of alphanumeric and numeric data
+import {EncodedDataSegment} from "../../../types";
+import {QRVersion} from "../../../types/constantTypes";
+import {DATA_ENCODING_MODE} from "../../../constants";
+import {getCharCountIndicatorLength, encodeWithSingleMode} from "./..";
+
 export const determineSizeForAlphanumericData = (size: number): number =>
     11 * Math.floor(size / 2) + (size % 2 ? 6 : 0)
 
@@ -18,7 +22,7 @@ export const determineSizeForNumericData = (size: number): number => {
 }
 
 // Optimizes a run of cross-compatible segments (alphanumeric/numeric) by checking if consolidation saves space and returns the optimized size in bits
-function optimizeCrossCompatibleSegments(segments: Array<EncodedDataSegment>, version: QRVersion): Array<EncodedDataSegment> {
+export function optimizeCrossCompatibleSegments(segments: Array<EncodedDataSegment>, version: QRVersion): Array<EncodedDataSegment> {
     /** 
      * We are not storing segments as those are more complex since they need to be recomputed each time they merge.
      * we will just create theoretical partitions with theoretical ConsolidatedSegmentPrototypes.

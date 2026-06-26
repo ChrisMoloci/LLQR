@@ -1,6 +1,6 @@
-import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
+import {QRMatrixCanvas} from "../../types";
 
-function reserveFormatInformation(qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatrixCanvas {
+export function reserveFormatInformation(qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatrixCanvas {
     const formatPositions: Array<[number, number]> = [
         [8, 0], [8, 1], [8, 2], [8, 3], [8, 4], [8, 5],
         [8, 7], [8, 8], [7, 8], [5, 8], [4, 8], [3, 8], [2, 8], [1, 8], [0, 8],

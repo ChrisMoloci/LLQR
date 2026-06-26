@@ -1,4 +1,4 @@
-function interleaveData(groupedData: Array<Array<Array<number>>>, groupingObj: Object): Array<number> {
+export function interleaveData(groupedData: Array<Array<Array<number>>>, groupingObj: Object): Array<number> {
     if (!groupedData) throw new Error("No grouped data provided for interleaving.");
 
     // Splite data and ecc and add them to a single array

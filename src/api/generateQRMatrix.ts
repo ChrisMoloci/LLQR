@@ -1,16 +1,31 @@
+// import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
+// import generateMatrix from "../matrix/generateMatrix";
+// import { getCurrentConfig } from "../config/defineConfig";
+// import { encodeWithModeSwitching } from "../encoding/qr/encodeWithModeSwitching";
+// import { QRSpecs } from "../types/QRSpecs";
+// import determineMode from "../encoding/qr/mode-detection/determineEncodingMode";
+// import { EncodedDataSegment } from "../types/EncodedDataSegment";
+// import { encodeWithSingleMode } from "../encoding/qr/encodeWithSingleMode";
+// import determineMinQRVersion from "../versioning/determineMinQRVersion";
+// import generateECCStream from "../ecc/generateECCStream";
+// import { DataEncodingMode } from "../types/constantTypes/DataEncodingMode";
+// import { DATA_ENCODING_MODE } from "../constants/DATA_ENCODING_MODE";
+// import { MODE_SWITCHING_STRATEGY } from "../constants/MODE_SWITCHING_STRATEGY";
+
+// Types & Constants
+import {EncodedDataSegment, QRSpecs} from "../types"
+import { DataEncodingMode } from "../types/constantTypes"
+import {DATA_ENCODING_MODE, MODE_SWITCHING_STRATEGY} from "../constants";
+
+// Functions
+import { getCurrentConfig } from "../config";
+import { determineMode } from "../encoding";
+import encodeWithSingleMode from "../encoding/qr/encodeWithSingleMode";
+import encodeWithModeSwitching from "../encoding/qr/encodeWithModeSwitching";
+import {determineMinQRVersion} from "../versioning";
 import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
-import generateMatrix from "../matrix/generateMatrix";
-import { getCurrentConfig } from "../config/defineConfig";
-import { encodeWithModeSwitching } from "../encoding/qr/encodeWithModeSwitching";
-import { QRSpecs } from "../types/QRSpecs";
-import determineMode from "../encoding/qr/mode-detection/determineEncodingMode";
-import { EncodedDataSegment } from "../types/EncodedDataSegment";
-import { encodeWithSingleMode } from "../encoding/qr/encodeWithSingleMode";
-import determineMinQRVersion from "../versioning/determineMinQRVersion";
-import generateECCStream from "../ecc/generateECCStream";
-import { DataEncodingMode } from "../types/constantTypes/DataEncodingMode";
-import { DATA_ENCODING_MODE } from "../constants/DATA_ENCODING_MODE";
-import { MODE_SWITCHING_STRATEGY } from "../constants/MODE_SWITCHING_STRATEGY";
+import {generateECCStream} from "../ecc";
+import {generateMatrix} from "../matrix";
 
 function generateQRMatrix(data: string): Array<Array<number>> {
     // -- 1. Get Current QR Configurations --

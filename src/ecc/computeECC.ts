@@ -1,6 +1,6 @@
-import { gfMultiply, gfXor } from "./GF256_Arithmetic";
+import {gfMultiply, gfXor} from "./GF256_Arithmetic";
 
-function computeECC(groupedData: Array<Array<Array<number>>>, groupingObj: Object, generatorPolynomial: Array<number>): Array<Array<Array<number>>> {
+export function computeECC(groupedData: Array<Array<Array<number>>>, groupingObj: Object, generatorPolynomial: Array<number>): Array<Array<Array<number>>> {
     const eccGroupedData: Array<Array<Array<number>>> = groupedData.map((group, groupIndex) => {
         // console.log("Computing ECC for Group:", groupIndex + 1, "with", numOfBlocks, "blocks.");
         if (group instanceof Array && group.length > 0) {

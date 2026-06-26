@@ -1,8 +1,10 @@
-import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
-import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
+// import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
+// import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
 
+import {EncodedDataSegment} from "../../../types";
+import {DATA_ENCODING_MODE} from "../../../constants";
 
-function encodeNumeric(data: string): EncodedDataSegment {
+export function encodeNumeric(data: string): EncodedDataSegment {
     if (!/^\d+$/.test(data)) {
         throw new Error("Data is not numeric.");
     }

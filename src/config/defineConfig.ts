@@ -1,7 +1,10 @@
-import { DEFAULT_IMAGE_SPECS, DEFAULT_QR_SPECS } from "../const"
-import { ImageSpecs } from "../types/ImageSpecs";
-import { QRConfigs } from "../types/QRConfigs";
-import { QRSpecs } from "../types/QRSpecs";
+// import { DEFAULT_IMAGE_SPECS, DEFAULT_QR_SPECS } from "../const"
+// import { ImageSpecs } from "../types/ImageSpecs";
+// import { QRConfigs } from "../types/QRConfigs";
+// import { QRSpecs } from "../types/QRSpecs";
+
+import {ImageSpecs, QRConfigs, QRSpecs} from "../types";
+import {DEFAULT_IMAGE_SPECS, DEFAULT_QR_SPECS} from "../const";
 
 // Stores the current global configuration for QR code generation
 let qrConfigs: QRConfigs = {
@@ -10,7 +13,7 @@ let qrConfigs: QRConfigs = {
 }
 
 // Allows the developer to define global configuration for QR code generation
-export default function defineConfig(qrConfig: Partial<QRSpecs> | null, imageConfig: Partial<ImageSpecs> | null) {
+export function defineConfig(qrConfig: Partial<QRSpecs> | null, imageConfig: Partial<ImageSpecs> | null) {
     if (qrConfig) qrConfigs.qrConfig = mergeConfig(qrConfig, qrConfigs.qrConfig);
     if (imageConfig) qrConfigs.imageConfig = mergeConfig(imageConfig, qrConfigs.imageConfig);
 

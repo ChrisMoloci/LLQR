@@ -1,5 +1,5 @@
 // Helper function to get ECI assignment number size in bits
-function getECIAssignmentNumberSize(assignmentNumber: number): number {
+export function getECIAssignmentNumberSize(assignmentNumber: number): number {
     switch(true) {
         case assignmentNumber >= 0 && assignmentNumber <= 127:
             return 8; // assignment number size

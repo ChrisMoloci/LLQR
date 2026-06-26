@@ -1,8 +1,12 @@
-import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
-import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
-import unicodeToShiftJIS from "../../../datasets/unicode_to_shiftjis";
+// import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
+// import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
+// import unicodeToShiftJIS from "../../../datasets/unicode_to_shiftjis";
 
-function encodeKanji(data: string): EncodedDataSegment | null {
+import {EncodedDataSegment} from "../../../types";
+import {DATA_ENCODING_MODE} from "../../../constants";
+import {unicodeToShiftJIS} from "../../../datasets";
+
+export function encodeKanji(data: string): EncodedDataSegment | null {
     // Validate that the data is possibly kanji characters
 
     // TODO: Fix regex to supports all kanji characters

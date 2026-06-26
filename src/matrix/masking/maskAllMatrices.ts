@@ -1,9 +1,14 @@
-import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
-import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
-import { MASK_PATTERN_CODE } from "../../api/exports/constants";
-import maskQR from "./maskingFunctions";
+// import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
+// import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
+// import { MASK_PATTERN_CODE } from "../../api/exports/constants";
+// import maskQR from "./maskingFunctions";
 
-function maskAllMatrices(qrMatrixCanvas: QRMatrixCanvas, size: number): Array<MaskedQRMatrix> {
+
+import {MaskedQRMatrix, QRMatrixCanvas} from "../../types";
+import {maskQR} from "../.";
+import {MASK_PATTERN_CODE} from "../../constants";
+
+export function maskAllMatrices(qrMatrixCanvas: QRMatrixCanvas, size: number): Array<MaskedQRMatrix> {
     const maskedMatrices: Array<MaskedQRMatrix> = [];
 
     // Important to clone the qrMatrixCanvas for each mask passing the ref

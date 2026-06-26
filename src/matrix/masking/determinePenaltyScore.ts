@@ -1,6 +1,8 @@
-import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
+// import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
 
-export default function determinePenaltyScore(maskedQRMatrix: MaskedQRMatrix): Array<Array<number>> {
+import {MaskedQRMatrix} from "../../types";
+
+export function determinePenaltyScore(maskedQRMatrix: MaskedQRMatrix): Array<Array<number>> {
     let penaltyScore = 0;
 
     // -- 1. Evaluate consecutive modules in Rows or Columns of 5
@@ -176,3 +178,5 @@ export function evaluateDarkModuleRatio(maskedQRMatrix: MaskedQRMatrix): number 
 
     return Math.min(prevPenalty, nextPenalty); // Return the lower penalty score
 }
+
+export default determinePenaltyScore;

@@ -1,7 +1,7 @@
-// import { ImageSpecs } from "./ImageSpecs"
-// import { QRSpecs } from "./QRSpecs"
+import { ImageSpecs } from "."
+import { QRSpecs } from "."
 
-type QRConfigs = {
+export type QRConfigs = {
     qrConfig: QRSpecs,
     imageConfig: ImageSpecs
 }

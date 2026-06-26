@@ -1,9 +1,13 @@
-import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
-import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
-import { encodeWithSingleMode } from "../encodeWithSingleMode";
+// import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
+// import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
+// import { encodeWithSingleMode } from "../encodeWithSingleMode";
 
 // Merges adjacent segments of the same encoding mode into single segments
-function mergeAdjacentSegments(segments: Array<EncodedDataSegment>): Array<EncodedDataSegment> {
+import {EncodedDataSegment} from "../../../types";
+import {DATA_ENCODING_MODE} from "../../../constants";
+import {encodeWithSingleMode} from "../.";
+
+export function mergeAdjacentSegments(segments: Array<EncodedDataSegment>): Array<EncodedDataSegment> {
     /*
      * In very rare cases, some segments may end up adjacent with the same encoding mode due to failed kanji
      * encoding triggering further segmentation of its segment.

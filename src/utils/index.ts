@@ -1,5 +1,1 @@
-import getBitLength from "./getBitLength";
-
-export {
-    getBitLength
-}
+export * from "./getBitLength";

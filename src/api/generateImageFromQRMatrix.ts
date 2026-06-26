@@ -1,5 +1,4 @@
-import { DEFAULT_IMAGE_SPECS } from "../const";
-import generateImageCanvasFromMatrix from "../image/generateImageCanvasFromMatrix";
+import { generateImageCanvasFromMatrix } from "../image";
 
 function generateImageFromQRMatrix(qrMatrix: Array<Array<number>>, size: number = 512): HTMLImageElement {
     // Generate the canvas from the matrix

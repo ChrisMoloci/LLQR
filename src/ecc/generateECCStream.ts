@@ -1,15 +1,23 @@
+// import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
+// import { ECC_LEVEL_CODE } from "../api/exports/constants";
+// import computeECC from "./computeECC";
+// import { QRVersion } from "../types/constantTypes/QRVersion"
+// import { ECCLevel, ECCLevelKey } from "../types/constantTypes/ECCLevel";
+// import groupDataAndBlocks from "./groupDataAndBlocks";
+// import interleaveData from "./interleaveData";
+// import normalizeDataStream from "./normalizeDataStream";
+// import padECCZeroBytesToBlocks from "./padECCZeroBytesToBlocks";
 
-import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
-import { ECC_LEVEL_CODE } from "../api/exports/constants";
-import computeECC from "./computeECC";
-import { QRVersion } from "../types/constantTypes/QRVersion"
-import { ECCLevel, ECCLevelKey } from "../types/constantTypes/ECCLevel";
-import groupDataAndBlocks from "./groupDataAndBlocks";
-import interleaveData from "./interleaveData";
+import {ECCLevel, QRVersion} from "../types/constantTypes";
+import {ECC_LEVEL_CODE} from "../constants";
+import {qrDataCapacityBits} from "../datasets";
 import normalizeDataStream from "./normalizeDataStream";
+import groupDataAndBlocks from "./groupDataAndBlocks";
 import padECCZeroBytesToBlocks from "./padECCZeroBytesToBlocks";
+import computeECC from "./computeECC";
+import interleaveData from "./interleaveData";
 
-function generateECCStream(encodedData: Array<string>, qrVersion: QRVersion, eccLevelCode: ECCLevel): Array<string> {
+export function generateECCStream(encodedData: Array<string>, qrVersion: QRVersion, eccLevelCode: ECCLevel): Array<string> {
     if (qrVersion == null) {
         throw new Error("Version cannot be null when generating ECC stream.");
     }

@@ -1,19 +1,26 @@
-import { DATA_ENCODING_MODE } from "../constants/DATA_ENCODING_MODE";
-import { ECI_SWITCHING_STRATEGY } from "../constants/ECI_SWITCHING_STRATEGY";
-import { EncodedDataSegment } from "../types/EncodedDataSegment";
-import { DataEncodingCharacterSet } from "../types/constantTypes/DataEncodingCharacterSet";
-import { DataEncodingMode } from "../types/constantTypes/DataEncodingMode";
-import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
-import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
-import { ECC_LEVEL_CODE, QR_VERSION } from "../api/exports/constants";
-import { ECCLevelCode, ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion } from "../api/exports/types";
+// import { DATA_ENCODING_MODE } from "../constants/DATA_ENCODING_MODE";
+// import { ECI_SWITCHING_STRATEGY } from "../constants/ECI_SWITCHING_STRATEGY";
+// import { EncodedDataSegment } from "../types/EncodedDataSegment";
+// import { DataEncodingCharacterSet } from "../types/constantTypes/DataEncodingCharacterSet";
+// import { DataEncodingMode } from "../types/constantTypes/DataEncodingMode";
+// import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
+// import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
+// import { ECC_LEVEL_CODE, QR_VERSION } from "../api/exports/constants";
+// import { ECCLevelCode, ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion } from "../api/exports/types";
+// import computeTheoreticalSizeOfDataForVersion from "./computeTheoreticalSizeOfDataForVersion";
+// import { getCharCountIndicatorLength } from "../encoding/qr/segmentation/getCharCountIndicatorLength";
+// import optimizeCrossCompatibleSegments from "../encoding/qr/segmentation/optimizeCrossCompatSegments";
+// import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
+
+import {EncodedDataSegment} from "../types";
+import {ECCLevel, ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion} from "../types/constantTypes";
+import {ECC_LEVEL_CODE, ECI_SWITCHING_STRATEGY, QR_VERSION} from "../constants";
+import {qrDataCapacityBits} from "../datasets";
 import computeTheoreticalSizeOfDataForVersion from "./computeTheoreticalSizeOfDataForVersion";
-import { getCharCountIndicatorLength } from "../encoding/qr/segmentation/getCharCountIndicatorLength";
-import optimizeCrossCompatibleSegments from "../encoding/qr/segmentation/optimizeCrossCompatSegments";
-import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
+import {prepareDatastream} from "../encoding";
 
 
-function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy, minPrefferedVersion: QRVersion | null = null): QRVersion {
+export function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevel, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy, minPrefferedVersion: QRVersion | null = null): QRVersion {
     let bestVersion: QRVersion | null = null; // Stores best version found through iterations (eventuall the best version)
 
     // Loop through all QR versions from 1 to 40

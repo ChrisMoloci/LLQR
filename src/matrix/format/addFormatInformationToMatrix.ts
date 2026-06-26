@@ -1,7 +1,10 @@
-import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
-import { getBitLength } from "../../utils/getBitLength";
+// import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
+// import { getBitLength } from "../../utils/getBitLength";
 
-function addFormatInformationToMatrix(maskedQRMatrix: MaskedQRMatrix, eccLevel: string, size: number): MaskedQRMatrix {
+import {MaskedQRMatrix} from "../../types";
+import {getBitLength} from "../../utils";
+
+export function addFormatInformationToMatrix(maskedQRMatrix: MaskedQRMatrix, eccLevel: string, size: number): MaskedQRMatrix {
     // Debug values (REMOVE IN PRODUCTION)
     // eccLevel = "01";
     // maskPattern = "100";

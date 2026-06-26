@@ -1,6 +1,6 @@
-import { ShapeLocation } from "../../types/ShapeLocation";
+import {ShapeLocation} from "../../types";
 
-function computeFinderPatternsLocations(size: number): Array<ShapeLocation> {
+export function computeFinderPatternsLocations(size: number): Array<ShapeLocation> {
     // Only compute once
     return [
         { x: 0, y: 0, x2: 6, y2: 6 }, // Top Left

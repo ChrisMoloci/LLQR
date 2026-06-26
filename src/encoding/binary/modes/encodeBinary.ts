@@ -1,11 +1,15 @@
+// import { DATA_ENCODING_CHARACTER_SET } from "../../../constants/DATA_ENCODING_CHARACTER_SET";
+// import { DataEncodingCharacterSet } from "../../../types/constantTypes/DataEncodingCharacterSet";
+// import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
+// import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
+// import BINARY_ENCODER_FUNCTION_MAPPINGS from "../charsets/binaryEncoderFunctionMappings";
 
-import { DATA_ENCODING_CHARACTER_SET } from "../../../constants/DATA_ENCODING_CHARACTER_SET";
-import { DataEncodingCharacterSet } from "../../../types/constantTypes/DataEncodingCharacterSet";
-import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
-import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
+import {EncodedDataSegment} from "../../../types";
+import {DataEncodingCharacterSet} from "../../../types/constantTypes";
+import {DATA_ENCODING_CHARACTER_SET, DATA_ENCODING_MODE} from "../../../constants";
 import BINARY_ENCODER_FUNCTION_MAPPINGS from "../charsets/binaryEncoderFunctionMappings";
 
-function encodeBinary(data: string): EncodedDataSegment {
+export function encodeBinary(data: string): EncodedDataSegment {
     // -- 1. Create an array of all the chars from data --
     let plainDataChars: Array<string>; // Create empty array to store characters
 

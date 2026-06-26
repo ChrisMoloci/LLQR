@@ -1,4 +1,4 @@
-function encodeISO_8859_1(plainDataChars: Array<string>): Array<string> {
+export function encodeISO_8859_1(plainDataChars: Array<string>): Array<string> {
     return plainDataChars.map(char => {
         // Get the character code
         const charCode = char.charCodeAt(0);

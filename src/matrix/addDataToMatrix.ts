@@ -1,6 +1,8 @@
-import { QRMatrixCanvas } from "../types/QRMatrixCanvas";
+// import { QRMatrixCanvas } from "../types/QRMatrixCanvas";
 
-function addDataToMatrix(qrMatrixCanvas: QRMatrixCanvas, dataStream: Array<string>, size: number): QRMatrixCanvas {
+import {QRMatrixCanvas} from "../types";
+
+export function addDataToMatrix(qrMatrixCanvas: QRMatrixCanvas, dataStream: Array<string>, size: number): QRMatrixCanvas {
     let bitIndex = 0; // Current bit index in the data stream
     let directionUp = true; // Direction of traversal (upwards or downwards)
     // let done = false; // Flag to indicate if all data bits have been placed

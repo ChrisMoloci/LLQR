@@ -1,6 +1,6 @@
 import { Radiuses } from "../../types/Radiuses";
 
-function drawRoundedModule(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, radiuses: Radiuses | number): HTMLCanvasElement {
+export function drawRoundedModule(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, radiuses: Radiuses | number): HTMLCanvasElement {
     if (typeof radiuses === "number") {
         radiuses = {
             topLeft: radiuses,

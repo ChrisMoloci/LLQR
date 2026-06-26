@@ -1,6 +1,6 @@
-import { MaskPattern } from "./constantTypes/MaskPattern";
+import { MaskPattern } from "./constantTypes";
 
-type MaskedQRMatrix = {
+export type MaskedQRMatrix = {
     matrix: Array<Array<number>>,
     maskPattern: MaskPattern,
     penaltyScore?: number,

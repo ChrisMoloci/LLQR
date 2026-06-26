@@ -1,8 +1,12 @@
-import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
-import { QRVersion } from "../../api/exports/types";
-import { getBitLength } from "../../utils/getBitLength";
+// import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
+// import { QRVersion } from "../../api/exports/types";
+// import { getBitLength } from "../../utils/getBitLength";
 
-function addVersionInformation(qrMatrixCanvas: QRMatrixCanvas, version: QRVersion, size: number): QRMatrixCanvas {
+import {QRMatrixCanvas} from "../../types";
+import {QRVersion} from "../../types/constantTypes";
+import {getBitLength} from "../../utils";
+
+export function addVersionInformation(qrMatrixCanvas: QRMatrixCanvas, version: QRVersion, size: number): QRMatrixCanvas {
     // version = 7;
 
     // -- 1. Compute the version information (With ECC) - With (18,6) Golay Code

@@ -1,12 +1,19 @@
-import { ShapeLocation } from "../../types/ShapeLocation";
-import { QR_ELEMENT_SHAPE } from "../../constants/QR_ELEMENT_SHAPE";
-import { ImageSpecs } from "../../types/ImageSpecs";
-import drawCircleModule from "../draw/drawCircleModule";
-import drawRoundedModule from "../draw/drawRoundedModule";
-import drawSquareModule from "../draw/drawSquareModule";
-import { QRVersion } from "../../types/QRSpecTypes/QRVersion";
+// import { ShapeLocation } from "../../types/ShapeLocation";
+// import { QR_ELEMENT_SHAPE } from "../../constants/QR_ELEMENT_SHAPE";
+// import { ImageSpecs } from "../../types/ImageSpecs";
+// import drawCircleModule from "../draw/drawCircleModule";
+// import drawRoundedModule from "../draw/drawRoundedModule";
+// import drawSquareModule from "../draw/drawSquareModule";
+// import { QRVersion } from "../../types/QRSpecTypes/QRVersion";
 
-function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, alignmentPatterns: Array<ShapeLocation>, finderPatterns: Array<ShapeLocation>, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number, version: QRVersion): HTMLCanvasElement {
+
+
+import {ImageSpecs, ShapeLocation} from "../../types";
+import {QRVersion} from "../../types/constantTypes";
+import {QR_ELEMENT_SHAPE} from "../../constants";
+import {drawCircleModule, drawRoundedModule, drawSquareModule} from "../."
+
+export function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, alignmentPatterns: Array<ShapeLocation>, finderPatterns: Array<ShapeLocation>, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number, version: QRVersion): HTMLCanvasElement {
     // Colors
     const outlineColor = imageSpecs.alignmentPatternOutlineColor;
     const backgroundColor = imageSpecs.alignmentPatternInnerBackgroundColor;

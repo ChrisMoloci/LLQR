@@ -1,7 +1,12 @@
-import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
-import determinePenaltyScore from "./determinePenaltyScore";
+// import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
+// import determinePenaltyScore from "./determinePenaltyScore";
 
-function determineOptimalMaskPattern(maskedQRMatrices: Array<MaskedQRMatrix>): Array<Array<number>> {
+
+
+import {MaskedQRMatrix} from "../../types";
+import {determinePenaltyScore} from "../.";
+
+export function determineOptimalMaskPattern(maskedQRMatrices: Array<MaskedQRMatrix>): Array<Array<number>> {
     // Calculate penalty scores for each masked QR matrix
     for (const maskedQRMatrix of maskedQRMatrices) {
         determinePenaltyScore(maskedQRMatrix);

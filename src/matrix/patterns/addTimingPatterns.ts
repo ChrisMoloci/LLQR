@@ -1,6 +1,8 @@
-import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
+// import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
 
-function addTimingPatterns(qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatrixCanvas {
+import {QRMatrixCanvas} from "../../types";
+
+export function addTimingPatterns(qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatrixCanvas {
     for (let i = 8; i < size - 8; i++) {
         // Add the modules to the matrix
         qrMatrixCanvas.matrix[6]![i]! = i % 2 === 0 ? 1 : 0; // Horizontal timing pattern

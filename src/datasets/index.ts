@@ -1,11 +1,4 @@
-import { alignmentPatternLocations } from "./alignmentPatternLocations";
-import { qrDataCapacityBits } from "./qrDataCapacityBits";
-import { qrEncodingCharCounts } from "./qrEncodingCharCounts";
-import { unicodeToShiftJIS } from "./unicode_to_shiftjis";
-
-export {
-    alignmentPatternLocations,
-    qrDataCapacityBits,
-    qrEncodingCharCounts,
-    unicodeToShiftJIS,
-}
+export * from "./alignmentPatternLocations";
+export * from "./qrDataCapacityBits";
+export * from "./qrEncodingCharCounts";
+export * from "./unicode_to_shiftjis";

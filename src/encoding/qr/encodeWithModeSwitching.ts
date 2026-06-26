@@ -1,21 +1,29 @@
-import unicodeToShiftJIS from "../../datasets/unicode_to_shiftjis";
-import determineMode from "./mode-detection/determineEncodingMode";
-import encodeAlphanumeric from "../binary/modes/encodeAlphanumeric";
-import encodeBinary from "../binary/modes/encodeBinary";
-import encodeKanji from "../binary/modes/encodeKanji";
-import encodeNumeric from "../binary/modes/encodeNumeric";
-import { EncodedDataSegment } from "../../types/EncodedDataSegment";
-import { ModeSwitchingStrategy } from "../../api/exports/types";
-import { encodeWithSingleMode } from "./encodeWithSingleMode";
-import { DATA_ENCODING_MODE } from "../../constants/DATA_ENCODING_MODE";
-import { MODE_SWITCHING_STRATEGY } from "../../constants/MODE_SWITCHING_STRATEGY";
-import { segmentInvalidKanjiCandidate } from "./segmentation/segmentInvalidKanjiData";
-import { mergeAdjacentSegments } from "./segmentation/mergeAdjacentSegments";
+// import unicodeToShiftJIS from "../../datasets/unicode_to_shiftjis";
+// import determineMode from "./mode-detection/determineEncodingMode";
+// import encodeAlphanumeric from "../binary/modes/encodeAlphanumeric";
+// import encodeBinary from "../binary/modes/encodeBinary";
+// import encodeKanji from "../binary/modes/encodeKanji";
+// import encodeNumeric from "../binary/modes/encodeNumeric";
+// import { EncodedDataSegment } from "../../types/EncodedDataSegment";
+// import { ModeSwitchingStrategy } from "../../api/exports/types";
+// import { encodeWithSingleMode } from "./encodeWithSingleMode";
+// import { DATA_ENCODING_MODE } from "../../constants/DATA_ENCODING_MODE";
+// import { MODE_SWITCHING_STRATEGY } from "../../constants/MODE_SWITCHING_STRATEGY";
+// import { segmentInvalidKanjiCandidate } from "./segmentation/segmentInvalidKanjiData";
+// import { mergeAdjacentSegments } from "./segmentation/mergeAdjacentSegments";
+
+
 
 
 // TODO: Cleanup code in this function by splitting some logic into helper functions
 
-function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwitchingStrategy = MODE_SWITCHING_STRATEGY.AUTO): Array<EncodedDataSegment> {
+import {ModeSwitchingStrategy} from "../../types/constantTypes";
+import {MODE_SWITCHING_STRATEGY} from "../../constants";
+import {EncodedDataSegment} from "../../types";
+import {encodeAlphanumeric, encodeBinary, encodeKanji, encodeNumeric} from "../binary";
+import {segmentInvalidKanjiCandidate, mergeAdjacentSegments} from "./.";
+
+export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwitchingStrategy = MODE_SWITCHING_STRATEGY.AUTO): Array<EncodedDataSegment> {
     const segments: Array<EncodedDataSegment> = [];
 
     // Make sure function is not called with disabled mode

@@ -1,5 +1,5 @@
 // Generates the ECI Mode Indicator and Assignment Number binary strings to be added to the data stream
-function generateECIIndicatorAndAssignmentNumber(assignmentNumber: number): Array<string> {
+export function generateECIIndicatorAndAssignmentNumber(assignmentNumber: number): Array<string> {
     // ECI Mode Indicator is always '0111'
     const eciModeIndicator = '0111';
 
