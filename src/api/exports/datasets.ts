@@ -10,17 +10,11 @@
 /**
  *  Importing datasets from library
  */
-import { alignmentPatternLocations } from "../../datasets/alignmentPatternLocations";
-import { qrDataCapacityBits } from "../../datasets/qrDataCapacityBits";
-import { qrEncodingCharCounts } from "../../datasets/qrEncodingCharCounts";
-import unicodeToShiftJIS from "../../datasets/unicode_to_shiftjis";
+import * as dataset from "../../datasets";
 
 /**
- * Exporting types out of the library
+ * Exporting datasets out of the library
  */
 export {
-    alignmentPatternLocations,
-    qrDataCapacityBits,
-    qrEncodingCharCounts,
-    unicodeToShiftJIS
+    dataset
 }

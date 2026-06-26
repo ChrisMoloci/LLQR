@@ -1,7 +1,7 @@
 import { DATA_ENCODING_MODE } from "../constants/DATA_ENCODING_MODE";
 import { DataEncodingCharacterSet } from "./constantTypes/DataEncodingCharacterSet";
 
-export type EncodedDataSegment = 
+type EncodedDataSegment =
     // Segment type used for Numeric
     | {encodingMode: typeof DATA_ENCODING_MODE.NUMERIC, charCount: number, plainTextData: string, encodedData: Array<string> }
     // Segment type used for Alphanumeric
@@ -10,3 +10,5 @@ export type EncodedDataSegment =
     | {encodingMode: typeof DATA_ENCODING_MODE.KANJI, charCount: number, plainTextData: string, encodedData: Array<string> }
     // Segment type used for Byte which includes character set info
     | {encodingMode: typeof DATA_ENCODING_MODE.BYTE, charSetAssignmentNumber: DataEncodingCharacterSet, charCount: number, plainTextData: string, encodedData: Array<string> };
+
+export default EncodedDataSegment;

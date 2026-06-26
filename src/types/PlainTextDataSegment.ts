@@ -1,7 +1,9 @@
 import { DataEncodingMode } from "./constantTypes/DataEncodingMode";
 
 // Stores plain text
-export interface PlainTextDataSegment {
+interface PlainTextDataSegment {
     mode: DataEncodingMode;
     data: string;
 }
+
+export default PlainTextDataSegment;

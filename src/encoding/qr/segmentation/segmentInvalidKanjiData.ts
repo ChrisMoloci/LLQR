@@ -8,7 +8,7 @@ import determineMode from "../mode-detection/determineEncodingMode";
 import { encodeWithSingleMode } from "../encodeWithSingleMode";
 
 // When an a kanjiCandidate fails to encode, we must try to segment it into smaller kanji and byte segments (or just create a byte segment if all chars are invalid)
-export function segmentInvalidKanjiCandidate(data: string, useModeSwitching: ModeSwitchingStrategy): Array<EncodedDataSegment> {
+function segmentInvalidKanjiCandidate(data: string, useModeSwitching: ModeSwitchingStrategy): Array<EncodedDataSegment> {
     const segments: Array<EncodedDataSegment> = [];
 
     /*
@@ -77,3 +77,5 @@ export function segmentInvalidKanjiCandidate(data: string, useModeSwitching: Mod
 
     return segments; // Return the array of segments
 }
+
+export default segmentInvalidKanjiCandidate;

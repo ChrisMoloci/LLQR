@@ -7,13 +7,13 @@ import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
 import { ECC_LEVEL_CODE, QR_VERSION } from "../api/exports/constants";
 import { ECCLevelCode, ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion } from "../api/exports/types";
-import { computeTheoreticalSizeOfDataForVersion } from "./computeTheoreticalSizeOfDataForVersion";
+import computeTheoreticalSizeOfDataForVersion from "./computeTheoreticalSizeOfDataForVersion";
 import { getCharCountIndicatorLength } from "../encoding/qr/segmentation/getCharCountIndicatorLength";
 import optimizeCrossCompatibleSegments from "../encoding/qr/segmentation/optimizeCrossCompatSegments";
 import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
 
 
-export default function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy, minPrefferedVersion: QRVersion | null = null): QRVersion {
+function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevelCode, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy, minPrefferedVersion: QRVersion | null = null): QRVersion {
     let bestVersion: QRVersion | null = null; // Stores best version found through iterations (eventuall the best version)
 
     // Loop through all QR versions from 1 to 40
@@ -52,3 +52,5 @@ export default function determineMinQRVersion(encodedData: Array<EncodedDataSegm
 
     return bestVersion;
 }
+
+export default determineMinQRVersion;

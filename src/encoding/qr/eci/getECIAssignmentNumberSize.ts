@@ -1,5 +1,5 @@
 // Helper function to get ECI assignment number size in bits
-export function getECIAssignmentNumberSize(assignmentNumber: number): number {
+function getECIAssignmentNumberSize(assignmentNumber: number): number {
     switch(true) {
         case assignmentNumber >= 0 && assignmentNumber <= 127:
             return 8; // assignment number size
@@ -11,3 +11,5 @@ export function getECIAssignmentNumberSize(assignmentNumber: number): number {
             throw new Error("ECI Assignment Number too large in determine min version.");
     }
 }
+
+export default getECIAssignmentNumberSize;

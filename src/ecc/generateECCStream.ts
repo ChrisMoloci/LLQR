@@ -3,13 +3,13 @@ import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { ECC_LEVEL_CODE } from "../api/exports/constants";
 import computeECC from "./computeECC";
 import { QRVersion } from "../types/constantTypes/QRVersion"
-import { ECCLevelCode, ECCLevelKey } from "../types/constantTypes/ECCLevelCode";
+import { ECCLevel, ECCLevelKey } from "../types/constantTypes/ECCLevel";
 import groupDataAndBlocks from "./groupDataAndBlocks";
 import interleaveData from "./interleaveData";
 import normalizeDataStream from "./normalizeDataStream";
 import padECCZeroBytesToBlocks from "./padECCZeroBytesToBlocks";
 
-function generateECCStream(encodedData: Array<string>, qrVersion: QRVersion, eccLevelCode: ECCLevelCode): Array<string> {
+function generateECCStream(encodedData: Array<string>, qrVersion: QRVersion, eccLevelCode: ECCLevel): Array<string> {
     if (qrVersion == null) {
         throw new Error("Version cannot be null when generating ECC stream.");
     }

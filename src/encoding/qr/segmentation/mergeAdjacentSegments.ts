@@ -3,7 +3,7 @@ import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
 import { encodeWithSingleMode } from "../encodeWithSingleMode";
 
 // Merges adjacent segments of the same encoding mode into single segments
-export function mergeAdjacentSegments(segments: Array<EncodedDataSegment>): Array<EncodedDataSegment> {
+function mergeAdjacentSegments(segments: Array<EncodedDataSegment>): Array<EncodedDataSegment> {
     /*
      * In very rare cases, some segments may end up adjacent with the same encoding mode due to failed kanji
      * encoding triggering further segmentation of its segment.
@@ -62,3 +62,5 @@ export function mergeAdjacentSegments(segments: Array<EncodedDataSegment>): Arra
 
     return segments; // Return the normalized segments
 }
+
+export default mergeAdjacentSegments;

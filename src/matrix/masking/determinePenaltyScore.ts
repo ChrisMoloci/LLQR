@@ -23,7 +23,7 @@ export default function determinePenaltyScore(maskedQRMatrix: MaskedQRMatrix): A
     return maskedQRMatrix.matrix;
 }
 
-function evaluateConsecutiveModules(maskedQRMatrix: MaskedQRMatrix): number {
+export function evaluateConsecutiveModules(maskedQRMatrix: MaskedQRMatrix): number {
     // TODO: Should the consecutive row and column counts start at 1 instead of 0?
     let penaltyScore = 0;
     for (let i = 0; i < maskedQRMatrix.matrix.length; i++) {
@@ -83,7 +83,7 @@ function evaluateConsecutiveModules(maskedQRMatrix: MaskedQRMatrix): number {
     return penaltyScore;
 }
 
-function evaluate2x2Blocks(maskedQRMatrix: MaskedQRMatrix): number {
+export function evaluate2x2Blocks(maskedQRMatrix: MaskedQRMatrix): number {
     let penaltyScore = 0;
     for (let i = 0; i < maskedQRMatrix.matrix.length - 1; i++) {
         for (let j = 0; j < maskedQRMatrix.matrix.length - 1; j++) {
@@ -105,7 +105,7 @@ function evaluate2x2Blocks(maskedQRMatrix: MaskedQRMatrix): number {
     return penaltyScore;
 }
 
-function evaluateFinderPatternSimilarities(maskedQRMatrix: MaskedQRMatrix): number {
+export function evaluateFinderPatternSimilarities(maskedQRMatrix: MaskedQRMatrix): number {
     let penaltyScore = 0;
 
     // Represent the patterns as binary literals (a.k.a. in js a number) for easier comparison
@@ -145,7 +145,7 @@ function evaluateFinderPatternSimilarities(maskedQRMatrix: MaskedQRMatrix): numb
     return penaltyScore;
 }
 
-function evaluateDarkModuleRatio(maskedQRMatrix: MaskedQRMatrix): number {
+export function evaluateDarkModuleRatio(maskedQRMatrix: MaskedQRMatrix): number {
     let darkModuleCount = 0; // Stores the amount of dark modules in the matrix
     let lightModuleCount = 0; // Stores the amount of light modules in the matrix
 

@@ -7,7 +7,7 @@ import encodeKanji from "../binary/modes/encodeKanji";
 import encodeNumeric from "../binary/modes/encodeNumeric";
 
 
-export function encodeWithSingleMode(data: string, mode: DataEncodingMode): Array<EncodedDataSegment> {
+function encodeWithSingleMode(data: string, mode: DataEncodingMode): Array<EncodedDataSegment> {
     // Encodes all data using a single specified mode thats compatible
     const segments: Array<EncodedDataSegment> = [];
 
@@ -37,3 +37,5 @@ export function encodeWithSingleMode(data: string, mode: DataEncodingMode): Arra
 
     return segments;
 }
+
+export default encodeWithSingleMode;

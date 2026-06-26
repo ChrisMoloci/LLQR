@@ -1,4 +1,4 @@
-const unicodeToShiftJIS: Record<string, string> = {
+export const unicodeToShiftJIS: Record<string, string> = {
   "0x3000": "0x8140",
   "0x3001": "0x8141",
   "0x3002": "0x8142",
@@ -6879,5 +6879,3 @@ const unicodeToShiftJIS: Record<string, string> = {
   "0x51DC": "0xEAA3",
   "0x7199": "0xEAA4"
 }
-
-export default unicodeToShiftJIS;

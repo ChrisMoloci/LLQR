@@ -15,7 +15,7 @@ import { mergeAdjacentSegments } from "./segmentation/mergeAdjacentSegments";
 
 // TODO: Cleanup code in this function by splitting some logic into helper functions
 
-export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwitchingStrategy = MODE_SWITCHING_STRATEGY.AUTO): Array<EncodedDataSegment> {
+function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwitchingStrategy = MODE_SWITCHING_STRATEGY.AUTO): Array<EncodedDataSegment> {
     const segments: Array<EncodedDataSegment> = [];
 
     // Make sure function is not called with disabled mode
@@ -163,3 +163,5 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
     // Failsafe to merge adjacent segments of the same encoding mode
     return mergeAdjacentSegments(segments);
 }
+
+export default encodeWithModeSwitching;

@@ -3,7 +3,7 @@ import { qrEncodingCharCounts } from "../../../datasets/qrEncodingCharCounts";
 import { QR_VERSION } from "../../../api/exports/constants";
 import { QRVersion } from "../../../api/exports/types";
 
-export function getCharCountIndicatorLength(mode: DataEncodingMode, version: QRVersion): number {
+function getCharCountIndicatorLength(mode: DataEncodingMode, version: QRVersion): number {
     // ternary is used to convert ECI to Byte mode for lookup table
     // While encoding for the two work a little different, char count remains the same 
     // since it's still binary mode (even data will be the same in constraints of Latin-1 in UTF-8 encoding)
@@ -28,3 +28,5 @@ export function getCharCountIndicatorLength(mode: DataEncodingMode, version: QRV
     }
     return length;
 }
+
+export default getCharCountIndicatorLength;

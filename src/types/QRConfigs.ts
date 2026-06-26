@@ -1,8 +1,9 @@
-import { ImageSpecs } from "./ImageSpecs"
-import { QRSpecs } from "./QRSpecs"
+// import { ImageSpecs } from "./ImageSpecs"
+// import { QRSpecs } from "./QRSpecs"
 
-
-export type QRConfigs = {
+type QRConfigs = {
     qrConfig: QRSpecs,
     imageConfig: ImageSpecs
 }
+
+export default QRConfigs;

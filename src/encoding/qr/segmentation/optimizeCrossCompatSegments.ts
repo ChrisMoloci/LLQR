@@ -6,10 +6,10 @@ import { encodeWithSingleMode } from "../encodeWithSingleMode";
 
 
 // Helper functions to determine size of alphanumeric and numeric data
-const determineSizeForAlphanumericData = (size: number): number => 
+export const determineSizeForAlphanumericData = (size: number): number =>
     11 * Math.floor(size / 2) + (size % 2 ? 6 : 0)
 
-const determineSizeForNumericData = (size: number): number => {
+export const determineSizeForNumericData = (size: number): number => {
     const fullGroups = Math.floor(size / 3); // Calculate the number of full 3-digit groups
     const remainder = size - fullGroups * 3 // Calculate the number of remaining digits
 

@@ -1,7 +1,7 @@
 import { QRElementShape } from "./constantTypes/QRElementShape";
 
 // Defines the rules for generating an image from a QR matrix
-export type ImageSpecs = {
+type ImageSpecs = {
     // Colors
     backgroundColor: string,
     moduleColor: string,
@@ -27,4 +27,6 @@ export type ImageSpecs = {
     gridStrokeWidth: number, // 0-1 for percent
 }
 
-export type PublicImageSpecs = Partial<ImageSpecs>; // For user input, all fields are optional since we have defaults
+export default ImageSpecs;
+
+// export type PublicImageSpecs = Partial<ImageSpecs>; // For user input, all fields are optional since we have defaults
