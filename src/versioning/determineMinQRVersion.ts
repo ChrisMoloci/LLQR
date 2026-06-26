@@ -1,12 +1,12 @@
 import { DATA_ENCODING_MODE } from "../data_structures/constants/DATA_ENCODING_MODE";
 import { ECI_SWITCHING_STRATEGY } from "../data_structures/constants/ECI_SWITCHING_STRATEGY";
 import { EncodedDataSegment } from "../data_structures/types/EncodedDataSegment";
-import { DataEncodingCharacterSet } from "../data_structures/types/ConstantTypes/DataEncodingCharacterSet";
-import { DataEncodingMode } from "../data_structures/types/ConstantTypes/DataEncodingMode";
+import { DataEncodingCharacterSet } from "../data_structures/types/constantTypes/DataEncodingCharacterSet";
+import { DataEncodingMode } from "../data_structures/types/constantTypes/DataEncodingMode";
 import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
-import { ECC_LEVEL_CODE, QR_VERSION } from "../exports/constants";
-import { ECCLevelCode, ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion } from "../exports/types";
+import { ECC_LEVEL_CODE, QR_VERSION } from "../api/exports/constants";
+import { ECCLevelCode, ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion } from "../api/exports/types";
 import { computeTheoreticalSizeOfDataForVersion } from "./computeTheoreticalSizeOfDataForVersion";
 import { getCharCountIndicatorLength } from "../encoding/qr/segmentation/getCharCountIndicatorLength";
 import optimizeCrossCompatibleSegments from "../encoding/qr/segmentation/optimizeCrossCompatSegments";

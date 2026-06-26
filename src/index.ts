@@ -1,5 +1,5 @@
 /**
- * This file is used to export all public facing functions in the library.
+ * This file is used to export all api facing functions in the library.
  * DO NOT EXPORT VARAIABLES OR ANYTHING OTHER THAN TYPES FROM THIS FILE.
  * 
  * These functions are accessed like this:
@@ -11,9 +11,9 @@
  */
 
 // Core functions
-import generateFullQR from "././public/generateFullQR";
-import generateQRMatrix from "././public/generateQRMatrix";
-import generateImageFromQRMatrix from "././public/generateImageFromQRMatrix";
+import generateFullQR from "./api/generateFullQR";
+import generateQRMatrix from "./api/generateQRMatrix";
+import generateImageFromQRMatrix from "./api/generateImageFromQRMatrix";
 
 // Helper functions
 import defineConfig from "./config/defineConfig";

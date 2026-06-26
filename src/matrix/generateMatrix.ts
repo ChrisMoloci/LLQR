@@ -1,10 +1,10 @@
 import determinePenaltyScore from "./masking/determinePenaltyScore";
 import { getBitLength } from "../helpers/getBitLength";
-import { MaskPatternCode } from "../exports/types";
+import { MaskPatternCode } from "../api/exports/types";
 import { QRMatrixCanvas } from "../data_structures/types/QRMatrixCanvas";
 import { MaskedQRMatrix } from "../data_structures/types/MaskedQRMatrix";
-import { MASK_PATTERN_CODE } from "../exports/constants";
-import { QRVersion } from "../data_structures/types/QRSpecTypes/QRVersion"
+import { MASK_PATTERN_CODE } from "../api/exports/constants";
+import { QRVersion } from "../data_structures/types/constantTypes/QRVersion"
 import { QR_VERSION } from "../data_structures/constants/QR_VERSION";
 import initializeMatrices from "./initializeMatrices";
 import addFinderPatterns from "./patterns/addFinderPatterns";

@@ -1,7 +1,7 @@
-import { DataEncodingMode } from "../../../data_structures/types/ConstantTypes/DataEncodingMode";
+import { DataEncodingMode } from "../../../data_structures/types/constantTypes/DataEncodingMode";
 import { qrEncodingCharCounts } from "../../../datasets/qrEncodingCharCounts";
-import { QR_VERSION } from "../../../exports/constants";
-import { QRVersion } from "../../../exports/types";
+import { QR_VERSION } from "../../../api/exports/constants";
+import { QRVersion } from "../../../api/exports/types";
 
 export function getCharCountIndicatorLength(mode: DataEncodingMode, version: QRVersion): number {
     // ternary is used to convert ECI to Byte mode for lookup table

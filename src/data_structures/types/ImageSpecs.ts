@@ -1,4 +1,4 @@
-import { QRElementShape } from "./ImageSpecTypes/QRElementShape";
+import { QRElementShape } from "./constantTypes/QRElementShape";
 
 // Defines the rules for generating an image from a QR matrix
 export type ImageSpecs = {

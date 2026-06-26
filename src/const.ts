@@ -5,7 +5,7 @@ import { QR_ELEMENT_SHAPE } from "./data_structures/constants/QR_ELEMENT_SHAPE";
 import { ImageSpecs } from "./data_structures/types/ImageSpecs";
 import { QRSpecs } from "./data_structures/types/QRSpecs";
 import { QR_VERSION } from "./data_structures/constants/QR_VERSION";
-import { MASK_PATTERN_CODE } from "./exports/constants";
+import { MASK_PATTERN_CODE } from "./api/exports/constants";
 
 // Used for default QR Specs
 export const QR_DEFAULTS = {

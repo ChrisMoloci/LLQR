@@ -1,4 +1,4 @@
-import { MaskPatternCode } from "../../exports/types";
+import { MaskPatternCode } from "../../api/exports/types";
 import { MASK_PATTERN_FUNCTION } from "../../data_structures/constants/MASK_PATTERN_FUNCTION";
 import { MaskedQRMatrix } from "../../data_structures/types/MaskedQRMatrix";
 import { QRMatrixCanvas } from "../../data_structures/types/QRMatrixCanvas";

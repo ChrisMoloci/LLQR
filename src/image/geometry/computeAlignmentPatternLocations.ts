@@ -1,6 +1,6 @@
 import { ShapeLocation } from "../../data_structures/types/ShapeLocation";
 import { alignmentPatternLocations } from "../../datasets/alignmentPatternLocations";
-import { QRVersion } from "../../exports/types";
+import { QRVersion } from "../../api/exports/types";
 
 function computeAlignmentPatternsLocations(size: number, version: QRVersion): Array<ShapeLocation> {
     const alignmentPatterns = alignmentPatternLocations[version]?.flatMap(coord1 => {

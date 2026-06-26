@@ -5,7 +5,7 @@ import encodeBinary from "../binary/modes/encodeBinary";
 import encodeKanji from "../binary/modes/encodeKanji";
 import encodeNumeric from "../binary/modes/encodeNumeric";
 import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
-import { ModeSwitchingStrategy } from "../../exports/types";
+import { ModeSwitchingStrategy } from "../../api/exports/types";
 import { encodeWithSingleMode } from "./encodeWithSingleMode";
 import { DATA_ENCODING_MODE } from "../../data_structures/constants/DATA_ENCODING_MODE";
 import { MODE_SWITCHING_STRATEGY } from "../../data_structures/constants/MODE_SWITCHING_STRATEGY";

@@ -8,7 +8,7 @@ import { EncodedDataSegment } from "../data_structures/types/EncodedDataSegment"
 import { encodeWithSingleMode } from "../encoding/qr/encodeWithSingleMode";
 import determineMinQRVersion from "../versioning/determineMinQRVersion";
 import generateECCStream from "../ecc/generateECCStream";
-import { DataEncodingMode } from "../data_structures/types/ConstantTypes/DataEncodingMode";
+import { DataEncodingMode } from "../data_structures/types/constantTypes/DataEncodingMode";
 import { DATA_ENCODING_MODE } from "../data_structures/constants/DATA_ENCODING_MODE";
 import { MODE_SWITCHING_STRATEGY } from "../data_structures/constants/MODE_SWITCHING_STRATEGY";
 

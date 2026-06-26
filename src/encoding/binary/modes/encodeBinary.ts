@@ -1,6 +1,6 @@
 
 import { DATA_ENCODING_CHARACTER_SET } from "../../../data_structures/constants/DATA_ENCODING_CHARACTER_SET";
-import { DataEncodingCharacterSet } from "../../../data_structures/types/ConstantTypes/DataEncodingCharacterSet";
+import { DataEncodingCharacterSet } from "../../../data_structures/types/constantTypes/DataEncodingCharacterSet";
 import { DATA_ENCODING_MODE } from "../../../data_structures/constants/DATA_ENCODING_MODE";
 import { EncodedDataSegment } from "../../../data_structures/types/EncodedDataSegment";
 import BINARY_ENCODER_FUNCTION_MAPPINGS from "../charsets/binaryEncoderFunctionMappings";

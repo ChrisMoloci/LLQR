@@ -1,6 +1,6 @@
 import { ShapeLocation } from "../../data_structures/types/ShapeLocation";
-import { QR_ELEMENT_SHAPE } from "../../exports/constants";
-import { ImageSpecs } from "../../exports/types";
+import { QR_ELEMENT_SHAPE } from "../../api/exports/constants";
+import { ImageSpecs } from "../../api/exports/types";
 import drawCircleModule from "../draw/drawCircleModule";
 import drawRoundedModule from "../draw/drawRoundedModule";
 import drawSquareModule from "../draw/drawSquareModule";

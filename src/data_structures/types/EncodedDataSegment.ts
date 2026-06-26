@@ -1,5 +1,5 @@
 import { DATA_ENCODING_MODE } from "../constants/DATA_ENCODING_MODE";
-import { DataEncodingCharacterSet } from "./ConstantTypes/DataEncodingCharacterSet";
+import { DataEncodingCharacterSet } from "./constantTypes/DataEncodingCharacterSet";
 
 export type EncodedDataSegment = 
     // Segment type used for Numeric

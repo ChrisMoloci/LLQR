@@ -8,8 +8,8 @@ import { encodeWithModeSwitching } from "../encoding/qr/encodeWithModeSwitching"
 import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
 import { ECCLevelCode } from "../data_structures/constants/ECC_LEVEL_CODE";
 import { ECC_LEVEL_CODE } from "../data_structures/constants/ECC_LEVEL_CODE";
-import { QRVersions } from "../data_structures/types/QRSpecTypes/QRVersion";
-import { ECISwitchingStrategy } from "../exports/types";
+import { QRVersions } from "../data_structures/types/ConstantTypes/QRVersion";
+import { ECISwitchingStrategy } from "../api/exports/types";
 
 const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVersions, number>>> = {
     // Max char capacity for numeric encoding

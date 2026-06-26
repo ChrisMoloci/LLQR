@@ -1,8 +1,8 @@
-import { ECCLevelCode } from "./QRSpecTypes/ECCLevelCode";
-import { ECISwitchingStrategy } from "./QRSpecTypes/ECISwitchingStrategy";
-import { MaskPatternCode } from "./QRSpecTypes/MaskPatternCode";
-import { ModeSwitchingStrategy } from "./QRSpecTypes/ModeSwitchingStrategy";
-import { QRVersion } from "./QRSpecTypes/QRVersion";
+import { ECCLevelCode } from "./constantTypes/ECCLevelCode";
+import { ECISwitchingStrategy } from "./constantTypes/ECISwitchingStrategy";
+import { MaskPatternCode } from "./constantTypes/MaskPatternCode";
+import { ModeSwitchingStrategy } from "./constantTypes/ModeSwitchingStrategy";
+import { QRVersion } from "./constantTypes/QRVersion";
 
 // Defines the rules for generating a QR code
 export type QRSpecs = {

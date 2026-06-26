@@ -1,4 +1,4 @@
-import { MaskPatternCode } from "../types/QRSpecTypes/MaskPatternCode";
+import { MaskPatternCode } from "./constantTypes/MaskPatternCode";
 
 export type MaskedQRMatrix = {
     matrix: Array<Array<number>>,

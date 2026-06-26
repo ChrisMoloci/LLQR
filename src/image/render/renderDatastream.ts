@@ -2,7 +2,7 @@ import { ImageSpecs } from "../../data_structures/types/ImageSpecs";
 import drawCircleModule from "../draw/drawCircleModule";
 import drawSquareModule from "../draw/drawSquareModule";
 import isReserved from "../geometry/isReserved";
-import { QRVersion } from "../../data_structures/types/QRSpecTypes/QRVersion";
+import { QRVersion } from "../../data_structures/types/ConstantTypes/QRVersion";
 import { QR_ELEMENT_SHAPE } from "../../data_structures/constants/QR_ELEMENT_SHAPE";
 import { ShapeLocation } from "../../data_structures/types/ShapeLocation";
 import drawRoundedModule from "../draw/drawRoundedModule";

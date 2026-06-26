@@ -19,7 +19,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { ECISwitchingStrategy } from '../../../exports/types';
+import { ECISwitchingStrategy } from '../../../api/exports/types';
 
 /**
  * Data to generate variations for

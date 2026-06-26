@@ -1,6 +1,6 @@
 import { MaskedQRMatrix } from "../../data_structures/types/MaskedQRMatrix";
 import { QRMatrixCanvas } from "../../data_structures/types/QRMatrixCanvas";
-import { MASK_PATTERN_CODE } from "../../exports/constants";
+import { MASK_PATTERN_CODE } from "../../api/exports/constants";
 import maskQR from "./maskingFunctions";
 
 function maskAllMatrices(qrMatrixCanvas: QRMatrixCanvas, size: number): Array<MaskedQRMatrix> {

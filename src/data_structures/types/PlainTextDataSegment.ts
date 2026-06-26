@@ -1,4 +1,4 @@
-import { DataEncodingMode } from "./ConstantTypes/DataEncodingMode";
+import { DataEncodingMode } from "./constantTypes/DataEncodingMode";
 
 // Stores plain text
 export interface PlainTextDataSegment {

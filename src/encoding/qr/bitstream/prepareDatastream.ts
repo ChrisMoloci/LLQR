@@ -1,9 +1,9 @@
 import { getCharCountIndicatorLength } from "../segmentation/getCharCountIndicatorLength";
 import optimizeCrossCompatibleSegments from "../segmentation/optimizeCrossCompatSegments";
 import { EncodedDataSegment } from "../../../data_structures/types/EncodedDataSegment";
-import { ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion } from "../../../exports/types";
-import { DataEncodingMode } from "../../../data_structures/types/ConstantTypes/DataEncodingMode";
-import { DataEncodingCharacterSet } from "../../../data_structures/types/ConstantTypes/DataEncodingCharacterSet";
+import { ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion } from "../../../api/exports/types";
+import { DataEncodingMode } from "../../../data_structures/types/constantTypes/DataEncodingMode";
+import { DataEncodingCharacterSet } from "../../../data_structures/types/constantTypes/DataEncodingCharacterSet";
 import { DATA_ENCODING_MODE } from "../../../data_structures/constants/DATA_ENCODING_MODE";
 import { ECI_SWITCHING_STRATEGY } from "../../../data_structures/constants/ECI_SWITCHING_STRATEGY";
 import generateLengthIndicator from "./generateLengthIndicator";
