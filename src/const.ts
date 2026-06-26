@@ -1,10 +1,10 @@
-import { ECC_LEVEL_CODE } from "./data_structures/enums/ECC_LEVEL_CODE";
-import { ECI_SWITCHING_STRATEGY } from "./data_structures/enums/ECI_SWITCHING_STRATEGY";
-import { MODE_SWITCHING_STRATEGY } from "./data_structures/enums/MODE_SWITCHING_STRATEGY";
-import { QR_ELEMENT_SHAPE } from "./data_structures/enums/QR_ELEMENT_SHAPE";
+import { ECC_LEVEL_CODE } from "./data_structures/constants/ECC_LEVEL_CODE";
+import { ECI_SWITCHING_STRATEGY } from "./data_structures/constants/ECI_SWITCHING_STRATEGY";
+import { MODE_SWITCHING_STRATEGY } from "./data_structures/constants/MODE_SWITCHING_STRATEGY";
+import { QR_ELEMENT_SHAPE } from "./data_structures/constants/QR_ELEMENT_SHAPE";
 import { ImageSpecs } from "./data_structures/types/ImageSpecs";
 import { QRSpecs } from "./data_structures/types/QRSpecs";
-import { QR_VERSION } from "./data_structures/enums/QR_VERSION";
+import { QR_VERSION } from "./data_structures/constants/QR_VERSION";
 import { MASK_PATTERN_CODE } from "./exports/constants";
 
 // Used for default QR Specs

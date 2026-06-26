@@ -24,9 +24,9 @@ import { ECISwitchingStrategy } from "../data_structures/types/QRSpecTypes/ECISw
 import { QRElementShape } from "../data_structures/types/ImageSpecTypes/QRElementShape";
 
 // Other types
-import { DataEncodingCharacterSet } from "../data_structures/types/EnumTypes/DataEncodingCharacterSet";
-import { DataEncodingMode } from "../data_structures/types/EnumTypes/DataEncodingMode";
-import { MaskPatternFunction } from "../data_structures/types/EnumTypes/MaskPatternFunction";
+import { DataEncodingCharacterSet } from "../data_structures/types/ConstantTypes/DataEncodingCharacterSet";
+import { DataEncodingMode } from "../data_structures/types/ConstantTypes/DataEncodingMode";
+import { MaskPatternFunction } from "../data_structures/types/ConstantTypes/MaskPatternFunction";
 import { EncodedDataSegment } from "../data_structures/types/EncodedDataSegment";
 import { MaskedQRMatrix } from "../data_structures/types/MaskedQRMatrix";
 import { PlainTextDataSegment } from "../data_structures/types/PlainTextDataSegment";

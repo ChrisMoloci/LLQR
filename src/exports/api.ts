@@ -10,59 +10,59 @@
  *  Importing functions from library
  */
 // Core functions
-import determineMode from "../core/matrix_generation/determineEncodingMode";
-import { encodeWithSingleMode } from "../core/matrix_generation/encodeWithSingleMode";
-import { encodeWithModeSwitching } from "../core/matrix_generation/encodeWithModeSwitching";
-import determineMinQRVersion from "../core/matrix_generation/determineMinQRVersion";
-import prepareDatastream from "../core/matrix_generation/prepareDatastream";
-import generateECCStream from "../core/matrix_generation/ecc/generateECCStream";
-import generateMatrix from "../core/matrix_generation/matrix/generateMatrix";
-import generateImageCanvasFromMatrix from "../core/image_generation/generateImageCanvasFromMatrix";
+import determineMode from "../encoding/qr/mode-detection/determineEncodingMode";
+import { encodeWithSingleMode } from "../encoding/qr/encodeWithSingleMode";
+import { encodeWithModeSwitching } from "../encoding/qr/encodeWithModeSwitching";
+import determineMinQRVersion from "../versioning/determineMinQRVersion";
+import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
+import generateECCStream from "../ecc/generateECCStream";
+import generateMatrix from "../matrix/generateMatrix";
+import generateImageCanvasFromMatrix from "../image/generateImageCanvasFromMatrix";
 
 // Helper functions
-import encodeNumeric from "../encoders/encodeNumeric";
-import encodeAlphanumeric from "../encoders/encodeAlphanumeric";
-import encodeKanji from "../encoders/encodeKanji";
-import encodeBinary from "../encoders/encodeBinary";
-import encodeISO_8859_1 from "../encoders/byteEncoders/ISO_IEC_8859/encodeISO-8859-1";
-import encodeUTF8 from "../encoders/byteEncoders/unicode/encodeUTF-8";
+import encodeNumeric from "../encoding/binary/modes/encodeNumeric";
+import encodeAlphanumeric from "../encoding/binary/modes/encodeAlphanumeric";
+import encodeKanji from "../encoding/binary/modes/encodeKanji";
+import encodeBinary from "../encoding/binary/modes/encodeBinary";
+import encodeISO_8859_1 from "../encoding/binary/charsets/ISO_IEC_8859/encodeISO-8859-1";
+import encodeUTF8 from "../encoding/binary/charsets/unicode/encodeUTF-8";
 
-import { computeTheoreticalSizeOfDataForVersion } from "../core/helpers/computeTheoreticalSizeOfDataForVersion";
-import optimizeCrossCompatibleSegments from "../core/helpers/optimizeCrossCompatSegments";
-import { getCharCountIndicatorLength } from "../core/helpers/getCharCountIndicatorLength";
-import { getECIAssignmentNumberSize } from "../core/helpers/getECIAssignmentNumberSize";
+import { computeTheoreticalSizeOfDataForVersion } from "../versioning/computeTheoreticalSizeOfDataForVersion";
+import optimizeCrossCompatibleSegments from "../encoding/qr/segmentation/optimizeCrossCompatSegments";
+import { getCharCountIndicatorLength } from "../encoding/qr/segmentation/getCharCountIndicatorLength";
+import { getECIAssignmentNumberSize } from "../encoding/qr/eci/getECIAssignmentNumberSize";
 
-import generateECIIndicatorAndAssignmentNumber from "../core/helpers/generateECIIndicatorAndAssignmentNumber";
-import generateLengthIndicator from "../core/helpers/generateLengthIndicator";
+import generateECIIndicatorAndAssignmentNumber from "../encoding/qr/eci/generateECIIndicatorAndAssignmentNumber";
+import generateLengthIndicator from "../encoding/qr/bitstream/generateLengthIndicator";
 
-import normalizeDataStream from "../core/matrix_generation/ecc/normalizeDataStream";
-import groupDataAndBlocks from "../core/matrix_generation/ecc/groupDataAndBlocks";
-import padECCZeroBytesToBlocks from "../core/matrix_generation/ecc/padECCZeroBytesToBlocks";
-import computeECC from "../core/matrix_generation/ecc/computeECC";
-import interleaveData from "../core/matrix_generation/ecc/interleaveData";
+import normalizeDataStream from "../ecc/normalizeDataStream";
+import groupDataAndBlocks from "../ecc/groupDataAndBlocks";
+import padECCZeroBytesToBlocks from "../ecc/padECCZeroBytesToBlocks";
+import computeECC from "../ecc/computeECC";
+import interleaveData from "../ecc/interleaveData";
 
-import initializeMatrices from "../core/matrix_generation/matrix/initializeMatrices";
-import addFinderPatterns from "../core/matrix_generation/matrix/addFinderPatterns";
-import addTimingPatterns from "../core/matrix_generation/matrix/addTimingPatterns";
-import addAlignmentPatterns from "../core/matrix_generation/matrix/addAlignmentPatterns";
-import addDarkModule from "../core/matrix_generation/matrix/addDarkModule";
-import reserveFormatInformation from "../core/matrix_generation/matrix/reserveFormatInformation";
-import addVersionInformation from "../core/matrix_generation/matrix/addVersionInformation";
-import addDataToMatrix from "../core/matrix_generation/matrix/addDataToMatrix";
-import maskAllMatrices from "../core/matrix_generation/matrix/maskAllMatrices";
-import addFormatInformationToMatrix from "../core/matrix_generation/matrix/addFormatInformationToMatrix";
-import determineOptimalMaskPattern from "../core/matrix_generation/matrix/determineOptimalMaskPattern";
+import initializeMatrices from "../matrix/initializeMatrices";
+import addFinderPatterns from "../matrix/patterns/addFinderPatterns";
+import addTimingPatterns from "../matrix/patterns/addTimingPatterns";
+import addAlignmentPatterns from "../matrix/patterns/addAlignmentPatterns";
+import addDarkModule from "../matrix/patterns/addDarkModule";
+import reserveFormatInformation from "../matrix/format/reserveFormatInformation";
+import addVersionInformation from "../matrix/format/addVersionInformation";
+import addDataToMatrix from "../matrix/addDataToMatrix";
+import maskAllMatrices from "../matrix/masking/maskAllMatrices";
+import addFormatInformationToMatrix from "../matrix/format/addFormatInformationToMatrix";
+import determineOptimalMaskPattern from "../matrix/masking/determineOptimalMaskPattern";
 
-import computeFinderPatternsLocations from "../core/image_generation/computeFinderPatternLocations";
-import computeAlignmentPatternsLocations from "../core/image_generation/computeAlignmentPatternLocations";
-import renderFinderPatterns from "../core/image_generation/renderFinderPatterns";
-import renderAlignmentPatterns from "../core/image_generation/renderAlignmentPatterns";
-import isReserved from "../core/image_generation/isReserved";
-import renderDataStream from "../core/image_generation/renderDatastream";
+import computeFinderPatternsLocations from "../image/geometry/computeFinderPatternLocations";
+import computeAlignmentPatternsLocations from "../image/geometry/computeAlignmentPatternLocations";
+import renderFinderPatterns from "../image/render/renderFinderPatterns";
+import renderAlignmentPatterns from "../image/render/renderAlignmentPatterns";
+import isReserved from "../image/geometry/isReserved";
+import renderDataStream from "../image/render/renderDatastream";
 
-import drawCircleModule from "../core/image_generation/drawCircleModule";
-import drawSquareModule from "../core/image_generation/drawSquareModule";
-import drawRoundedModule from "../core/image_generation/drawRoundedModule";
+import drawCircleModule from "../image/draw/drawCircleModule";
+import drawSquareModule from "../image/draw/drawSquareModule";
+import drawRoundedModule from "../image/draw/drawRoundedModule";
 
 /**
  * Exporting types out of the library
