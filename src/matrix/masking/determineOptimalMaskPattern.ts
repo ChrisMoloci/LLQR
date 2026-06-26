@@ -1,4 +1,4 @@
-import { MaskedQRMatrix } from "../../data_structures/types/MaskedQRMatrix";
+import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
 import determinePenaltyScore from "./determinePenaltyScore";
 
 function determineOptimalMaskPattern(maskedQRMatrices: Array<MaskedQRMatrix>): Array<Array<number>> {

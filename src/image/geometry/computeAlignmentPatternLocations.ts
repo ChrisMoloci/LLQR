@@ -1,4 +1,4 @@
-import { ShapeLocation } from "../../data_structures/types/ShapeLocation";
+import { ShapeLocation } from "../../types/ShapeLocation";
 import { alignmentPatternLocations } from "../../datasets/alignmentPatternLocations";
 import { QRVersion } from "../../api/exports/types";
 

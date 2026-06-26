@@ -11,29 +11,29 @@
  */
 
 // Config Variable Types
-import { PublicQRSpecs as QRSpecs } from "../../data_structures/types/QRSpecs";
-import { PublicImageSpecs as ImageSpecs } from "../../data_structures/types/ImageSpecs";
+import { PublicQRSpecs as QRSpecs } from "../../types/QRSpecs";
+import { PublicImageSpecs as ImageSpecs } from "../../types/ImageSpecs";
 
 // Config Variable Property Types
-import { ECCLevelCode } from "../../data_structures/types/constantTypes/ECCLevelCode";
-import { QRVersion } from "../../data_structures/types/constantTypes/QRVersion";
-import { MaskPatternCode } from "../../data_structures/types/constantTypes/MaskPatternCode";
-import { ModeSwitchingStrategy } from "../../data_structures/types/constantTypes/ModeSwitchingStrategy";
-import { ECISwitchingStrategy } from "../../data_structures/types/constantTypes/ECISwitchingStrategy";
+import { ECCLevelCode } from "../../types/constantTypes/ECCLevelCode";
+import { QRVersion } from "../../types/constantTypes/QRVersion";
+import { MaskPatternCode } from "../../types/constantTypes/MaskPatternCode";
+import { ModeSwitchingStrategy } from "../../types/constantTypes/ModeSwitchingStrategy";
+import { ECISwitchingStrategy } from "../../types/constantTypes/ECISwitchingStrategy";
 
-import { QRElementShape } from "../../data_structures/types/constantTypes/QRElementShape";
+import { QRElementShape } from "../../types/constantTypes/QRElementShape";
 
 // Other types
-import { DataEncodingCharacterSet } from "../../data_structures/types/constantTypes/DataEncodingCharacterSet";
-import { DataEncodingMode } from "../../data_structures/types/constantTypes/DataEncodingMode";
-import { MaskPatternFunction } from "../../data_structures/types/constantTypes/MaskPatternFunction";
-import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
-import { MaskedQRMatrix } from "../../data_structures/types/MaskedQRMatrix";
-import { PlainTextDataSegment } from "../../data_structures/types/PlainTextDataSegment";
-import { QRConfigs } from "../../data_structures/types/QRConfigs";
-import { QRMatrixCanvas } from "../../data_structures/types/QRMatrixCanvas";
-import { Radiuses } from "../../data_structures/types/Radiuses";
-import { ShapeLocation } from "../../data_structures/types/ShapeLocation";
+import { DataEncodingCharacterSet } from "../../types/constantTypes/DataEncodingCharacterSet";
+import { DataEncodingMode } from "../../types/constantTypes/DataEncodingMode";
+import { MaskPatternFunction } from "../../types/constantTypes/MaskPatternFunction";
+import { EncodedDataSegment } from "../../types/EncodedDataSegment";
+import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
+import { PlainTextDataSegment } from "../../types/PlainTextDataSegment";
+import { QRConfigs } from "../../types/QRConfigs";
+import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
+import { Radiuses } from "../../types/Radiuses";
+import { ShapeLocation } from "../../types/ShapeLocation";
 
 /**
  * Exporting types out of the library

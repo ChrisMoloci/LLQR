@@ -1,12 +1,12 @@
-import { ImageSpecs } from "../../data_structures/types/ImageSpecs";
+import { ImageSpecs } from "../../types/ImageSpecs";
 import drawCircleModule from "../draw/drawCircleModule";
 import drawSquareModule from "../draw/drawSquareModule";
 import isReserved from "../geometry/isReserved";
-import { QRVersion } from "../../data_structures/types/ConstantTypes/QRVersion";
-import { QR_ELEMENT_SHAPE } from "../../data_structures/constants/QR_ELEMENT_SHAPE";
-import { ShapeLocation } from "../../data_structures/types/ShapeLocation";
+import { QRVersion } from "../../types/ConstantTypes/QRVersion";
+import { QR_ELEMENT_SHAPE } from "../../constants/QR_ELEMENT_SHAPE";
+import { ShapeLocation } from "../../types/ShapeLocation";
 import drawRoundedModule from "../draw/drawRoundedModule";
-import { Radiuses } from "../../data_structures/types/Radiuses";
+import { Radiuses } from "../../types/Radiuses";
 
 function renderDataStream(matrix: Array<Array<number>>, matrixCtx: CanvasRenderingContext2D, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number, version: QRVersion, finderPatterns: Array<ShapeLocation>, alignmentPatterns: Array<ShapeLocation>): HTMLCanvasElement {
     const dataColor = imageSpecs.moduleColor;

@@ -1,7 +1,7 @@
-import { EncodedDataSegment } from "../../../data_structures/types/EncodedDataSegment";
+import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
 import unicodeToShiftJIS from "../../../datasets/unicode_to_shiftjis";
-import { MODE_SWITCHING_STRATEGY } from "../../../data_structures/constants/MODE_SWITCHING_STRATEGY";
-import { ModeSwitchingStrategy } from "../../../data_structures/types/QRSpecTypes/ModeSwitchingStrategy"
+import { MODE_SWITCHING_STRATEGY } from "../../../constants/MODE_SWITCHING_STRATEGY";
+import { ModeSwitchingStrategy } from "../../../types/QRSpecTypes/ModeSwitchingStrategy"
 import encodeKanji from "../../binary/modes/encodeKanji";
 import encodeBinary from "../../binary/modes/encodeBinary";
 import determineMode from "../mode-detection/determineEncodingMode";

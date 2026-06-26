@@ -1,4 +1,4 @@
-import { QRMatrixCanvas } from "../../data_structures/types/QRMatrixCanvas";
+import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
 
 function addDarkModule(qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatrixCanvas {
     qrMatrixCanvas.matrix[size - 8]![8]! = 1; // Dark module in the center

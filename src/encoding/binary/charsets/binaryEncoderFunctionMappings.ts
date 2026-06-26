@@ -1,4 +1,4 @@
-import { DATA_ENCODING_CHARACTER_SET } from "../../../data_structures/constants/DATA_ENCODING_CHARACTER_SET";
+import { DATA_ENCODING_CHARACTER_SET } from "../../../constants/DATA_ENCODING_CHARACTER_SET";
 import encodeISO_8859_1 from "./ISO_IEC_8859/encodeISO-8859-1";
 import encodeUTF8 from "./unicode/encodeUTF-8";
 

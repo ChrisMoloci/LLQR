@@ -1,4 +1,4 @@
-import { ShapeLocation } from "../../data_structures/types/ShapeLocation";
+import { ShapeLocation } from "../../types/ShapeLocation";
 
 function computeFinderPatternsLocations(size: number): Array<ShapeLocation> {
     // Only compute once

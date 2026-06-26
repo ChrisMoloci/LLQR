@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { EncodedDataSegment } from '../../data_structures/types/EncodedDataSegment';
+import { EncodedDataSegment } from '../../types/EncodedDataSegment';
 import { encodeWithSingleMode } from './encodeWithSingleMode';
-import { DataEncodingMode } from '../../data_structures/types/constantTypes/DataEncodingMode';
+import { DataEncodingMode } from '../../types/constantTypes/DataEncodingMode';
 
 // Data for testing
 const testData: Record<string, Array<EncodedDataSegment>> = {

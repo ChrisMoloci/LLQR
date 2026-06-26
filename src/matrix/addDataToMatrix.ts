@@ -1,4 +1,4 @@
-import { QRMatrixCanvas } from "../data_structures/types/QRMatrixCanvas";
+import { QRMatrixCanvas } from "../types/QRMatrixCanvas";
 
 function addDataToMatrix(qrMatrixCanvas: QRMatrixCanvas, dataStream: Array<string>, size: number): QRMatrixCanvas {
     let bitIndex = 0; // Current bit index in the data stream

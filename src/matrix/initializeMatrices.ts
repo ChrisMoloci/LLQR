@@ -1,4 +1,4 @@
-import { QRMatrixCanvas } from "../data_structures/types/QRMatrixCanvas";
+import { QRMatrixCanvas } from "../types/QRMatrixCanvas";
 
 function initializeMatrices(size: number): QRMatrixCanvas {
     const qrMatrixCanvas: QRMatrixCanvas = {

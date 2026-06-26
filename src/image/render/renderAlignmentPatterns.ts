@@ -1,10 +1,10 @@
-import { ShapeLocation } from "../../data_structures/types/ShapeLocation";
-import { QR_ELEMENT_SHAPE } from "../../data_structures/constants/QR_ELEMENT_SHAPE";
-import { ImageSpecs } from "../../data_structures/types/ImageSpecs";
+import { ShapeLocation } from "../../types/ShapeLocation";
+import { QR_ELEMENT_SHAPE } from "../../constants/QR_ELEMENT_SHAPE";
+import { ImageSpecs } from "../../types/ImageSpecs";
 import drawCircleModule from "../draw/drawCircleModule";
 import drawRoundedModule from "../draw/drawRoundedModule";
 import drawSquareModule from "../draw/drawSquareModule";
-import { QRVersion } from "../../data_structures/types/QRSpecTypes/QRVersion";
+import { QRVersion } from "../../types/QRSpecTypes/QRVersion";
 
 function renderAlignmentPatterns(matrixCtx: CanvasRenderingContext2D, alignmentPatterns: Array<ShapeLocation>, finderPatterns: Array<ShapeLocation>, size: number, moduleSize: number, imageSpecs: ImageSpecs, radius: number, version: QRVersion): HTMLCanvasElement {
     // Colors

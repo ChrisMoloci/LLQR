@@ -4,11 +4,11 @@ import encodeAlphanumeric from "../binary/modes/encodeAlphanumeric";
 import encodeBinary from "../binary/modes/encodeBinary";
 import encodeKanji from "../binary/modes/encodeKanji";
 import encodeNumeric from "../binary/modes/encodeNumeric";
-import { EncodedDataSegment } from "../../data_structures/types/EncodedDataSegment";
+import { EncodedDataSegment } from "../../types/EncodedDataSegment";
 import { ModeSwitchingStrategy } from "../../api/exports/types";
 import { encodeWithSingleMode } from "./encodeWithSingleMode";
-import { DATA_ENCODING_MODE } from "../../data_structures/constants/DATA_ENCODING_MODE";
-import { MODE_SWITCHING_STRATEGY } from "../../data_structures/constants/MODE_SWITCHING_STRATEGY";
+import { DATA_ENCODING_MODE } from "../../constants/DATA_ENCODING_MODE";
+import { MODE_SWITCHING_STRATEGY } from "../../constants/MODE_SWITCHING_STRATEGY";
 import { segmentInvalidKanjiCandidate } from "./segmentation/segmentInvalidKanjiData";
 import { mergeAdjacentSegments } from "./segmentation/mergeAdjacentSegments";
 

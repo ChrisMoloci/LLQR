@@ -1,7 +1,7 @@
 import { MaskPatternCode } from "../../api/exports/types";
-import { MASK_PATTERN_FUNCTION } from "../../data_structures/constants/MASK_PATTERN_FUNCTION";
-import { MaskedQRMatrix } from "../../data_structures/types/MaskedQRMatrix";
-import { QRMatrixCanvas } from "../../data_structures/types/QRMatrixCanvas";
+import { MASK_PATTERN_FUNCTION } from "../../constants/MASK_PATTERN_FUNCTION";
+import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
+import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
 
 // Mask Functions union type
 // export type MaskFunctions = typeof mask0 | typeof mask1 | typeof mask2 | typeof mask3 | typeof mask4 | typeof mask5 | typeof mask6 | typeof mask7;

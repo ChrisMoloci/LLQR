@@ -1,14 +1,14 @@
 import { describe, it, expect } from "vitest";
 import { skip } from "node:test";
-import { DATA_ENCODING_MODE, DataEncodingMode } from "../data_structures/constants/DATA_ENCODING_MODE";
-import { EncodedDataSegment } from "../data_structures/types/EncodedDataSegment";
+import { DATA_ENCODING_MODE, DataEncodingMode } from "../constants/DATA_ENCODING_MODE";
+import { EncodedDataSegment } from "../types/EncodedDataSegment";
 import determineMinQRVersion, { getCharCountIndicatorLength } from "./determineMinQRVersion";
 import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { encodeWithModeSwitching } from "../encoding/qr/encodeWithModeSwitching";
 import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
-import { ECCLevelCode } from "../data_structures/constants/ECC_LEVEL_CODE";
-import { ECC_LEVEL_CODE } from "../data_structures/constants/ECC_LEVEL_CODE";
-import { QRVersions } from "../data_structures/types/ConstantTypes/QRVersion";
+import { ECCLevelCode } from "../constants/ECC_LEVEL_CODE";
+import { ECC_LEVEL_CODE } from "../constants/ECC_LEVEL_CODE";
+import { QRVersions } from "../types/ConstantTypes/QRVersion";
 import { ECISwitchingStrategy } from "../api/exports/types";
 
 const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVersions, number>>> = {

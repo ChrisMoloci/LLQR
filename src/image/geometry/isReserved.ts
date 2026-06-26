@@ -1,4 +1,4 @@
-import { ShapeLocation } from "../../data_structures/types/ShapeLocation";
+import { ShapeLocation } from "../../types/ShapeLocation";
 import { QRVersion } from "../../api/exports/types";
 
 // Checks if an area is reserved (that means that that part was already drawn)

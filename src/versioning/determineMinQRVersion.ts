@@ -1,8 +1,8 @@
-import { DATA_ENCODING_MODE } from "../data_structures/constants/DATA_ENCODING_MODE";
-import { ECI_SWITCHING_STRATEGY } from "../data_structures/constants/ECI_SWITCHING_STRATEGY";
-import { EncodedDataSegment } from "../data_structures/types/EncodedDataSegment";
-import { DataEncodingCharacterSet } from "../data_structures/types/constantTypes/DataEncodingCharacterSet";
-import { DataEncodingMode } from "../data_structures/types/constantTypes/DataEncodingMode";
+import { DATA_ENCODING_MODE } from "../constants/DATA_ENCODING_MODE";
+import { ECI_SWITCHING_STRATEGY } from "../constants/ECI_SWITCHING_STRATEGY";
+import { EncodedDataSegment } from "../types/EncodedDataSegment";
+import { DataEncodingCharacterSet } from "../types/constantTypes/DataEncodingCharacterSet";
+import { DataEncodingMode } from "../types/constantTypes/DataEncodingMode";
 import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
 import { qrEncodingCharCounts } from "../datasets/qrEncodingCharCounts";
 import { ECC_LEVEL_CODE, QR_VERSION } from "../api/exports/constants";

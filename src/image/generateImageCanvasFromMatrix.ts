@@ -1,7 +1,7 @@
 import { getCurrentConfig } from "../config/defineConfig";
-import { ImageSpecs } from "../data_structures/types/ImageSpecs";
+import { ImageSpecs } from "../types/ImageSpecs";
 import { QRVersion } from "../api/exports/types";
-import { ShapeLocation } from "../data_structures/types/ShapeLocation";
+import { ShapeLocation } from "../types/ShapeLocation";
 import renderFinderPatterns from "./render/renderFinderPatterns";
 import computeFinderPatternsLocations from "./geometry/computeFinderPatternLocations";
 import computeAlignmentPatternsLocations from "./geometry/computeAlignmentPatternLocations";

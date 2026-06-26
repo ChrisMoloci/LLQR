@@ -1,5 +1,5 @@
-import { DATA_ENCODING_MODE } from "../../../data_structures/constants/DATA_ENCODING_MODE";
-import { DataEncodingMode } from "../../../data_structures/types/constantTypes/DataEncodingMode";
+import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
+import { DataEncodingMode } from "../../../types/constantTypes/DataEncodingMode";
 
 // Determines the most efficient encoding mode required to encode the whole data (mode switching is handled later)
 export default function determineMode(data: string): DataEncodingMode {

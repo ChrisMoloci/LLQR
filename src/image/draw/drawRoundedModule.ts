@@ -1,4 +1,4 @@
-import { Radiuses } from "../../data_structures/types/Radiuses";
+import { Radiuses } from "../../types/Radiuses";
 
 function drawRoundedModule(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, radiuses: Radiuses | number): HTMLCanvasElement {
     if (typeof radiuses === "number") {

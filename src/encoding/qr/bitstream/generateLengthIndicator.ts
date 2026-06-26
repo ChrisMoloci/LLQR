@@ -1,4 +1,4 @@
-import { DataEncodingMode } from "../../../data_structures/types/constantTypes/DataEncodingMode";
+import { DataEncodingMode } from "../../../types/constantTypes/DataEncodingMode";
 
 // Creates a length indicator based on data length, mode, and char count indicator length
 function generateLengthIndicator(unencodedData: string, encodedData: Array<string>, charCountIndicatorLength: number, mode: DataEncodingMode) {

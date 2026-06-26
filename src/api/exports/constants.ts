@@ -10,23 +10,23 @@
  *  Importing constantTypes from library
  */
 // Spec ENUMS (not of enum type)
-import { ECC_LEVEL_CODE } from "../../data_structures/constants/ECC_LEVEL_CODE";
-import { QR_VERSION } from "../../data_structures/constants/QR_VERSION";
-import { MASK_PATTERN_CODE } from "../../data_structures/constants/MASK_PATTERN_CODE";
-import { MODE_SWITCHING_STRATEGY } from "../../data_structures/constants/MODE_SWITCHING_STRATEGY";
-import { ECI_SWITCHING_STRATEGY } from "../../data_structures/constants/ECI_SWITCHING_STRATEGY";
+import { ECC_LEVEL_CODE } from "../../constants/ECC_LEVEL_CODE";
+import { QR_VERSION } from "../../constants/QR_VERSION";
+import { MASK_PATTERN_CODE } from "../../constants/MASK_PATTERN_CODE";
+import { MODE_SWITCHING_STRATEGY } from "../../constants/MODE_SWITCHING_STRATEGY";
+import { ECI_SWITCHING_STRATEGY } from "../../constants/ECI_SWITCHING_STRATEGY";
 
-import { QR_ELEMENT_SHAPE } from "../../data_structures/constants/QR_ELEMENT_SHAPE";
+import { QR_ELEMENT_SHAPE } from "../../constants/QR_ELEMENT_SHAPE";
 
 // Default Config ENUMS (not of enum type)
 import { QR_DEFAULTS } from "../../const";
 import { IMAGE_DEFAULTS } from "../../const";
 
 // Other constantTypes
-import { Color } from "../../data_structures/constants/COLOR";
-import { DATA_ENCODING_MODE } from "../../data_structures/constants/DATA_ENCODING_MODE";
-import { DATA_ENCODING_CHARACTER_SET } from "../../data_structures/constants/DATA_ENCODING_CHARACTER_SET";
-import { MASK_PATTERN_FUNCTION } from "../../data_structures/constants/MASK_PATTERN_FUNCTION";
+import { COLOR } from "../../constants/COLOR";
+import { DATA_ENCODING_MODE } from "../../constants/DATA_ENCODING_MODE";
+import { DATA_ENCODING_CHARACTER_SET } from "../../constants/DATA_ENCODING_CHARACTER_SET";
+import { MASK_PATTERN_FUNCTION } from "../../constants/MASK_PATTERN_FUNCTION";
 
 /**
  * Exporting types out of the library

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import determineMode from "./determineEncodingMode";
-import { DATA_ENCODING_MODE } from "../../../data_structures/constants/DATA_ENCODING_MODE";
+import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
 
 
 const numericData = "0123456789";

@@ -1,5 +1,5 @@
-import { DATA_ENCODING_MODE } from "../../../data_structures/constants/DATA_ENCODING_MODE";
-import { EncodedDataSegment } from "../../../data_structures/types/EncodedDataSegment";
+import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
+import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
 import { QRVersion } from "../../../api/exports/types";
 import { getCharCountIndicatorLength } from "./getCharCountIndicatorLength";
 import { encodeWithSingleMode } from "../encodeWithSingleMode";

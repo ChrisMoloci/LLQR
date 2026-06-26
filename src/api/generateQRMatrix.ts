@@ -2,15 +2,15 @@ import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
 import generateMatrix from "../matrix/generateMatrix";
 import { getCurrentConfig } from "../config/defineConfig";
 import { encodeWithModeSwitching } from "../encoding/qr/encodeWithModeSwitching";
-import { QRSpecs } from "../data_structures/types/QRSpecs";
+import { QRSpecs } from "../types/QRSpecs";
 import determineMode from "../encoding/qr/mode-detection/determineEncodingMode";
-import { EncodedDataSegment } from "../data_structures/types/EncodedDataSegment";
+import { EncodedDataSegment } from "../types/EncodedDataSegment";
 import { encodeWithSingleMode } from "../encoding/qr/encodeWithSingleMode";
 import determineMinQRVersion from "../versioning/determineMinQRVersion";
 import generateECCStream from "../ecc/generateECCStream";
-import { DataEncodingMode } from "../data_structures/types/constantTypes/DataEncodingMode";
-import { DATA_ENCODING_MODE } from "../data_structures/constants/DATA_ENCODING_MODE";
-import { MODE_SWITCHING_STRATEGY } from "../data_structures/constants/MODE_SWITCHING_STRATEGY";
+import { DataEncodingMode } from "../types/constantTypes/DataEncodingMode";
+import { DATA_ENCODING_MODE } from "../constants/DATA_ENCODING_MODE";
+import { MODE_SWITCHING_STRATEGY } from "../constants/MODE_SWITCHING_STRATEGY";
 
 function generateQRMatrix(data: string): Array<Array<number>> {
     // -- 1. Get Current QR Configurations --

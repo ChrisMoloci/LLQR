@@ -1,4 +1,4 @@
-import { QRMatrixCanvas } from "../../data_structures/types/QRMatrixCanvas";
+import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
 
 function addFinderPatterns(qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatrixCanvas {
     const finderPatternTemplate: Array<Array<number>> = [

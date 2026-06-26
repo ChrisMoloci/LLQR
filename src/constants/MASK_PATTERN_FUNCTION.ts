@@ -1,4 +1,4 @@
-import { mask0, mask1, mask2, mask3, mask4, mask5, mask6, mask7 } from "../../matrix/masking/maskingFunctions";
+import { mask0, mask1, mask2, mask3, mask4, mask5, mask6, mask7 } from "../matrix/masking/maskingFunctions";
 import { MASK_PATTERN_CODE } from "./MASK_PATTERN_CODE";
 
 // Create a mapping of mask pattern codes to their functions

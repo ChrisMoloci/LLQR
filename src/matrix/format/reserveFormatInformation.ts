@@ -1,4 +1,4 @@
-import { QRMatrixCanvas } from "../../data_structures/types/QRMatrixCanvas";
+import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
 
 function reserveFormatInformation(qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatrixCanvas {
     const formatPositions: Array<[number, number]> = [

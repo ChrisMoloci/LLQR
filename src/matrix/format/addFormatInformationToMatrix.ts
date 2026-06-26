@@ -1,5 +1,5 @@
-import { MaskedQRMatrix } from "../../data_structures/types/MaskedQRMatrix";
-import { getBitLength } from "../../helpers/getBitLength";
+import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
+import { getBitLength } from "../../utils/getBitLength";
 
 function addFormatInformationToMatrix(maskedQRMatrix: MaskedQRMatrix, eccLevel: string, size: number): MaskedQRMatrix {
     // Debug values (REMOVE IN PRODUCTION)

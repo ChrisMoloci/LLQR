@@ -1,4 +1,4 @@
-import { QRMatrixCanvas } from "../../data_structures/types/QRMatrixCanvas";
+import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
 
 function addTimingPatterns(qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatrixCanvas {
     for (let i = 8; i < size - 8; i++) {
