@@ -12,7 +12,7 @@
 // import optimizeCrossCompatibleSegments from "../encoding/qr/segmentation/optimizeCrossCompatSegments";
 // import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
 
-import {EncodedDataSegment} from "../types";
+import {ECCLevelKey, EncodedDataSegment, QRDataCapacityBitsTableEntry} from "../types";
 import {ECCLevel, ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion} from "../types/constantTypes";
 import {ECC_LEVEL_CODE, ECI_SWITCHING_STRATEGY, QR_VERSION} from "../constants";
 import {qrDataCapacityBits} from "../datasets";
@@ -30,9 +30,16 @@ export function determineMinQRVersion(encodedData: Array<EncodedDataSegment>, ec
 
         // -- 1. Determine how much data can fit in this version with the given ECC level
         const eccLevelKey = Object.entries(ECC_LEVEL_CODE).find(([key, value]) => value === eccLevel)?.[0];
-        const capacity = qrDataCapacityBits[version][eccLevelKey!].data; // Get info about a particullar QR Code version
+        if (!eccLevelKey) throw Error("Invalid ECC LEVEL_CODE");
 
-        // -- 1. Calculate the total bits needed to encode all the data for a particullar version
+        // Get the capacity information for this version
+        const versionTableVersion: Record<string, QRDataCapacityBitsTableEntry> | undefined = qrDataCapacityBits[version];
+        if (!versionTableVersion) throw Error("Invalid ECC LEVEL_CODE");
+
+        // Get the data capacity for the version
+        const capacity = versionTableVersion[eccLevelKey]!.data; // Get info about a particullar QR Code version
+
+        // -- 2. Calculate the total bits needed to encode all the data for a particullar version
         let dataStreamSize = computeTheoreticalSizeOfDataForVersion(workingEncodedData, version as QRVersion, eciSwitchingMode, modeSwitchingMode);
 
         // Calculate for terminator and byte alignment

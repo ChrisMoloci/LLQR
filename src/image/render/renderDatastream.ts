@@ -11,7 +11,7 @@
 
 
 import {ImageSpecs, Radiuses, ShapeLocation} from "../../types";
-import {QRVersion} from "../../types/constantTypes";
+import {QRVersion} from "../../types";
 import {QR_ELEMENT_SHAPE} from "../../constants";
 import {isReserved, drawCircleModule, drawRoundedModule, drawSquareModule} from "../."
 
@@ -65,22 +65,22 @@ export function renderDataStream(matrix: Array<Array<number>>, matrixCtx: Canvas
                         };
 
                         // Top left corner - round if there's no black module above OR to the left
-                        if ((row === 0 || matrix[row-1][col] === 0) && (col === 0 || matrix[row][col-1] === 0)) {
+                        if ((row === 0 || matrix[row-1]![col] === 0) && (col === 0 || matrix[row]![col-1] === 0)) {
                             radiuses.topLeft = radius;
                         }
         
                         // Top right corner - round if there's no black module above OR to the right
-                        if ((row === 0 || matrix[row-1][col] === 0) && (col === size-1 || matrix[row][col+1] === 0)) {
+                        if ((row === 0 || matrix[row-1]![col] === 0) && (col === size-1 || matrix[row]![col+1] === 0)) {
                             radiuses.topRight = radius;
                         }
         
                         // Bottom right corner - round if there's no black module below OR to the right
-                        if ((row === size-1 || matrix[row+1][col] === 0) && (col === size-1 || matrix[row][col+1] === 0)) {
+                        if ((row === size-1 || matrix[row+1]![col] === 0) && (col === size-1 || matrix[row]![col+1] === 0)) {
                             radiuses.bottomRight = radius;
                         }
         
                         // Bottom left corner - round if there's no black module below OR to the left
-                        if ((row === size-1 || matrix[row+1][col] === 0) && (col === 0 || matrix[row][col-1] === 0)) {
+                        if ((row === size-1 || matrix[row+1]![col] === 0) && (col === 0 || matrix[row]![col-1] === 0)) {
                             radiuses.bottomLeft = radius;
                         }
 

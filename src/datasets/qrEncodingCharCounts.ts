@@ -1,4 +1,6 @@
-export const qrEncodingCharCounts = {
+import {QREncodingCharCountsTable} from "../types";
+
+export const qrEncodingCharCounts: QREncodingCharCountsTable = {
     v1_9: {
         versions: [1, 2, 3, 4, 5, 6, 7, 8, 9],
         "0001": 10,

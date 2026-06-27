@@ -9,6 +9,7 @@
 // import padECCZeroBytesToBlocks from "./padECCZeroBytesToBlocks";
 
 import {ECCLevel, QRVersion} from "../types/constantTypes";
+import type {QRDataCapacityBitsTable, QRDataCapacityBitsTableBlocks, QRDataCapacityBitsTableEntry} from "../types";
 import {ECC_LEVEL_CODE} from "../constants";
 import {qrDataCapacityBits} from "../datasets";
 import normalizeDataStream from "./normalizeDataStream";
@@ -25,16 +26,28 @@ export function generateECCStream(encodedData: Array<string>, qrVersion: QRVersi
         throw new Error("ECC Level Code cannot be null when generating ECC stream.");
     }
 
+    // Get the error correction level key from the ECC_LEVEL_CODE mapping
     const eccLevelKey = Object.entries(ECC_LEVEL_CODE).find(([key, value]) => value === eccLevelCode)?.[0];
-
     if (eccLevelKey === undefined) {
         throw new Error("Invalid ECC Level Code provided for ECC stream generation.");
     }
 
-    const groupingObj = qrDataCapacityBits[qrVersion][eccLevelKey];
-    const dataCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevelKey].data * 8;
-    const eccCodewordBufferSize: number = qrDataCapacityBits[qrVersion][eccLevelKey].ecc * 8;
-    const generatorPolynomial: Array<number> = qrDataCapacityBits[qrVersion][eccLevelKey].generator;
+    // Get the capacity information for the specified QR version
+    const versionTableVersion: Record<string, QRDataCapacityBitsTableEntry> | undefined = qrDataCapacityBits[qrVersion];
+    if (versionTableVersion === undefined) {
+        throw new Error("Invalid QR Version provided for ECC stream generation.");
+    }
+
+    // Get the capacity information for the particular version
+    const versionTableEntry: QRDataCapacityBitsTableEntry | undefined = versionTableVersion[eccLevelKey];
+    if (versionTableEntry === undefined) {
+        throw new Error("Invalid grouping object for ECC stream generation.");
+    }
+
+    const groupingObj = versionTableEntry.blocks;
+    const dataCodewordBufferSize: number = versionTableEntry.data * 8;
+    const eccCodewordBufferSize: number = versionTableEntry.ecc * 8;
+    const generatorPolynomial: Array<number> = versionTableEntry.generator;
 
     // -- 1. Restructure data stream with padding, and empty ECC bytes as an array --
     const normalizedDataStream = normalizeDataStream(encodedData, dataCodewordBufferSize);
@@ -57,7 +70,7 @@ export function generateECCStream(encodedData: Array<string>, qrVersion: QRVersi
     console.log("Computed ECC Grouped Data:", eccGroupedData);
 
     // -- 6. Interleave Stream
-    const interleavedDataStream = interleaveData(eccGroupedData, groupingObj);
+    const interleavedDataStream = interleaveData(eccGroupedData, versionTableEntry);
     console.log("Final Interleaved Data and ECC Stream:", interleavedDataStream);
 
     // -- 7. Convert interleaved number array to array of binary values --

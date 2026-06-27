@@ -19,7 +19,7 @@ export function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, finder
         const finderPatternLocation = finderPatterns[i]!;
 
         // Set the CTX fill color to outline color
-        matrixCtx.fillStyle = outlineColor[i];
+        matrixCtx.fillStyle = outlineColor[i]!;
 
         // Draw the outline and background
         switch (imageSpecs.finderPatternOutlineShapes[i]) {
@@ -51,7 +51,7 @@ export function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, finder
         }
 
         // Draw finder pattern inner background
-        matrixCtx.fillStyle = imageSpecs.finderPatternInnerBackgroundColor[i];
+        matrixCtx.fillStyle = imageSpecs.finderPatternInnerBackgroundColor[i]!;
         switch (imageSpecs.finderPatternInnerBackgroundShapes[i]) {
             case QR_ELEMENT_SHAPE.SQUARE:
                 drawSquareModule(
@@ -81,7 +81,7 @@ export function renderFinderPatterns(matrixCtx: CanvasRenderingContext2D, finder
         }
 
         // Draw the inner area of the finder patterns
-        matrixCtx.fillStyle = innerColor[i];
+        matrixCtx.fillStyle = innerColor[i]!;
         switch (imageSpecs.finderPatternInnerShapes[i]) {
             case QR_ELEMENT_SHAPE.SQUARE:
                 drawSquareModule(

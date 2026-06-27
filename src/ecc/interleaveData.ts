@@ -1,7 +1,9 @@
-export function interleaveData(groupedData: Array<Array<Array<number>>>, groupingObj: Object): Array<number> {
-    if (!groupedData) throw new Error("No grouped data provided for interleaving.");
+import {QRDataCapacityBitsTableEntry} from "../types";
 
-    // Splite data and ecc and add them to a single array
+export function interleaveData(groupedData: Array<Array<Array<number>>>, groupingObj: QRDataCapacityBitsTableEntry): Array<number> {
+    if (!groupedData || !groupedData[0] || !groupedData[1]) throw new Error("Invalid grouped data provided for interleaving.");
+
+    // Split data and ecc and add them to a single array
     const dataCodewords: Array<number> = [];
     const eccCodewords: Array<number> = [];
     const interleavedData: Array<number> = [];

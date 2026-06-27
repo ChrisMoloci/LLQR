@@ -15,7 +15,7 @@ export function addVersionInformation(qrMatrixCanvas: QRMatrixCanvas, version: Q
     const generatorPolynomial: number = 0b1111100100101;
 
     // The final ECC value for our version
-    let eccVersion: number = version << 12; // Initialize by shifting version 12 bits to the left
+    let eccVersion: number = version! << 12; // Initialize by shifting version 12 bits to the left
 
     let loopDepth = 0; // Safety variable to prevent infinite loops
 
@@ -36,7 +36,7 @@ export function addVersionInformation(qrMatrixCanvas: QRMatrixCanvas, version: Q
 
     // Add original 6-bit version number to the beginning of the ECC stream and convert to a reversed number array (start from LSB)
     const completeVersionInformationStream: number[] = (
-        version.toString(2).padStart(6, '0') + // Original version number (6 bits)
+        version!.toString(2).padStart(6, '0') + // Original version number (6 bits)
         eccVersion.toString(2).padStart(12, '0') // ECC bits (12 bits)
     ).split('').map(bit => parseInt(bit)).reverse(); // Convert to array and reverse for easier placement
 

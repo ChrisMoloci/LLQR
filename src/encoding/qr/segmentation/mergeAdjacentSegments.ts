@@ -44,7 +44,7 @@ export function mergeAdjacentSegments(segments: Array<EncodedDataSegment>): Arra
 
             if (nextSegment.encodingMode === currentMode) {
                 // If the next segment has the same encoding mode as the current segment, we may be able to merge them
-                if (currentMode === DATA_ENCODING_MODE.BYTE) {
+                if (currentMode === DATA_ENCODING_MODE.BYTE && nextSegment.encodingMode === DATA_ENCODING_MODE.BYTE) {
                     // For byte mode, we need to also check if they are using the same char set (e.g Latin-1, UTF-8, etc)
                     if (currentSegment.charSetAssignmentNumber !== nextSegment.charSetAssignmentNumber) {
                         break; // Different charsets, cannot merge;

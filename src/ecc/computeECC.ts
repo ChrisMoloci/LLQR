@@ -1,13 +1,14 @@
 import {gfMultiply, gfXor} from "./GF256_Arithmetic";
+import type {QRDataCapacityBitsTableBlocks} from "../types";
 
-export function computeECC(groupedData: Array<Array<Array<number>>>, groupingObj: Object, generatorPolynomial: Array<number>): Array<Array<Array<number>>> {
+export function computeECC(groupedData: Array<Array<Array<number>>>, groupingObj: QRDataCapacityBitsTableBlocks, generatorPolynomial: Array<number>): Array<Array<Array<number>>> {
     const eccGroupedData: Array<Array<Array<number>>> = groupedData.map((group, groupIndex) => {
         // console.log("Computing ECC for Group:", groupIndex + 1, "with", numOfBlocks, "blocks.");
         if (group instanceof Array && group.length > 0) {
             return group.map((block, blockIndex) => {
                 // console.log("Computing ECC for Block:", blockIndex + 1, "of Group:", groupIndex + 1);
                 if (block instanceof Array && block.length > 0) {
-                    const blockDataCodewordBufferSize = groupingObj.blocks[`g${groupIndex + 1}`].dataCodewordsPerBlock;
+                    const blockDataCodewordBufferSize = groupingObj[`g${groupIndex + 1}` as "g1" | "g2"].dataCodewordsPerBlock;
                     /**
                      * Why we need to copy the intial data and create a copy of the whole block:
                      * As we perform the ECC on the entire block, the data portion of it will be altered and evantually become 0.
@@ -30,7 +31,7 @@ export function computeECC(groupedData: Array<Array<Array<number>>>, groupingObj
                         if (currentCodeword !== 0) {
                             // For each codeword in the block, multiply the generator polynomial by the codeword and XOR it with the padded data
                             for (let polynomialIndex = 0; polynomialIndex < generatorPolynomial.length; polynomialIndex++) {
-                                currentBlock[codewordIndex + polynomialIndex] = gfXor(currentBlock[codewordIndex + polynomialIndex], gfMultiply(generatorPolynomial[polynomialIndex], currentCodeword));
+                                currentBlock[codewordIndex + polynomialIndex] = gfXor(currentBlock[codewordIndex + polynomialIndex]!, gfMultiply(generatorPolynomial[polynomialIndex]!, currentCodeword));
                             }
                         }
                     }

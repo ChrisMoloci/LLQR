@@ -1,7 +1,9 @@
-export function groupDataAndBlocks(dataStream: Array<number>, groupingObj: Object) {
+import {QRDataCapacityBitsTableBlocks} from "../types";
+
+export function groupDataAndBlocks(dataStream: Array<number>, groupingObj: QRDataCapacityBitsTableBlocks) {
     // Create the unnormalized groups with data from all blocks in each group
-    const group1 = dataStream.slice(0, (groupingObj.blocks.g1.numBlocks * groupingObj.blocks.g1.dataCodewordsPerBlock));
-    const group2 = dataStream.slice((groupingObj.blocks.g1.numBlocks * groupingObj.blocks.g1.dataCodewordsPerBlock), ((groupingObj.blocks.g1.numBlocks * groupingObj.blocks.g1.dataCodewordsPerBlock)) + ((groupingObj.blocks.g2.numBlocks * groupingObj.blocks.g2.dataCodewordsPerBlock)));
+    const group1 = dataStream.slice(0, (groupingObj.g1.numBlocks * groupingObj.g1.dataCodewordsPerBlock));
+    const group2 = dataStream.slice((groupingObj.g1.numBlocks * groupingObj.g1.dataCodewordsPerBlock), ((groupingObj.g1.numBlocks * groupingObj.g1.dataCodewordsPerBlock)) + ((groupingObj.g2.numBlocks * groupingObj.g2.dataCodewordsPerBlock)));
 
     // Create group matrix of blocks
     const groupedData: Array<Array<Array<number>>> = [[], []]; // Array to hold two groups
@@ -11,11 +13,11 @@ export function groupDataAndBlocks(dataStream: Array<number>, groupingObj: Objec
         switch (group) {
             case groupedData[0]: // Group 1
                 // Create blocks for group 1
-                groupedData[0] = createBlocksForGroup(group1, groupingObj.blocks.g1.numBlocks, groupingObj.blocks.g1.dataCodewordsPerBlock);
+                groupedData[0] = createBlocksForGroup(group1, groupingObj.g1.numBlocks, groupingObj.g1.dataCodewordsPerBlock);
                 break;
             case groupedData[1]: // Group 2
                 // Create blocks for group 2
-                groupedData[1] = createBlocksForGroup(group2, groupingObj.blocks.g2.numBlocks, groupingObj.blocks.g2.dataCodewordsPerBlock);  
+                groupedData[1] = createBlocksForGroup(group2, groupingObj.g2.numBlocks, groupingObj.g2.dataCodewordsPerBlock);
                 break;
         }
     }

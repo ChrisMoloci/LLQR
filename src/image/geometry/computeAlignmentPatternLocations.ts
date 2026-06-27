@@ -7,8 +7,8 @@ import {ShapeLocation} from "../../types";
 import {alignmentPatternLocations} from "../../datasets";
 
 export function computeAlignmentPatternsLocations(size: number, version: QRVersion): Array<ShapeLocation> {
-    const alignmentPatterns = alignmentPatternLocations[version]?.flatMap(coord1 => {
-        return alignmentPatternLocations[version]!
+    const alignmentPatterns = alignmentPatternLocations[version!]?.flatMap(coord1 => {
+        return alignmentPatternLocations[version!]!
             .filter(coord2 =>
                 !(
                     (coord1 < 9 && coord2 < 9) || // Top-left finder

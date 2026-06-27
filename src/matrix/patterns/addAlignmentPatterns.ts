@@ -15,7 +15,7 @@ export function addAlignmentPatterns(qrMatrixCanvas: QRMatrixCanvas, version: QR
         [1, 1, 1, 1, 1]
     ];
 
-    const alignmentPatterns: number[] | undefined = alignmentPatternLocations[version];
+    const alignmentPatterns: number[] | undefined = alignmentPatternLocations[version!];
 
     // If no alignment patterns are needed, return the matrix as is
     if (!alignmentPatterns || alignmentPatterns.length === 0) return qrMatrixCanvas;

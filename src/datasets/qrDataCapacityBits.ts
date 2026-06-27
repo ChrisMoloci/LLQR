@@ -1,4 +1,6 @@
-export const qrDataCapacityBits: Record<string, any> = {
+import {QRDataCapacityBitsTable} from "../types";
+
+export const qrDataCapacityBits: QRDataCapacityBitsTable = {
   "1": {
     "L": {
       "total": 26,

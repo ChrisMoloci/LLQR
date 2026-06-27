@@ -1,7 +1,9 @@
 // Function to pad zero bytes for ECC codewords in each block
-export function padECCZeroBytesToBlocks(groupedData: Array<Array<Array<number>>>, groupingObj: Object, eccCodewordBufferSize: number): Array<Array<Array<number>>> {
+import {QRDataCapacityBitsTableBlocks} from "../types";
+
+export function padECCZeroBytesToBlocks(groupedData: Array<Array<Array<number>>>, groupingObj: QRDataCapacityBitsTableBlocks, eccCodewordBufferSize: number): Array<Array<Array<number>>> {
     const paddedGroupedData: Array<Array<Array<number>>> = groupedData.map((group, groupIndex) => {
-        const numOfBlocks = groupingObj.blocks[`g${groupIndex + 1}`].numBlocks;
+        const numOfBlocks = groupingObj[`g${groupIndex + 1}` as "g1" || "g2"].numBlocks;
         if (group instanceof Array && numOfBlocks > 0) {
             return group.map((block, blockIndex) => {
                 if (block instanceof Array && blockIndex + 1 <= numOfBlocks) {
