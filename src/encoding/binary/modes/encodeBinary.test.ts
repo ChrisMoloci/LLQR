@@ -1,7 +1,11 @@
-import { describe, it, expect } from "vitest";
+import {describe} from "vitest";
 
-describe("Placeholder Test", () => {
-    it("should pass this placeholder test", () => {
-        return true;
-    });
-});
+describe.todo("encodeBinary", () => {})
+
+// import { describe, it, expect } from "vitest";
+//
+// describe("Placeholder Test", () => {
+//     it("should pass this placeholder test", () => {
+//         return true;
+//     });
+// });
