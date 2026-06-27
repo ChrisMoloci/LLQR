@@ -1,5 +1,3 @@
-// import { QRMatrixCanvas } from "../types/QRMatrixCanvas";
-
 import {QRMatrixCanvas} from "../types";
 
 export function addDataToMatrix(qrMatrixCanvas: QRMatrixCanvas, dataStream: Array<string>, size: number): QRMatrixCanvas {

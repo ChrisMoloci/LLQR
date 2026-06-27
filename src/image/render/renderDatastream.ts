@@ -1,17 +1,4 @@
-// import { ImageSpecs } from "../../types/ImageSpecs";
-// import drawCircleModule from "../draw/drawCircleModule";
-// import drawSquareModule from "../draw/drawSquareModule";
-// import isReserved from "../geometry/isReserved";
-// import { QRVersion } from "../../types/ConstantTypes/QRVersion";
-// import { QR_ELEMENT_SHAPE } from "../../constants/QR_ELEMENT_SHAPE";
-// import { ShapeLocation } from "../../types/ShapeLocation";
-// import drawRoundedModule from "../draw/drawRoundedModule";
-// import { Radiuses } from "../../types/Radiuses";
-
-
-
-import {ImageSpecs, Radiuses, ShapeLocation} from "../../types";
-import {QRVersion} from "../../types";
+import {ImageSpecs, Radiuses, ShapeLocation, QRVersion} from "../../types";
 import {QR_ELEMENT_SHAPE} from "../../constants";
 import {isReserved, drawCircleModule, drawRoundedModule, drawSquareModule} from "../."
 

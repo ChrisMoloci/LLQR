@@ -1,5 +1,3 @@
-// import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
-
 import {QRMatrixCanvas} from "../../types";
 
 export function addFinderPatterns(qrMatrixCanvas: QRMatrixCanvas, size: number): QRMatrixCanvas {

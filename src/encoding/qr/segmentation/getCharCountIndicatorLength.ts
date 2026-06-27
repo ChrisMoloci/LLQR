@@ -1,9 +1,4 @@
-// import { DataEncodingMode } from "../../../types/constantTypes/DataEncodingMode";
-// import { qrEncodingCharCounts } from "../../../datasets/qrEncodingCharCounts";
-// import { QR_VERSION } from "../../../api/exports/constants";
-// import { QRVersion } from "../../../api/exports/types";
-
-import {DataEncodingMode, QRVersion} from "../../../types/constantTypes";
+import {DataEncodingMode, QRVersion} from "../../../types";
 import {QR_VERSION} from "../../../constants";
 import {qrEncodingCharCounts} from "../../../datasets";
 

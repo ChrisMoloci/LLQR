@@ -1,26 +1,20 @@
-import { describe, it, expect } from "vitest";
-import { skip } from "node:test";
-import { DATA_ENCODING_MODE, DataEncodingMode } from "../constants/DATA_ENCODING_MODE";
-import { EncodedDataSegment } from "../types/EncodedDataSegment";
-import determineMinQRVersion, { getCharCountIndicatorLength } from "./determineMinQRVersion";
-import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
-import { encodeWithModeSwitching } from "../encoding/qr/encodeWithModeSwitching";
-import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
-import { ECCLevelCode } from "../constants/ECC_LEVEL_CODE";
-import { ECC_LEVEL_CODE } from "../constants/ECC_LEVEL_CODE";
-import { QRVersions } from "../types/ConstantTypes/QRVersion";
-import { ECISwitchingStrategy } from "../api/exports/types";
+import {DataEncodingMode, ECCLevel, EncodedDataSegment} from "../types";
+import {DATA_ENCODING_MODE, ECC_LEVEL_CODE} from "../constants";
+import {describe} from "vitest";
+import {encodeWithModeSwitching} from "../encoding";
 
-const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVersions, number>>> = {
+
+// @ts-ignore
+const dataCapacities: Record<DataEncodingMode, Record<ECCLevel, Record<QRVersions, number>>> = {
     // Max char capacity for numeric encoding
     [DATA_ENCODING_MODE.NUMERIC as DataEncodingMode]: {
-        [ECC_LEVEL_CODE.L as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.L as ECCLevel]: {
             "1": 41, "2": 77, "3": 127, "4": 187, "5": 255, "6": 322, "7": 370, "8": 461, "9": 552, "10": 652,
             "11": 772, "12": 883, "13": 1022, "14": 1101, "15": 1250, "16": 1408, "17": 1548, "18": 1725, "19": 1903, "20": 2061,
             "21": 2232, "22": 2409, "23": 2620, "24": 2812, "25": 3057, "26": 3283, "27": 3517, "28": 3669, "29": 3909, "30": 4158,
             "31": 4417, "32": 4686, "33": 4965, "34": 5253, "35": 5529, "36": 5836, "37": 6153, "38": 6479, "39": 6743, "40": 7089
         },
-        [ECC_LEVEL_CODE.M as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.M as ECCLevel]: {
             "1": 34,
       "2": 63,
       "3": 101,
@@ -62,7 +56,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
       "39": 5313,
       "40": 5596
         },
-        [ECC_LEVEL_CODE.Q as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.Q as ECCLevel]: {
             "1": 27,
       "2": 48,
       "3": 77,
@@ -104,7 +98,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
       "39": 3791,
       "40": 3993
         },
-        [ECC_LEVEL_CODE.H as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.H as ECCLevel]: {
             "1": 17,
       "2": 34,
       "3": 58,
@@ -150,7 +144,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
 
     // Max char capacity for alphanumeric encoding
     [DATA_ENCODING_MODE.ALPHANUMERIC as DataEncodingMode]: {
-        [ECC_LEVEL_CODE.L as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.L as ECCLevel]: {
             "1": 25,
       "2": 47,
       "3": 77,
@@ -192,7 +186,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
       "39": 4087,
       "40": 4296
         },
-        [ECC_LEVEL_CODE.M as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.M as ECCLevel]: {
             "1": 20,
       "2": 38,
       "3": 61,
@@ -234,7 +228,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
       "39": 3220,
       "40": 3391
         },
-        [ECC_LEVEL_CODE.Q as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.Q as ECCLevel]: {
             "1": 16,
       "2": 29,
       "3": 47,
@@ -276,7 +270,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
       "39": 2298,
       "40": 2420
         },
-        [ECC_LEVEL_CODE.H as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.H as ECCLevel]: {
             "1": 10,
       "2": 20,
       "3": 35,
@@ -322,7 +316,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
 
     // Max char capacity for byte encoding
     [DATA_ENCODING_MODE.BYTE as DataEncodingMode]: {
-        [ECC_LEVEL_CODE.L as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.L as ECCLevel]: {
             "1": 17,
       "2": 32,
       "3": 53,
@@ -364,7 +358,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
       "39": 2809,
       "40": 2953
         },
-        [ECC_LEVEL_CODE.M as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.M as ECCLevel]: {
             "1": 14,
       "2": 26,
       "3": 42,
@@ -406,7 +400,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
       "39": 2213,
       "40": 2331
         },
-        [ECC_LEVEL_CODE.Q as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.Q as ECCLevel]: {
             "1": 11,
       "2": 20,
       "3": 32,
@@ -448,7 +442,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
       "39": 1579,
       "40": 1663
         },
-        [ECC_LEVEL_CODE.H as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.H as ECCLevel]: {
             "1": 7,
       "2": 14,
       "3": 24,
@@ -494,7 +488,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
 
     // Max char capacity for kanji encoding
     [DATA_ENCODING_MODE.KANJI as DataEncodingMode]: {
-        [ECC_LEVEL_CODE.L as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.L as ECCLevel]: {
             "1": 10,
       "2": 20,
       "3": 32,
@@ -536,7 +530,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
       "39": 1729,
       "40": 1817
         },
-        [ECC_LEVEL_CODE.M as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.M as ECCLevel]: {
             "1": 8,
       "2": 16,
       "3": 26,
@@ -578,7 +572,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
       "39": 1362,
       "40": 1435
         },
-        [ECC_LEVEL_CODE.Q as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.Q as ECCLevel]: {
             "1": 7,
       "2": 12,
       "3": 20,
@@ -620,7 +614,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
       "39": 972,
       "40": 1024
         },
-        [ECC_LEVEL_CODE.H as ECCLevelCode]: {
+        [ECC_LEVEL_CODE.H as ECCLevel]: {
             "1": 4,
       "2": 8,
       "3": 15,
@@ -973,7 +967,7 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
                         
 //                         if (version === 40 && i > capacity) return; // Skip test if exceeding max capacity
 
-//                         const determinedVersion = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", null);
+//                         const determinedVersion = determineMinQRVersion(encodedData, eccLevel as ECCLevel, "disabled", "disabled", null);
 
 //                         if (i <= capacity) {
 //                             // If within capacity, expect the determined version to be the current version
@@ -985,17 +979,17 @@ const dataCapacities: Record<DataEncodingMode, Record<ECCLevelCode, Record<QRVer
 //                             if (version < 40) {
 //                                 // Test with a higher preferred version
 //                                 const preferredVersion = version + 1 as QRVersions;
-//                                 const determinedVersionWithPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", preferredVersion);
+//                                 const determinedVersionWithPref = determineMinQRVersion(encodedData, eccLevel as ECCLevel, "disabled", "disabled", preferredVersion);
 //                                 expect(determinedVersionWithPref).toBe(preferredVersion); // Test with version +1 higher
                                 
-//                                 const determineVersionWithHighestPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", 40);
+//                                 const determineVersionWithHighestPref = determineMinQRVersion(encodedData, eccLevel as ECCLevel, "disabled", "disabled", 40);
 //                                 expect(determineVersionWithHighestPref).toBe(40); // Test with version max version as preferred
 //                             } 
 
 //                             if (version > 1) {
 //                                 // Test with a lower preferred version
 //                                 const preferredVersion = version - 1 as QRVersions;
-//                                 const determinedVersionWithLowerPref = determineMinQRVersion(encodedData, eccLevel as ECCLevelCode, "disabled", "disabled", preferredVersion);
+//                                 const determinedVersionWithLowerPref = determineMinQRVersion(encodedData, eccLevel as ECCLevel, "disabled", "disabled", preferredVersion);
 //                                 expect(determinedVersionWithLowerPref).toBe(version); // Should be the version we are checking for
 //                                 expect(determinedVersionWithLowerPref).not.toBe(preferredVersion); // Should not be the lower preferred version
 //                             }
@@ -1094,11 +1088,11 @@ describe("Determine the minimum version for a QR Code with segmented data", () =
                 for (const eccLevel of Object.values(ECC_LEVEL_CODE)) {
                     for (let eciMode of ["disabled", "auto", "forced"]) {
                         it(`Should determine the correct version for a string of mixed data of`, () => {
-                            const determinedVersion = determineMinQRVersion(data, eccLevel as ECCLevelCode, eciMode as ECISwitchingStrategy, null);
+                            const determinedVersion = determineMinQRVersion(data, eccLevel as ECCLevel, eciMode as ECISwitchingStrategy, null);
 
                             // Gotta sum the individual strings in the array since not all codewords will by bytes (such as for numeric, alphanumeric, or kanji)
                             const preparedDataSize = Math.ceil(prepareDatastream(data, determinedVersion, eciMode as ECISwitchingStrategy).reduce((sum, seg) => sum + seg.length, 0) / 8);
-                            const maxDataSize = getDataSizeForVersion(determinedVersion, eccLevel as ECCLevelCode); // Get the max allowed data size for the determined version (in bytes)
+                            const maxDataSize = getDataSizeForVersion(determinedVersion, eccLevel as ECCLevel); // Get the max allowed data size for the determined version (in bytes)
                             
                             expect(preparedDataSize).toBeLessThanOrEqual(maxDataSize); // Check if prepared data size fits within the max data size (valid version)
                             // expect(1).toBe(1); // Placeholder to avoid empty test suite error
@@ -1117,7 +1111,7 @@ describe("Determine the minimum version for a QR Code with segmented data", () =
                         // } 
                         // else if (size > 324) {
                         //     it("It should yield an exception when exceeding max capacity", () => {
-                        //         expect(determineMinQRVersion(data, eccLevel as ECCLevelCode, eciMode as ECISwitchingModes, null)).toThrow();
+                        //         expect(determineMinQRVersion(data, eccLevel as ECCLevel, eciMode as ECISwitchingModes, null)).toThrow();
                         //     });
                         // }
                     }
@@ -8587,7 +8581,7 @@ function splitInt(num: number, divisor: number) {
     return groups;
 }
 
-function getDataSizeForVersion(version: QRVersions, eccLevel: ECCLevelCode): number {
+function getDataSizeForVersion(version: QRVersions, eccLevel: ECCLevel): number {
     const eccLevelKey = Object.entries(ECC_LEVEL_CODE).find(([key, value]) => value === eccLevel)?.[0];
     return qrDataCapacityBits[version][eccLevelKey!].data;
 }

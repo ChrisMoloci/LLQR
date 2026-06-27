@@ -1,5 +1,5 @@
 export * from "./computeECC";
-export *from "./generateECCStream";
+export * from "./generateECCStream";
 export * from "./GF256_Arithmetic"
 export * from "./groupDataAndBlocks";
 export * from "./interleaveData";

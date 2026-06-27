@@ -1,7 +1,3 @@
-// import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
-// import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
-// import unicodeToShiftJIS from "../../../datasets/unicode_to_shiftjis";
-
 import {EncodedDataSegment} from "../../../types";
 import {DATA_ENCODING_MODE} from "../../../constants";
 import {unicodeToShiftJIS} from "../../../datasets";

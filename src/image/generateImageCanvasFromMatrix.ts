@@ -1,17 +1,5 @@
-// import { getCurrentConfig } from "../config/defineConfig";
-// import { ImageSpecs } from "../types/ImageSpecs";
-// import { QRVersion } from "../api/exports/types";
-// import { ShapeLocation } from "../types/ShapeLocation";
-// import renderFinderPatterns from "./render/renderFinderPatterns";
-// import computeFinderPatternsLocations from "./geometry/computeFinderPatternLocations";
-// import computeAlignmentPatternsLocations from "./geometry/computeAlignmentPatternLocations";
-// import renderAlignmentPatterns from "./render/renderAlignmentPatterns";
-// import isReserved from "./geometry/isReserved";
-// import renderDataStream from "./render/renderDatastream";
-
-import {ImageSpecs, ShapeLocation} from "../types";
+import {ImageSpecs, ShapeLocation, QRVersion} from "../types";
 import {getCurrentConfig} from "../config";
-import {QRVersion} from "../types/constantTypes";
 import computeFinderPatternsLocations from "./geometry/computeFinderPatternLocations";
 import computeAlignmentPatternsLocations from "./geometry/computeAlignmentPatternLocations";
 import renderFinderPatterns from "./render/renderFinderPatterns";

@@ -1,14 +1,3 @@
-// import { getCharCountIndicatorLength } from "../segmentation/getCharCountIndicatorLength";
-// import optimizeCrossCompatibleSegments from "../segmentation/optimizeCrossCompatSegments";
-// import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
-// import { ECISwitchingStrategy, ModeSwitchingStrategy, QRVersion } from "../../../api/exports/types";
-// import { DataEncodingMode } from "../../../types/constantTypes/DataEncodingMode";
-// import { DataEncodingCharacterSet } from "../../../types/constantTypes/DataEncodingCharacterSet";
-// import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
-// import { ECI_SWITCHING_STRATEGY } from "../../../constants/ECI_SWITCHING_STRATEGY";
-// import generateLengthIndicator from "./generateLengthIndicator";
-// import generateECIIndicatorAndAssignmentNumber from "../eci/generateECIIndicatorAndAssignmentNumber";
-
 import {EncodedDataSegment} from "../../../types";
 import {
     DataEncodingCharacterSet,
@@ -16,7 +5,7 @@ import {
     ECISwitchingStrategy,
     ModeSwitchingStrategy,
     QRVersion
-} from "../../../types/constantTypes";
+} from "../../../types";
 import {DATA_ENCODING_MODE, ECI_SWITCHING_STRATEGY} from "../../../constants";
 import {
     optimizeCrossCompatibleSegments,

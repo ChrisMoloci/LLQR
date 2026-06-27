@@ -1,4 +1,4 @@
-import {DataEncodingMode} from "../../../types/constantTypes";
+import {DataEncodingMode} from "../../../types";
 import {DATA_ENCODING_MODE} from "../../../constants";
 
 // Determines the most efficient encoding mode required to encode the whole data (mode switching is handled later)

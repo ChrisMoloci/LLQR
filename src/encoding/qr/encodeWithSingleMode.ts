@@ -1,13 +1,4 @@
-// import { DATA_ENCODING_MODE } from "../../constants/DATA_ENCODING_MODE";
-// import { EncodedDataSegment } from "../../types/EncodedDataSegment";
-// import { DataEncodingMode } from "../../types/constantTypes/DataEncodingMode";
-// import encodeAlphanumeric from "../binary/modes/encodeAlphanumeric";
-// import encodeBinary from "../binary/modes/encodeBinary";
-// import encodeKanji from "../binary/modes/encodeKanji";
-// import encodeNumeric from "../binary/modes/encodeNumeric";
-
-import {DataEncodingMode} from "../../types/constantTypes";
-import {EncodedDataSegment} from "../../types";
+import {DataEncodingMode, EncodedDataSegment} from "../../types";
 import {DATA_ENCODING_MODE} from "../../constants";
 import {encodeAlphanumeric, encodeBinary, encodeKanji, encodeNumeric} from "../binary";
 

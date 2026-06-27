@@ -1,6 +1,3 @@
-// import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
-// import { getBitLength } from "../../utils/getBitLength";
-
 import {MaskedQRMatrix} from "../../types";
 import {getBitLength} from "../../utils";
 

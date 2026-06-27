@@ -1,9 +1,4 @@
-// import { alignmentPatternLocations } from "../../datasets/alignmentPatternLocations";
-// import { QRVersion } from "../../api/exports/types";
-// import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
-
-import {QRMatrixCanvas} from "../../types";
-import {QRVersion} from "../../types/constantTypes";
+import {QRMatrixCanvas, QRVersion} from "../../types";
 import {alignmentPatternLocations} from "../../datasets";
 
 export function addAlignmentPatterns(qrMatrixCanvas: QRMatrixCanvas, version: QRVersion, size: number): QRMatrixCanvas {

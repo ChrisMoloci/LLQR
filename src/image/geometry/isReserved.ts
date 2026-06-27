@@ -1,9 +1,4 @@
-// import { ShapeLocation } from "../../types/ShapeLocation";
-// import { QRVersion } from "../../api/exports/types";
-
-
-import {QRVersion} from "../../types/constantTypes";
-import {ShapeLocation} from "../../types";
+import {ShapeLocation, QRVersion} from "../../types";
 
 // Checks if an area is reserved (that means that that part was already drawn)
 export function isReserved(x: number, y: number, size: number, version: QRVersion, finderPatterns: Array<ShapeLocation>, alignmentPatterns: Array<ShapeLocation>): boolean {

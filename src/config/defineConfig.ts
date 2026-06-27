@@ -1,8 +1,3 @@
-// import { DEFAULT_IMAGE_SPECS, DEFAULT_QR_SPECS } from "../const"
-// import { ImageSpecs } from "../types/ImageSpecs";
-// import { QRConfigs } from "../types/QRConfigs";
-// import { QRSpecs } from "../types/QRSpecs";
-
 import {ImageSpecs, QRConfigs, QRSpecs} from "../types";
 import {DEFAULT_IMAGE_SPECS, DEFAULT_QR_SPECS} from "../const";
 

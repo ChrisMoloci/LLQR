@@ -1,9 +1,5 @@
-// import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
-// import { QRVersion } from "../../api/exports/types";
-// import { getBitLength } from "../../utils/getBitLength";
-
 import {QRMatrixCanvas} from "../../types";
-import {QRVersion} from "../../types/constantTypes";
+import {QRVersion} from "../../types";
 import {getBitLength} from "../../utils";
 
 export function addVersionInformation(qrMatrixCanvas: QRMatrixCanvas, version: QRVersion, size: number): QRMatrixCanvas {

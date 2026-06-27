@@ -1,9 +1,3 @@
-// import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
-// import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
-// import { MASK_PATTERN_CODE } from "../../api/exports/constants";
-// import maskQR from "./maskingFunctions";
-
-
 import {MaskedQRMatrix, QRMatrixCanvas} from "../../types";
 import {maskQR} from "../.";
 import {MASK_PATTERN_CODE} from "../../constants";

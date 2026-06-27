@@ -1,5 +1,3 @@
-// import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
-
 import {MaskedQRMatrix} from "../../types";
 
 export function determinePenaltyScore(maskedQRMatrix: MaskedQRMatrix): Array<Array<number>> {

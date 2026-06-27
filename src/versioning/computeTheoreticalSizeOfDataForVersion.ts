@@ -1,26 +1,12 @@
-// import { DATA_ENCODING_MODE } from "../constants/DATA_ENCODING_MODE";
-// import { EncodedDataSegment } from "../types/EncodedDataSegment";
-// import { DataEncodingCharacterSet } from "../types/constantTypes/DataEncodingCharacterSet";
-// import { DataEncodingMode } from "../types/constantTypes/DataEncodingMode";
-// import { ECI_SWITCHING_STRATEGY } from "../constants/ECI_SWITCHING_STRATEGY";
-// import { QRVersion } from "../types/constantTypes/QRVersion";
-// import { ECISwitchingStrategy } from "../types/constantTypes/ECISwitchingStrategy";
-// import { getCharCountIndicatorLength } from "../encoding/qr/segmentation/getCharCountIndicatorLength";
-// import optimizeCrossCompatibleSegments from "../encoding/qr/segmentation/optimizeCrossCompatSegments";
-// import { ModeSwitchingStrategy } from "../types/constantTypes/ModeSwitchingStrategy";
-// import { getECIAssignmentNumberSize } from "../encoding/qr/eci/getECIAssignmentNumberSize";
-
-
-
-// Helper functions for determinVersion()
-import {EncodedDataSegment} from "../types";
+// Helper functions for determineVersion()
 import {
     DataEncodingCharacterSet,
     DataEncodingMode,
     ECISwitchingStrategy,
+    EncodedDataSegment,
     ModeSwitchingStrategy,
     QRVersion
-} from "../types/constantTypes";
+} from "../types";
 import {DATA_ENCODING_MODE, ECI_SWITCHING_STRATEGY} from "../constants";
 import {getCharCountIndicatorLength, getECIAssignmentNumberSize, optimizeCrossCompatibleSegments} from "../encoding";
 

@@ -1,12 +1,3 @@
-// import { ECC_LEVEL_CODE } from "./constants/ECC_LEVEL_CODE";
-// import { ECI_SWITCHING_STRATEGY } from "./constants/ECI_SWITCHING_STRATEGY";
-// import { MODE_SWITCHING_STRATEGY } from "./constants/MODE_SWITCHING_STRATEGY";
-// import { QR_ELEMENT_SHAPE } from "./constants/QR_ELEMENT_SHAPE";
-// import { ImageSpecs } from "./types/ImageSpecs";
-// import { QRSpecs } from "./types/QRSpecs";
-// import { QR_VERSION } from "./constants/QR_VERSION";
-// import { MASK_PATTERN_CODE } from "./api/exports/constants";
-
 import {
     ECC_LEVEL_CODE,
     ECI_SWITCHING_STRATEGY,

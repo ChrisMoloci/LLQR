@@ -1,8 +1,4 @@
-// import { ShapeLocation } from "../../types/ShapeLocation";
-// import { alignmentPatternLocations } from "../../datasets/alignmentPatternLocations";
-// import { QRVersion } from "../../api/exports/types";
-
-import {QRVersion} from "../../types/constantTypes";
+import {QRVersion} from "../../types";
 import {ShapeLocation} from "../../types";
 import {alignmentPatternLocations} from "../../datasets";
 

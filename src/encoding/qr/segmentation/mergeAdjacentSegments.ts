@@ -1,7 +1,3 @@
-// import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
-// import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
-// import { encodeWithSingleMode } from "../encodeWithSingleMode";
-
 // Merges adjacent segments of the same encoding mode into single segments
 import {EncodedDataSegment} from "../../../types";
 import {DATA_ENCODING_MODE} from "../../../constants";

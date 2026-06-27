@@ -1,14 +1,4 @@
-// import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
-// import unicodeToShiftJIS from "../../../datasets/unicode_to_shiftjis";
-// import { MODE_SWITCHING_STRATEGY } from "../../../constants/MODE_SWITCHING_STRATEGY";
-// import { ModeSwitchingStrategy } from "../../../types/QRSpecTypes/ModeSwitchingStrategy"
-// import encodeKanji from "../../binary/modes/encodeKanji";
-// import encodeBinary from "../../binary/modes/encodeBinary";
-// import determineMode from "../mode-detection/determineEncodingMode";
-// import { encodeWithSingleMode } from "../encodeWithSingleMode";
-
-import {ModeSwitchingStrategy} from "../../../types/constantTypes";
-import {EncodedDataSegment} from "../../../types";
+import {EncodedDataSegment, ModeSwitchingStrategy} from "../../../types";
 import {unicodeToShiftJIS} from "../../../datasets";
 import {MODE_SWITCHING_STRATEGY} from "../../../constants";
 import {encodeBinary, encodeKanji} from "../../binary";

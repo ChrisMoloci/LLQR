@@ -1,6 +1,3 @@
-// import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
-// import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
-
 import {EncodedDataSegment} from "../../../types";
 import {DATA_ENCODING_MODE} from "../../../constants";
 

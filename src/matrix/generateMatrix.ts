@@ -1,26 +1,4 @@
-// import determinePenaltyScore from "./masking/determinePenaltyScore";
-// import { getBitLength } from "../utils/getBitLength";
-// import { MaskPatternCode } from "../api/exports/types";
-// import { QRMatrixCanvas } from "../types/QRMatrixCanvas";
-// import { MaskedQRMatrix } from "../types/MaskedQRMatrix";
-// import { MASK_PATTERN_CODE } from "../api/exports/constants";
-// import { QRVersion } from "../types/constantTypes/QRVersion"
-// import { QR_VERSION } from "../constants/QR_VERSION";
-// import initializeMatrices from "./initializeMatrices";
-// import addFinderPatterns from "./patterns/addFinderPatterns";
-// import addTimingPatterns from "./patterns/addTimingPatterns";
-// import addAlignmentPatterns from "./patterns/addAlignmentPatterns";
-// import addDarkModule from "./patterns/addDarkModule";
-// import reserveFormatInformation from "./format/reserveFormatInformation";
-// import addVersionInformation from "./format/addVersionInformation";
-// import addDataToMatrix from "./addDataToMatrix";
-// import maskAllMatrices from "./masking/maskAllMatrices";
-// import addFormatInformationToMatrix from "./format/addFormatInformationToMatrix";
-// import determineOptimalMaskPattern from "./masking/determineOptimalMaskPattern";
-
-import {QRVersion} from "../types/constantTypes";
-import {MaskedQRMatrix, QRMatrixCanvas} from "../types";
-import {MaskPattern} from "../types/constantTypes";
+import {MaskPattern, MaskedQRMatrix, QRMatrixCanvas, QRVersion} from "../types";
 import {
     addAlignmentPatterns,
     addDarkModule,

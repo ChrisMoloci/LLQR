@@ -1,8 +1,3 @@
-// import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
-// import determinePenaltyScore from "./determinePenaltyScore";
-
-
-
 import {MaskedQRMatrix} from "../../types";
 import {determinePenaltyScore} from "../.";
 

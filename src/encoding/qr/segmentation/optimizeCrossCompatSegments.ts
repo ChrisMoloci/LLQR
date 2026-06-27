@@ -1,12 +1,5 @@
-// import { DATA_ENCODING_MODE } from "../../../constants/DATA_ENCODING_MODE";
-// import { EncodedDataSegment } from "../../../types/EncodedDataSegment";
-// import { QRVersion } from "../../../api/exports/types";
-// import { getCharCountIndicatorLength } from "./getCharCountIndicatorLength";
-// import { encodeWithSingleMode } from "../encodeWithSingleMode";
-
 // Helper functions to determine size of alphanumeric and numeric data
-import {EncodedDataSegment} from "../../../types";
-import {QRVersion} from "../../../types/constantTypes";
+import {EncodedDataSegment, QRVersion} from "../../../types";
 import {DATA_ENCODING_MODE} from "../../../constants";
 import {getCharCountIndicatorLength, encodeWithSingleMode} from "./..";
 

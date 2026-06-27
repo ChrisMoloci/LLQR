@@ -1,15 +1,5 @@
-// import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
-// import { ECC_LEVEL_CODE } from "../api/exports/constants";
-// import computeECC from "./computeECC";
-// import { QRVersion } from "../types/constantTypes/QRVersion"
-// import { ECCLevel, ECCLevelKey } from "../types/constantTypes/ECCLevel";
-// import groupDataAndBlocks from "./groupDataAndBlocks";
-// import interleaveData from "./interleaveData";
-// import normalizeDataStream from "./normalizeDataStream";
-// import padECCZeroBytesToBlocks from "./padECCZeroBytesToBlocks";
-
-import {ECCLevel, QRVersion} from "../types/constantTypes";
-import type {QRDataCapacityBitsTable, QRDataCapacityBitsTableBlocks, QRDataCapacityBitsTableEntry} from "../types";
+import {ECCLevel, QRVersion} from "../types";
+import type {QRDataCapacityBitsTableEntry} from "../types";
 import {ECC_LEVEL_CODE} from "../constants";
 import {qrDataCapacityBits} from "../datasets";
 import normalizeDataStream from "./normalizeDataStream";

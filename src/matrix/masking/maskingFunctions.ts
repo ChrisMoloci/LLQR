@@ -1,10 +1,4 @@
-// import { MaskPatternCode } from "../../api/exports/types";
-// import { MASK_PATTERN_FUNCTION } from "../../constants/MASK_PATTERN_FUNCTION";
-// import { MaskedQRMatrix } from "../../types/MaskedQRMatrix";
-// import { QRMatrixCanvas } from "../../types/QRMatrixCanvas";
-
-import {MaskedQRMatrix, QRMatrixCanvas} from "../../types";
-import {MaskPattern} from "../../types/constantTypes";
+import {MaskPattern, MaskedQRMatrix, QRMatrixCanvas} from "../../types";
 import {MASK_PATTERN_FUNCTION} from "../../constants";
 
 export function maskQR(maskCode: MaskPattern, qrMatrixCanvas: QRMatrixCanvas, size: number): MaskedQRMatrix {
