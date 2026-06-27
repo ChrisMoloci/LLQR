@@ -1,6 +1,6 @@
 import { generateImageCanvasFromMatrix } from "../image";
 
-function generateImageFromQRMatrix(qrMatrix: Array<Array<number>>, size: number = 512): HTMLImageElement {
+export function generateImageFromQRMatrix(qrMatrix: Array<Array<number>>, size: number = 512): HTMLImageElement {
     // Generate the canvas from the matrix
     const canvas: HTMLCanvasElement = generateImageCanvasFromMatrix(qrMatrix, size);
 

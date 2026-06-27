@@ -7,20 +7,12 @@
  */
 
 /**
- *  Importing functions from library
- */
-
-// Core functions
-import generateFullQR from "./generateFullQR";
-import generateQRMatrix from "./generateQRMatrix";
-import generateImageFromQRMatrix from "./generateImageFromQRMatrix";
-
-/**
  * Exporting functions out of the library
  */
-export {
-    // Core functions
-    generateFullQR,
-    generateQRMatrix,
-    generateImageFromQRMatrix
-}
+// Config
+export * from "../config"
+
+// Core functions
+export * from "./generateFullQR";
+export * from "./generateQRMatrix";
+export * from "./generateImageFromQRMatrix";

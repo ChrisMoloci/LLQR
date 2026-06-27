@@ -6,15 +6,7 @@
  * import { qrDataCapacityBits } from "../datasets/qrDataCapacityBits";
  */
 
-
-/**
- *  Importing datasets from library
- */
-import * as dataset from "../../datasets";
-
 /**
  * Exporting datasets out of the library
  */
-export {
-    dataset
-}
+export * from "../../datasets";

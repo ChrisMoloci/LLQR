@@ -13,7 +13,7 @@ import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
 import {generateECCStream} from "../ecc";
 import {generateMatrix} from "../matrix";
 
-function generateQRMatrix(data: string): Array<Array<number>> {
+export function generateQRMatrix(data: string): Array<Array<number>> {
     // -- 1. Get Current QR Configurations --
     const qrSpecs: QRSpecs = getCurrentConfig().qrConfig;
     console.log("Generating QR Code with specs:", qrSpecs);

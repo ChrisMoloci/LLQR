@@ -7,24 +7,11 @@
  */
 
 /**
- *  Importing constantTypes from library
- */
-// ENUM Constants (not of enum type)
-import * as constants from "../../constants"
-
-// Default Config ENUMS (not of enum type)
-import { QR_DEFAULTS } from "../../const";
-import { IMAGE_DEFAULTS } from "../../const";
-
-/**
  * Exporting constants out of the library
  */
+// ENUM Constants (not of enum type)
+export * from "../../constants"
 
-export {
-    // ENUM Constants
-    constants,
-
-    // Default spec enum
-    QR_DEFAULTS,
-    IMAGE_DEFAULTS,
-}
+// Default Config ENUMS (not of enum type)
+export * from "../../const";
+// import { IMAGE_DEFAULTS } from "../../const";

@@ -7,51 +7,22 @@
  */
 
 /**
- *  Importing functions from library
- */
-// Config
-import * as config from "../../config"
-
-// ECC
-import * as ecc from "../../ecc"
-
-// Encoding
-import * as encoding from "../../encoding"
-
-// Matrix
-import * as matrix from "../../matrix";
-
-// Image
-import * as image from "../../image"
-
-// Utils
-import * as utils from "../../utils"
-
-// Versioning
-import * as versioning from "../../versioning"
-
-/**
  * Exporting functions out of the library
  */
-export {
-    // Config
-    config,
+// ECC
+export * from "../../ecc"
 
-    // Versioning
-    versioning,
+// Encoding
+export * from "../../encoding"
 
-    // Utils
-    utils,
+// Matrix
+export * from "../../matrix";
 
-    // Matrix
-    matrix,
+// Image
+export * from "../../image"
 
-    // ECC
-    ecc,
+// Utils
+export * from "../../utils"
 
-    // Encoding
-    encoding,
-
-    // Image
-    image
-}
+// Versioning
+export * from "../../versioning"

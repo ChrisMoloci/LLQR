@@ -7,21 +7,10 @@
  */
 
 /**
- *  Importing types from library
- */
-// Types
-import * as types from "../../types"
-
-// Constant Types
-import * as constantTypes from "../../constants"
-
-/**
  * Exporting types out of the library
  */
-export type {
-    // Types
-    types,
+// Types
+export * from "../../types"
 
-    // Constant Types
-    constantTypes
-}
+// Constant Types
+export * from "../../constants"
