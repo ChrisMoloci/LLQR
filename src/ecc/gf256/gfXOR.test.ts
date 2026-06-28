@@ -1,3 +1,46 @@
-import {describe} from "vitest";
+import {describe, expect, it} from "vitest";
+import {gfXor} from "./gfXOR";
 
-describe("gfXOR", () => {});
+describe("gfXOR", () => {
+    it.each([
+        [0, 0, 0],
+        [42, 42, 0],
+        [173, 0, 173],
+        [0x99, 0x53, 0xca],
+        [0xff, 0xaa, 0x55],
+        [0xff, 0xf0, 0x0f],
+        [0, 0xff, 0xff],
+    ])("returns %i for %i XOR %i in GF(256)", (expected, a, b) => {
+        expect(gfXor(a, b)).toBe(expected);
+    });
+
+    it("is commutative", () => {
+        expect(gfXor(0x12, 0x34)).toBe(gfXor(0x34, 0x12));
+        expect(gfXor(0x80, 0x7f)).toBe(gfXor(0x7f, 0x80));
+    });
+
+    it("returns 0 when an element is XORed with itself", () => {
+        expect(gfXor(1, 1)).toBe(0);
+        expect(gfXor(128, 128)).toBe(0);
+        expect(gfXor(255, 255)).toBe(0);
+    });
+
+    it("keeps results within the GF(256) byte range", () => {
+        expect(gfXor(255, 0)).toBe(255);
+        expect(gfXor(255, 1)).toBe(254);
+        expect(gfXor(128, 127)).toBe(255);
+    });
+
+    it.each([
+        [-1, 0],
+        [0, -1],
+        [256, 0],
+        [0, 256],
+        [1.5, 0],
+        [0, 1.5],
+        [Number.NaN, 0],
+        [0, Number.POSITIVE_INFINITY],
+    ])("throws for invalid GF(256) values: %s XOR %s", (a, b) => {
+        expect(() => gfXor(a, b)).toThrow("GF(256) values must be integers between 0 and 255");
+    });
+});
