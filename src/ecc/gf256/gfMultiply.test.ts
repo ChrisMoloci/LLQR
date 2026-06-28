@@ -1,3 +1,3 @@
 import {describe} from "vitest";
 
-describe("gfMultiply", () => {});
+describe.todo("gfMultiply", () => {});
