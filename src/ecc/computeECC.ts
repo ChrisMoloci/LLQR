@@ -1,4 +1,4 @@
-import {gfMultiply, gfXor} from "./GF256_Arithmetic";
+import {gfMultiply, gfXor} from ".";
 import type {QRDataCapacityBitsTableBlocks} from "../types";
 
 export function computeECC(groupedData: Array<Array<Array<number>>>, groupingObj: QRDataCapacityBitsTableBlocks, generatorPolynomial: Array<number>): Array<Array<Array<number>>> {
