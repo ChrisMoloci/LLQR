@@ -8,7 +8,7 @@ let qrConfigs: QRConfigs = {
 }
 
 // Allows the developer to define global configuration for QR code generation
-export function defineConfig(qrConfig: Partial<QRSpecs> | null, imageConfig: Partial<ImageSpecs> | null) {
+export function defineConfig(qrConfig?: Partial<QRSpecs> | null, imageConfig?: Partial<ImageSpecs> | null) {
     if (qrConfig) qrConfigs.qrConfig = mergeConfig(qrConfig, qrConfigs.qrConfig);
     if (imageConfig) qrConfigs.imageConfig = mergeConfig(imageConfig, qrConfigs.imageConfig);
 
