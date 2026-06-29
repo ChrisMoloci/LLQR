@@ -2,16 +2,30 @@ import {gf256AntilogTable, gf256LogTable} from "../../datasets";
 
 // Divide two numbers in GF(256)
 export function gfDivide(a: number, b: number): number {
-    if (a === 0) return 0; // If the numerator is zero, the result is zero
-    if (b === 0) throw new Error("Division by zero is not allowed in GF(256)");
+    /**
+     * Formula:
+     * A * B = antilog[(log[A] - log[B] + 255) % 255]
+     */
 
-    a = gf256LogTable[a] ?? -1;
-    b = gf256LogTable[b] ?? -1;
+    // Input validation
+    if (!Number.isInteger(a) || !Number.isInteger(b) || a < 0 || a > 255 || b <= 0 || b > 255) {
+        throw Error("GF Division error");
+    }
 
-    const logSum = (a - b + 255) % 255; // Subtract the logarithms and wrap around at 255
+    if (a === 0 || b === 0) return 0; // If either number is zero, the product is zero
 
-    const antilog = gf256AntilogTable[logSum];
-    if (!antilog) throw Error("GF Multiplication error")
+    const aLog = gf256LogTable[a];
+    const bLog = gf256LogTable[b];
 
-    return antilog; // Return the antilog of the result
+    if (aLog === undefined || bLog === undefined) {
+        throw Error("GF Division error");
+    }
+
+    // Get the log sum
+    const logSum = (aLog - bLog + 255) % 255; // Subtract the logarithms and wrap around at 255
+    const antilog = gf256AntilogTable[logSum]; // Get the antilog of the log sum
+
+    if (antilog === undefined) throw Error("GF Division error")
+
+    return antilog; // Antilog is the final result
 }

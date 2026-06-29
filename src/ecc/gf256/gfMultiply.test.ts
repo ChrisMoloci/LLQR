@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {gfMultiply} from "./gfMultiply";
+import {gfMultiply} from "./..";
 
 describe("gfMultiply", () => {
     // Positive tests
