@@ -4,6 +4,7 @@ import {describe, expect, it} from "vitest";
 import {gfXor} from "./gfXOR";
 
 describe("gfXOR", () => {
+    // Positive checks
     it.each([
         [0, 0, 0],
         [42, 42, 0],
@@ -16,23 +17,27 @@ describe("gfXOR", () => {
         expect(gfXor(a, b)).toBe(expected);
     });
 
+    // Commutative checks
     it("is commutative", () => {
         expect(gfXor(0x12, 0x34)).toBe(gfXor(0x34, 0x12));
         expect(gfXor(0x80, 0x7f)).toBe(gfXor(0x7f, 0x80));
     });
 
+    // 0 Checks
     it("returns 0 when an element is XORed with itself", () => {
         expect(gfXor(1, 1)).toBe(0);
         expect(gfXor(128, 128)).toBe(0);
         expect(gfXor(255, 255)).toBe(0);
     });
 
+    // Byte range checks
     it("keeps results within the GF(256) byte range", () => {
         expect(gfXor(255, 0)).toBe(255);
         expect(gfXor(255, 1)).toBe(254);
         expect(gfXor(128, 127)).toBe(255);
     });
 
+    // Negative checks
     it.each([
         [-1, 0],
         [0, -1],
