@@ -60,6 +60,8 @@ export function mergeAdjacentSegments(segments: Array<EncodedDataSegment>): Arra
         i++; // Move to next segment
     }
 
+    console.log("Optimized segments: ", structuredClone(segments));
+
     return segments; // Return the normalized segments
 }
 

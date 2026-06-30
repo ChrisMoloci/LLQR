@@ -1,8 +1,8 @@
-import {ModeSwitchingStrategy} from "../../types/constantTypes";
+import {ModeSwitchingStrategy} from "../../types";
 import {MODE_SWITCHING_STRATEGY} from "../../constants";
 import {EncodedDataSegment} from "../../types";
 import {encodeAlphanumeric, encodeBinary, encodeKanji, encodeNumeric} from "../binary";
-import {segmentInvalidKanjiCandidate, mergeAdjacentSegments} from "./.";
+import {segmentInvalidKanjiCandidate, mergeAdjacentSegments} from ".";
 
 // TODO: Cleanup code in this function by splitting some logic into helper functions
 
@@ -12,7 +12,7 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
     // Make sure function is not called with disabled mode
     if (useModeSwitching === MODE_SWITCHING_STRATEGY.DISABLED) throw new Error("Mode switching is disabled, use encodeWithSingleMode instead.");
 
-    /* 
+    /*
      * When auto or forced mode switching is enabled, this function breaks data up using the following priority:
      * 1. Numeric
      * 2. Alphanumeric (does not include numbers since Numeric takes priority)
@@ -68,9 +68,9 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
                 // Only encode kanji when it is more efficient
                 // console.log("Encoding Kanji Segment:", kanjiCandidateSlice[0]);
                 /*
-                 * Since kanji encoding is a subset of Shift-JIS and there is no defined range in unicode, 
+                 * Since kanji encoding is a subset of Shift-JIS and there is no defined range in unicode,
                  * We have to select a broader range of characters, attempt to encode them,
-                 * and if the encoder fails (due to non-kanji chars being present), 
+                 * and if the encoder fails (due to non-kanji chars being present),
                  * we fallthrough to byte encoding.
                  */
                 const kanjiSegment = encodeKanji(kanjiCandidateSlice[0]);
@@ -82,6 +82,9 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
                     // Segment the invalid kanji into smaller kanji and byte segments as needed
                     const subSegments = segmentInvalidKanjiCandidate(kanjiCandidateSlice[0], useModeSwitching);
 
+                    console.error(`sub segments:`);
+                    console.log(subSegments);
+
                     segments.push(...subSegments); // Add the rest of the subsegments to the main segments array
 
                     i += kanjiCandidateSlice[0].length; // Move index forward by the length of the kanji candidate slice
@@ -89,64 +92,87 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
                 break;
             default:
                 // console.log("Encoding Byte Segment:");
-                switch (useModeSwitching) {
-                    case MODE_SWITCHING_STRATEGY.AUTO:
-                        // Efficient segmentation
-                        // console.log("Encoding Byte Segment using efficient segmentation.");
+                // switch (useModeSwitching) {
+                if (useModeSwitching === MODE_SWITCHING_STRATEGY.AUTO) {
+                    // Efficient segmentation
 
-                        // In auto mode, we only encode byte segments when necessary
-                        let byteData = ''; // Stores all the characters for the byte segment
-                        let j = i; // Temp index to find the end of byte data segment
+                    // In auto mode, we only encode byte segments when necessary
+                    let byteData = ''; // Stores all the characters for the byte segment
+                    let j = i; // Temp index to find the end of byte data segment
 
-                        // Keep looping through data until we find the next efficient segment
-                        while (j < data.length) {
-                            // Create a temp slice from j to end
-                            let tempSlice = data.slice(j);
+                    // Keep looping through data until we find the next efficient segment
+                    while (j < data.length) {
+                        // Create a temp slice from j to end
+                        let tempSlice = data.slice(j);
 
-                            // console.log("Temp Slice for Byte Segmentation:", tempSlice);
-    
-                            // Create substrings just like earlier
-                            let tempNumeric = tempSlice.match(numericRegEx);
-                            let tempAlphanumeric = tempSlice.match(alphanumericRegEx);
-                            let tempKanjiCandidate = tempSlice.match(kanjiCandidateRegEx);
-                            // Check if we've hit an efficient segment
-                            if ((tempNumeric && tempNumeric[0].length >= 4) || 
-                                (tempAlphanumeric && tempAlphanumeric[0].length >= 4) ||
-                                (tempKanjiCandidate && tempKanjiCandidate[0].length >= 2)) {
-                                // console.log("Found next efficient segment at index ", j, " Segment: ", tempSlice, " with length ", tempSlice.length);
-                                break; // Stop collecting byte data
-                            }
-                            
-                            // Add this character to byte data
-                            byteData += data[j];
-                            j++; // Move to next character
+                        // console.log("Temp Slice for Byte Segmentation:", tempSlice);
 
-                            // console.log("Collected Byte Data so far:", byteData, " at index ", j);
+                        // Create substrings just like earlier
+                        let tempNumeric = tempSlice.match(numericRegEx);
+                        let tempAlphanumeric = tempSlice.match(alphanumericRegEx);
+                        let tempKanjiCandidate = tempSlice.match(kanjiCandidateRegEx);
+                        // Check if we've hit an efficient segment
+                        if ((tempNumeric && tempNumeric[0].length >= 4) ||
+                            (tempAlphanumeric && tempAlphanumeric[0].length >= 4) ||
+                            (tempKanjiCandidate && tempKanjiCandidate[0].length >= 2)) {
+                            // console.log("Found next efficient segment at index ", j, " Segment: ", tempSlice, " with length ", tempSlice.length);
+                            break; // Stop collecting byte data
                         }
 
-                        if (byteData.length === 0) {
-                            // This should never happen, but just in case
-                            byteData += data[j]; // Get the next char
-                            j++; // Iterate a char forward to avoid infinite loop
-                            console.warn("Critical: Byte data segment was empty, added one character to avoid infinite loop.");
-                        }
-                        
-                        // Add the byte data segment to segments
-                        segments.push(encodeBinary(byteData));
-                        
-                        i = j; // Move index forward since we've collected byte data
-                        break;
-                    case MODE_SWITCHING_STRATEGY.FORCED:
-                        // Inefficient segmentation based on priority defined above
-                        // console.log("Encoding Byte Segment using forced segmentation.");
+                        // Add this character to byte data
+                        byteData += data[j];
+                        j++; // Move to next character
+                    }
 
-                        // In forced mode, we encode all byte segments directly
-                        segments.push(encodeBinary(forcedByteSlice![0]));
-                        i += forcedByteSlice![0].length; // Move index forward by the amount segmented
-                        break;
-                    default:
-                        // This should never happen unless encodeWithModeSwitching is called direclty with invalid params (such as disabled mode switching)
-                        throw new Error("Invalid mode switching option provided: " + useModeSwitching);
+                    if (byteData.length === 0) {
+                        // This should never happen, but just in case
+                        byteData += data[j]; // Get the next char
+                        j++; // Iterate a char forward to avoid infinite loop
+                        console.warn("Critical: Byte data segment was empty, added one character to avoid infinite loop.");
+                    }
+
+                    // Add the byte data segment to segments
+                    segments.push(encodeBinary(byteData));
+
+                    i = j; // Move index forward since we've collected byte data
+                }
+                else if (useModeSwitching === MODE_SWITCHING_STRATEGY.FORCED) {
+                    // Inefficient segmentation based on priority defined above
+
+                    // In forced mode, we encode byte as a last resort and for as short as possible, prioritizing other modes
+                    let byteData = "";
+                    let j = i;
+
+                    // Cut off the byte segment immediately after another encoding mode is detected
+                    while (j < data.length) {
+                        const slice = data.slice(j);
+                        const startsNumeric = /^\d+/.test(slice);
+                        const startsAlphanumeric = /^[A-Z$%*+\-./: ]+/.test(slice);
+                        const startsKanjiCandidate = /^[\u0100-\u9FFF\uF900-\uFAFF]+/.test(slice);
+                        if (startsNumeric || startsAlphanumeric || startsKanjiCandidate) {
+                            break;
+                        }
+                        const char = Array.from(slice)[0]!;
+                        byteData += char;
+
+                        j++;
+                    }
+
+                    if (byteData.length === 0) {
+                        // This should never happen, but just in case
+                        byteData += data[j]; // Get the next char
+                        j++; // Iterate a char forward to avoid infinite loop
+                        console.warn("Critical: Byte data segment was empty, added one character to avoid infinite loop.");
+                    }
+
+                    // Add the byte data segment to segments
+                    segments.push(encodeBinary(byteData));
+
+                    i = j; // Move index forward since we've collected byte data
+                }
+                else {
+                    // This should never happen unless encodeWithModeSwitching is called direclty with invalid params (such as disabled mode switching)
+                    throw new Error("Invalid mode switching option provided: " + useModeSwitching);
                 }
         }
     }

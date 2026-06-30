@@ -6,7 +6,7 @@ import {
     ModeSwitchingStrategy,
     QRVersion
 } from "../../../types";
-import {DATA_ENCODING_MODE, ECI_SWITCHING_STRATEGY} from "../../../constants";
+import {DATA_ENCODING_MODE, ECI_SWITCHING_STRATEGY, MODE_SWITCHING_STRATEGY} from "../../../constants";
 import {
     optimizeCrossCompatibleSegments,
     generateECIIndicatorAndAssignmentNumber,
@@ -37,7 +37,7 @@ export function prepareDatastream(encodedSegments: Array<EncodedDataSegment>, ve
         const crossCompatibleSegments: Array<EncodedDataSegment> = [];
 
         // Only attempt consolidation if mode switching is "auto" and current segment is alphanumeric or numeric
-        if (modeSwitchingMode === ECI_SWITCHING_STRATEGY.AUTO && remainingOptimizedSegmentsCount === 0 && (
+        if (modeSwitchingMode === MODE_SWITCHING_STRATEGY.AUTO && remainingOptimizedSegmentsCount === 0 && (
             segment.encodingMode === DATA_ENCODING_MODE.ALPHANUMERIC || segment.encodingMode === DATA_ENCODING_MODE.NUMERIC
         )) {
             crossCompatibleSegments.push(segment); // Add the current segment to the list of cross compatible segments

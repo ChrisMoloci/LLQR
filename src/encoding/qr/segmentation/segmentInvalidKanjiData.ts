@@ -8,6 +8,8 @@ import {determineMode, encodeWithSingleMode} from "../.";
 export function segmentInvalidKanjiCandidate(data: string, useModeSwitching: ModeSwitchingStrategy): Array<EncodedDataSegment> {
     const segments: Array<EncodedDataSegment> = [];
 
+    console.log("Segmenting invalid kanji segment")
+
     /*
      * Note: You may be wondering why we dont do proper validation for kanji data in the first place.
      * 
@@ -19,20 +21,25 @@ export function segmentInvalidKanjiCandidate(data: string, useModeSwitching: Mod
      * This works both for forced and auto mode switching.
      */
 
-    // Seperate the chars further to segment byte and kanji based on validation
+    // Separate the chars further to segment byte and kanji based on validation
 
     // Proper function to validate if a char can be encoded in kanji
     const validateChar = (char: string): boolean => {
-        const shiftJISChar = unicodeToShiftJIS["0x" + char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')];
+        const unicodeHex = "0x" + char.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0');
+        const shiftJISChar = unicodeToShiftJIS[unicodeHex];
         return shiftJISChar !== undefined;
     }
 
+    // Important: DO NOT USE SPLIT, it may not work properly with some unicode characters
     const failedKanjiChars: Array<string> = Array.from(data); // Split the failed kanji candidate into individual chars
+    console.log("Failed kanji chars: " + failedKanjiChars);
 
     let index = 0 ; // Index to iterate through the segment chars
 
     // Iterate through the failed kanji chars to segment byte and kanji segments
     while (index < failedKanjiChars.length) {
+        console.log(failedKanjiChars[index]);
+
         let startPos = index; // Will store the start position of our next slice
 
         // If first char is valid kanji 
@@ -43,11 +50,13 @@ export function segmentInvalidKanjiCandidate(data: string, useModeSwitching: Mod
         if (isFirstCharKanji) {
             // Collect kanji chars
             while (index < failedKanjiChars.length && validateChar(failedKanjiChars[index]!)) {
+                console.log(`${failedKanjiChars[index]} is kanji`)
                 index++;
             }
         } else {
             // Collect byte chars
             while (index < failedKanjiChars.length && !validateChar(failedKanjiChars[index]!)) {
+                console.log(`${failedKanjiChars[index]} is not kanji`)
                 index++;
             }
         }
@@ -71,6 +80,8 @@ export function segmentInvalidKanjiCandidate(data: string, useModeSwitching: Mod
             segments.push(encodedSegment);
         }
     }
+
+    console.log(`Segmented byte and kanji: ${segments}`)
 
     return segments; // Return the array of segments
 }
