@@ -1,6 +1,6 @@
 import {QRDataCapacityBitsTable} from "../types";
 
-export const qrDataCapacityBits: QRDataCapacityBitsTable = {
+export const qrDataCapacities: QRDataCapacityBitsTable = {
   "1": {
     "L": {
       "total": 26,

@@ -1,7 +1,7 @@
 import {ECCLevel, QRVersion} from "../types";
 import type {QRDataCapacityBitsTableEntry} from "../types";
 import {ECC_LEVEL_CODE} from "../constants";
-import {qrDataCapacityBits} from "../datasets";
+import {qrDataCapacities} from "../datasets";
 import normalizeDataStream from "./normalizeDataStream";
 import groupDataAndBlocks from "./groupDataAndBlocks";
 import padECCZeroBytesToBlocks from "./padECCZeroBytesToBlocks";
@@ -23,7 +23,7 @@ export function generateECCStream(encodedData: Array<string>, qrVersion: QRVersi
     }
 
     // Get the capacity information for the specified QR version
-    const versionTableVersion: Record<string, QRDataCapacityBitsTableEntry> | undefined = qrDataCapacityBits[qrVersion];
+    const versionTableVersion: Record<string, QRDataCapacityBitsTableEntry> | undefined = qrDataCapacities[qrVersion];
     if (versionTableVersion === undefined) {
         throw new Error("Invalid QR Version provided for ECC stream generation.");
     }

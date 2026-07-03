@@ -15,7 +15,7 @@ export const determineSizeForNumericData = (size: number): number => {
 }
 
 // Optimizes a run of cross-compatible segments (alphanumeric/numeric) by checking if consolidation saves space and returns the optimized size in bits
-export function optimizeCrossCompatibleSegments(segments: Array<EncodedDataSegment>, version: QRVersion): Array<EncodedDataSegment> {
+export function optimizeAdjacentAlphanumericNumericSegments(segments: Array<EncodedDataSegment>, version: QRVersion): Array<EncodedDataSegment> {
     /**
      * We are not storing segments as those are more complex since they need to be recomputed each time they merge.
      * we will just create theoretical partitions with theoretical ConsolidatedSegmentPrototypes.
@@ -119,4 +119,4 @@ export function optimizeCrossCompatibleSegments(segments: Array<EncodedDataSegme
     });
 }
 
-export default optimizeCrossCompatibleSegments;
+export default optimizeAdjacentAlphanumericNumericSegments;

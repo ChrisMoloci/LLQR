@@ -44,7 +44,7 @@ src/
 │   ├── segmentation/
 │   │   ├── determineEncodingMode.ts
 │   │   ├── mergeAdjacentSegments.ts
-│   │   ├── optimizeCrossCompatSegments.ts
+│   │   ├── optimizeAdjacentAlphanumericNumericSegments.ts
 │   │   └── segmentInvalidKanjiData.ts
 │   │
 │   ├── eci/

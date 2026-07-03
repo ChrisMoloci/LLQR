@@ -3,6 +3,7 @@ export * from "./encodeWithModeSwitching";
 export * from "./encodeWithSingleMode";
 
 // Bitstream
+export * from "./bitstream/createDatastream"
 export * from "./bitstream/generateLengthIndicator";
 export * from "./bitstream/prepareDatastream";
 
@@ -16,5 +17,5 @@ export * from "./mode-detection/determineEncodingMode"
 // Segmentation
 export * from "./segmentation/getCharCountIndicatorLength";
 export * from "./segmentation/mergeAdjacentSegments";
-export * from "./segmentation/optimizeCrossCompatSegments";
+export * from "./segmentation/optimizeAdjacentAlphanumericNumericSegments";
 export * from "./segmentation/segmentInvalidKanjiData";
