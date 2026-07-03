@@ -16,20 +16,20 @@ export const determineSizeForNumericData = (size: number): number => {
 
 // Optimizes a run of cross-compatible segments (alphanumeric/numeric) by checking if consolidation saves space and returns the optimized size in bits
 export function optimizeCrossCompatibleSegments(segments: Array<EncodedDataSegment>, version: QRVersion): Array<EncodedDataSegment> {
-    /** 
+    /**
      * We are not storing segments as those are more complex since they need to be recomputed each time they merge.
      * we will just create theoretical partitions with theoretical ConsolidatedSegmentPrototypes.
      * once the partitioning is complete, we will take these partitions and replace the passed in segments
-     * with new ones constructed from the ConsolidatedSegmentPrototypes 
+     * with new ones constructed from the ConsolidatedSegmentPrototypes
      *
     */
-   type Partition = {
-        size: number, 
+    type Partition = {
+        size: number,
         partitions: Array<ConsolidatedSegmentPrototype>
     }
 
     /**
-     * Stores the start and end segments of a run that can be consolidated along with the mode to merge 
+     * Stores the start and end segments of a run that can be consolidated along with the mode to merge
      * them into. If two or more segments are more efficiently stored in one due to header overhead,
      * we can use this object to know which segments to merge without merging them until the end so we
      * can test other merge combinations to get to the most efficient one (using DP)
@@ -80,7 +80,7 @@ export function optimizeCrossCompatibleSegments(segments: Array<EncodedDataSegme
             const isNumeric = currentChunk.every(seg => seg.encodingMode === DATA_ENCODING_MODE.NUMERIC);
 
             // This allows us to iterate over modes for currentChunk to create cleaner logic the conditional statements everywhere
-            const possibleEncodingModes: Array<typeof DATA_ENCODING_MODE.ALPHANUMERIC | typeof DATA_ENCODING_MODE.NUMERIC> = isNumeric ? 
+            const possibleEncodingModes: Array<typeof DATA_ENCODING_MODE.ALPHANUMERIC | typeof DATA_ENCODING_MODE.NUMERIC> = isNumeric ?
                 [DATA_ENCODING_MODE.ALPHANUMERIC, DATA_ENCODING_MODE.NUMERIC] : [DATA_ENCODING_MODE.ALPHANUMERIC];
 
             for (const mode of possibleEncodingModes) {
@@ -108,7 +108,7 @@ export function optimizeCrossCompatibleSegments(segments: Array<EncodedDataSegme
     if (!bestPartitioning) {
         throw new Error("An error occured during optimization of cross-compatible segments. No optimal partitioning was computed.");
     }
-        
+
     return bestPartitioning.partitions.map(partition => {
         // Generate a condolidated segments for each partition
         const segmentsToConsolidate = segments.slice(partition.start, partition.end + 1); // Get the segments to consolidate for this partition
