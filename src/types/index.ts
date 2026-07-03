@@ -4,6 +4,7 @@ export * from "./EncodedDataSegment";
 export * from "./ImageSpecs";
 export * from "./MaskedQRMatrix";
 export * from "./PlainTextDataSegment";
+export * from "./PreparedDatastream";
 export * from "./QRConfigs";
 export * from "./QRMatrixCanvas";
 export * from "./QRSpecs";
