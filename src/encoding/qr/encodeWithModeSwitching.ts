@@ -24,7 +24,8 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
     const numericRegEx      = /^\d+/; // Numeric
     const alphanumericRegEx = /^[A-Z$%*+\-./: ]+/; // Alphanumeric
     const kanjiCandidateRegEx = /^[\u0100-\u9FFF\uF900-\uFAFF]+/; // Kanji candidates (since its a subset of shift-JIS not unicode)
-    const byteRegEx         = /^[^A-Z0-9]+/; // Anything else (Byte)
+    // const byteRegEx         = /^[^A-Z0-9]+/; // Anything else (Byte)
+    // Byte will consume anything else remaining
 
     // Defines the minimum char count for a segment based on auto or forced mode switching
     // const minSegmentSize = useModeSwitching === "auto" ? 4 : 1;
@@ -39,7 +40,8 @@ export function encodeWithModeSwitching(data: string, useModeSwitching: ModeSwit
         let numericSlice = slice.match(numericRegEx);
         let alphanumericSlice = slice.match(alphanumericRegEx);
         let kanjiCandidateSlice = slice.match(kanjiCandidateRegEx);
-        let forcedByteSlice = slice.match(byteRegEx); // Used only in forced mode switching
+        // let forcedByteSlice = slice.match(byteRegEx); // Used only in forced mode switching
+        // Byte will consume anything else remaining
 
         // console.log("Data Slice:", slice);
         // console.log("Numeric Slice:", numericSlice);
