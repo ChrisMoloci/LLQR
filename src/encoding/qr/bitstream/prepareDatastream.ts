@@ -9,7 +9,7 @@ import {
     ECI_SWITCHING_STRATEGY,
     QR_VERSION
 } from "../../../constants";
-import {createDatastream} from "../.";
+import {generateDatastream} from "../.";
 import {qrDataCapacities} from "../../../datasets";
 
 export function prepareDatastream(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevel, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy, preferredVersion?: QRVersion): PreparedDatastream {
@@ -27,7 +27,7 @@ export function prepareDatastream(encodedData: Array<EncodedDataSegment>, eccLev
         const workingEncodedData = structuredClone(encodedData);
 
         // -- 1. Create a datastream for this version --
-        datastream = createDatastream(workingEncodedData, version as QRVersion, eciSwitchingMode, modeSwitchingMode);;
+        datastream = generateDatastream(workingEncodedData, version as QRVersion, eciSwitchingMode, modeSwitchingMode);;
 
         // -- 2. Take the datastream for this version and check if it fits in the QR Code --
 
@@ -60,7 +60,7 @@ export function prepareDatastream(encodedData: Array<EncodedDataSegment>, eccLev
 
         // Re-encode the data for the preferred version
         const workingEncodedData = structuredClone(encodedData);
-        datastream = createDatastream(workingEncodedData, preferredVersion as QRVersion, eciSwitchingMode, modeSwitchingMode);
+        datastream = generateDatastream(workingEncodedData, preferredVersion as QRVersion, eciSwitchingMode, modeSwitchingMode);
 
         return {
             version: preferredVersion,

@@ -3,7 +3,7 @@ export * from "./encodeWithModeSwitching";
 export * from "./encodeWithSingleMode";
 
 // Bitstream
-export * from "./bitstream/createDatastream"
+export * from "./bitstream/generateDatastream"
 export * from "./bitstream/generateLengthIndicator";
 export * from "./bitstream/prepareDatastream";
 

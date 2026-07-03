@@ -14,11 +14,11 @@ import {
     getCharCountIndicatorLength
 } from "./..";
 
-export function createDatastream(encodedSegments: Array<EncodedDataSegment>, version: QRVersion, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy): Array<string> {
+export function generateDatastream(encodedSegments: Array<EncodedDataSegment>, version: QRVersion, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy): Array<string> {
     const dataStream: Array<string> = []; // Will hold the final data stream (as an array of codewords)
 
     // Store Encoding Mode and ECI Assignment Number states for mode switching checks
-    let encodingModeState: DataEncodingMode | null = null; // Holds current encoding mode state for mode switching
+    // let encodingModeState: DataEncodingMode | null = null; // Holds current encoding mode state for mode switching
     let eciModeAssignmentNumberState: DataEncodingCharacterSet | null = null; // Holds current ECI mode charset state for mode switching
 
     let i = 0; // Index to track the current segment being processed
@@ -71,7 +71,7 @@ export function createDatastream(encodedSegments: Array<EncodedDataSegment>, ver
 
         // -- 2. Add Header to datastream
 
-        // ECI headers
+        // -- A: ECI headers --
         if (eciSwitchingMode === ECI_SWITCHING_STRATEGY.FORCED && segment.encodingMode === DATA_ENCODING_MODE.BYTE) {
             // Always add ECI Indicator and Assignment Number for Byte mode segments if ECI switching is forced
             const eciStream = generateECIIndicatorAndAssignmentNumber(segment.charSetAssignmentNumber);
@@ -85,37 +85,50 @@ export function createDatastream(encodedSegments: Array<EncodedDataSegment>, ver
             eciModeAssignmentNumberState = segment.charSetAssignmentNumber; // Update ECI charset state
         }
 
-        // Mode headers
-        if (encodingModeState !== segment.encodingMode ||
-            (
-                // Always add mode indicator + char count indicator if ECI switching is forced since it must acompany every ECI mode indicator + assignment number
-                eciSwitchingMode === ECI_SWITCHING_STRATEGY.FORCED &&
-                segment.encodingMode == DATA_ENCODING_MODE.BYTE
-            ) ||
-            (
-                // Add a mode indicator + char count indicator if ECI switching is "auto" and adjacent byte segments have different ECI assignment numbers
-                eciSwitchingMode === ECI_SWITCHING_STRATEGY.AUTO &&
-                segment.encodingMode === DATA_ENCODING_MODE.BYTE &&
-                eciModeAssignmentNumberState !== segment.charSetAssignmentNumber
-            )
-        ) {
-            // If encoding mode has changed
+        // // Mode headers
+        // if (encodingModeState !== segment.encodingMode ||
+        //     (
+        //         // Always add mode indicator + char count indicator if ECI switching is forced since it must acompany every ECI mode indicator + assignment number
+        //         eciSwitchingMode === ECI_SWITCHING_STRATEGY.FORCED &&
+        //         segment.encodingMode == DATA_ENCODING_MODE.BYTE
+        //     ) ||
+        //     (
+        //         // Add a mode indicator + char count indicator if ECI switching is "auto" and adjacent byte segments have different ECI assignment numbers
+        //         eciSwitchingMode === ECI_SWITCHING_STRATEGY.AUTO &&
+        //         segment.encodingMode === DATA_ENCODING_MODE.BYTE &&
+        //         eciModeAssignmentNumberState !== segment.charSetAssignmentNumber
+        //     )
+        // ) {
+        //     // If encoding mode has changed
+        //
+        //     // Add Mode Indicator
+        //     const encodingMode: DataEncodingMode = segment.encodingMode;
+        //
+        //     // Add Character Count Indicator
+        //     const charCountIndicator = generateLengthIndicator(segment.plainTextData, segment.encodedData, getCharCountIndicatorLength(segment.encodingMode, version), segment.encodingMode);
+        //
+        //     // Add Mode Indicator and Character Count Indicator to data stream
+        //     dataStream.push(encodingMode, charCountIndicator);
+        //     console.log(`Added Mode Indicator ${encodingMode} and Character Count Indicator ${charCountIndicator} to data stream.`);
+        //
+        //     // Update encoding mode state
+        //     encodingModeState = encodingMode;
+        // }
 
-            // Add Mode Indicator
-            const encodingMode: DataEncodingMode = segment.encodingMode;
+        // -- B: Add Mode Indicator --
+        const encodingMode: DataEncodingMode = segment.encodingMode;
 
-            // Add Character Count Indicator
-            const charCountIndicator = generateLengthIndicator(segment.plainTextData, segment.encodedData, getCharCountIndicatorLength(segment.encodingMode, version), segment.encodingMode);
+        // Add Character Count Indicator
+        const charCountIndicator = generateLengthIndicator(segment.plainTextData, segment.encodedData, getCharCountIndicatorLength(segment.encodingMode, version), segment.encodingMode);
 
-            // Add Mode Indicator and Character Count Indicator to data stream
-            dataStream.push(encodingMode, charCountIndicator);
-            console.log(`Added Mode Indicator ${encodingMode} and Character Count Indicator ${charCountIndicator} to data stream.`);
+        // Add Mode Indicator and Character Count Indicator to data stream
+        dataStream.push(encodingMode, charCountIndicator);
+        console.log(`Added Mode Indicator ${encodingMode} and Character Count Indicator ${charCountIndicator} to data stream.`);
 
-            // Update encoding mode state
-            encodingModeState = encodingMode;
-        }
+        // Update encoding mode state
+        // encodingModeState = encodingMode;
 
-        // Add the encoded data for the segment to the data stream
+        // -- C: Add the encoded data for the segment to the data stream --
         dataStream.push(...segment.encodedData); // Append the encoded data to the data stream
         console.log("Added Encoded Data to data stream:", segment.encodedData);
 
@@ -130,4 +143,4 @@ export function createDatastream(encodedSegments: Array<EncodedDataSegment>, ver
     return dataStream;
 }
 
-export default createDatastream;
+export default generateDatastream;
