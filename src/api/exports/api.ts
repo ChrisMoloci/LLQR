@@ -23,6 +23,3 @@ export * from "../../image"
 
 // Utils
 export * from "../../utils"
-
-// Versioning
-export * from "../../versioning"

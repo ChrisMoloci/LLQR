@@ -1,5 +1,5 @@
 // Types & Constants
-import {EncodedDataSegment, QRSpecs} from "../types"
+import {EncodedDataSegment, PreparedDatastream, QRSpecs} from "../types"
 import { DataEncodingMode } from "../types"
 import {DATA_ENCODING_MODE, MODE_SWITCHING_STRATEGY} from "../constants";
 
@@ -8,7 +8,6 @@ import { getCurrentConfig } from "../config";
 import { determineMode } from "../encoding";
 import encodeWithSingleMode from "../encoding/qr/encodeWithSingleMode";
 import encodeWithModeSwitching from "../encoding/qr/encodeWithModeSwitching";
-import {determineMinQRVersion} from "../versioning";
 import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
 import {generateECCStream} from "../ecc";
 import {generateMatrix} from "../matrix";
@@ -41,31 +40,19 @@ export function generateQRMatrix(data: string): Array<Array<number>> {
 
     console.log("Encoded Data:", encodedData);
 
-    // -- 4. Determine the Min Version of the QR Code (Or use Preferred Minimum if possible)
-    /**
-     * Also determines the character count indicator lengths for each segment and adds them to the segments
-     * returning FinalizedEncodedSegment[]
-     */
-    const version = determineMinQRVersion(encodedData, qrSpecs.eccLevel, qrSpecs.useECISwitching, qrSpecs.useModeSwitching, qrSpecs.minPreferredVersion);
+    // -- 4. Prepare datastream and determine version (min | preferred)
+    const preparedDatastream: PreparedDatastream = prepareDatastream(encodedData, qrSpecs.eccLevel, qrSpecs.useECISwitching, qrSpecs.useModeSwitching, qrSpecs.minPreferredVersion);
+    const version = preparedDatastream.version;
+    const datastream = preparedDatastream.datastream;
 
-    if (version === null) {
-        throw new Error("Unable to determine a suitable QR code version for the provided data and ECC level.");
-    }
-
-    console.log("Determined Minimum QR Version:", version);
-
-    // -- 5. Prepare data stream for ECC generation (add mode, length indicators, etc.) --
-    const preparedDataStream: Array<string> = prepareDatastream(encodedData, version, qrSpecs.useECISwitching, qrSpecs.useModeSwitching);
-
-    console.log("Prepared Data Stream:", preparedDataStream);
+    console.log("Prepared Data Stream:", preparedDatastream);
     
-    // -- 6. Generate Error Correction Codewords --
-    const eccStream: Array<string> = generateECCStream(preparedDataStream, version, qrSpecs.eccLevel);
+    // -- 5. Generate Error Correction Codewords --
+    const eccStream: Array<string> = generateECCStream(datastream, version, qrSpecs.eccLevel);
     console.log("Generated ECC Stream:", eccStream);
 
-    // -- 7. Generate the matrix using the ecc data stream --
+    // -- 6. Generate the matrix using the ecc data stream --
     const matrix: Array<Array<number>> = generateMatrix(eccStream, version, qrSpecs.eccLevel, qrSpecs.maskPattern);
-    // const matrix: Array<Array<number>> = generateMatrix([], version, qrSpecs.eccLevel, qrSpecs.maskPattern);
     console.log("Generated QR Matrix:", matrix);
 
     // -- 8. Return the generated matrix --
