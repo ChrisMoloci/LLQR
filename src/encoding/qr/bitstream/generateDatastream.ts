@@ -6,7 +6,12 @@ import {
     ModeSwitchingStrategy,
     QRVersion
 } from "../../../types";
-import {DATA_ENCODING_MODE, ECI_SWITCHING_STRATEGY, MODE_SWITCHING_STRATEGY} from "../../../constants";
+import {
+    DATA_ENCODING_CHARACTER_SET,
+    DATA_ENCODING_MODE,
+    ECI_SWITCHING_STRATEGY,
+    MODE_SWITCHING_STRATEGY
+} from "../../../constants";
 import {
     generateLengthIndicator,
     generateECIIndicatorAndAssignmentNumber,
@@ -19,7 +24,7 @@ export function generateDatastream(encodedSegments: Array<EncodedDataSegment>, v
 
     // Store Encoding Mode and ECI Assignment Number states for mode switching checks
     // let encodingModeState: DataEncodingMode | null = null; // Holds current encoding mode state for mode switching
-    let eciModeAssignmentNumberState: DataEncodingCharacterSet | null = null; // Holds current ECI mode charset state for mode switching
+    let eciModeAssignmentNumberState: DataEncodingCharacterSet | undefined = undefined; // Holds current ECI mode charset state for mode switching
 
     let i = 0; // Index to track the current segment being processed
 
@@ -71,40 +76,60 @@ export function generateDatastream(encodedSegments: Array<EncodedDataSegment>, v
         }
 
         // -- 2. Consolidate cross compatible segments (byte) if possible --
-        const crossCompatibleByteSegments: Array<EncodedDataSegment> = [];
+        if (
+            remainingOptimizedByteSegmentsCount === 0 &&
+            modeSwitchingMode === MODE_SWITCHING_STRATEGY.AUTO &&
+            segment.encodingMode === DATA_ENCODING_MODE.BYTE &&
+            // TODO: Change charsetAssignmentNumber check when more encoders are added
+            segment.charSetAssignmentNumber === DATA_ENCODING_CHARACTER_SET["UTF-8"]
+        ) {
+            const optimizedSegments = optimizeAdjacentByteSegments(segment, version, eciSwitchingMode, eciModeAssignmentNumberState);
 
-        if (modeSwitchingMode === MODE_SWITCHING_STRATEGY.AUTO &&
-            remainingOptimizedNumericAlphanumericSegmentsCount === 0 &&
-            segment.encodingMode === DATA_ENCODING_MODE.BYTE) {
-            crossCompatibleByteSegments.push(segment);
+            encodedSegments.splice(i, 1, ...optimizedSegments);
 
-            for (let j = i + 1; j < encodedSegments.length; j++) {
-                // Iterate through subsequent segments to see if any are cross-compatible for consolidation
+            segment = encodedSegments[i]!;
 
-                const followingSegment = encodedSegments[j]; // Next segment to check
-                const followingEncodingMode = followingSegment?.encodingMode; // Next segment's encoding mode
-
-                if (followingSegment && followingEncodingMode === DATA_ENCODING_MODE.BYTE) {
-                    // If the following segment is cross-compatible, add it to the collection
-                    crossCompatibleAlphanumericNumericSegments.push(followingSegment!); // Add to cross-compatible segments
-                } else break; // No more consecutive cross-compatible segments
-            }
+            remainingOptimizedByteSegmentsCount = optimizedSegments.length;
+            // i += optimizedSegments.length;
         }
 
-        // Now, process the collected cross-compatible segments to see if consolidation saves space
-        if (crossCompatibleByteSegments.length > 1) {
-            const optimizedCrossCompatSegments = optimizeAdjacentByteSegments(crossCompatibleByteSegments, version)
 
-            encodedSegments.splice(i, crossCompatibleAlphanumericNumericSegments.length, ...optimizedCrossCompatSegments); // Replace the original segments with the optimized segments
-
-            segment = encodedSegments[i]!; // Update current segment to the first of the optimized segments for size calculation
-            // encodingMode = segment.encodingMode; // Update encoding mode for segment
-
-            remainingOptimizedByteSegmentsCount = optimizedCrossCompatSegments.length; // Set the remaining optimized segment count to skip optimizing the next segments that were just optimized
-
-            console.log("Optimized cross-compatible segments:", optimizedCrossCompatSegments);
-            console.log("Updated encoded segments after optimization:", encodedSegments);
-        }
+        // const crossCompatibleByteSegments: Array<EncodedDataSegment> = [];
+        //
+        // if (modeSwitchingMode === MODE_SWITCHING_STRATEGY.AUTO &&
+        //     segment.encodingMode === DATA_ENCODING_MODE.BYTE &&
+        //     // TODO: Change charsetAssignmentNumber check when more encoders are added
+        //     segment.charSetAssignmentNumber === 26
+        // ) {
+        //     crossCompatibleByteSegments.push(segment);
+        //
+        //     for (let j = i + 1; j < encodedSegments.length; j++) {
+        //         // Iterate through subsequent segments to see if any are cross-compatible for consolidation
+        //
+        //         const followingSegment = encodedSegments[j]; // Next segment to check
+        //         const followingEncodingMode = followingSegment?.encodingMode; // Next segment's encoding mode
+        //
+        //         if (followingSegment && followingEncodingMode === DATA_ENCODING_MODE.BYTE) {
+        //             // If the following segment is cross-compatible, add it to the collection
+        //             crossCompatibleAlphanumericNumericSegments.push(followingSegment!); // Add to cross-compatible segments
+        //         } else break; // No more consecutive cross-compatible segments
+        //     }
+        // }
+        //
+        // // Now, process the collected cross-compatible segments to see if consolidation saves space
+        // if (crossCompatibleByteSegments.length > 1) {
+        //     const optimizedCrossCompatSegments = optimizeAdjacentByteSegments(crossCompatibleByteSegments, version)
+        //
+        //     encodedSegments.splice(i, crossCompatibleAlphanumericNumericSegments.length, ...optimizedCrossCompatSegments); // Replace the original segments with the optimized segments
+        //
+        //     segment = encodedSegments[i]!; // Update current segment to the first of the optimized segments for size calculation
+        //     // encodingMode = segment.encodingMode; // Update encoding mode for segment
+        //
+        //     // remainingOptimizedByteSegmentsCount = optimizedCrossCompatSegments.length; // Set the remaining optimized segment count to skip optimizing the next segments that were just optimized
+        //
+        //     console.log("Optimized cross-compatible segments:", optimizedCrossCompatSegments);
+        //     console.log("Updated encoded segments after optimization:", encodedSegments);
+        // }
 
         // -- 2. Add Header to datastream
 

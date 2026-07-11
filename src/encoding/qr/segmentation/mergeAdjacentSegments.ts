@@ -34,24 +34,35 @@ export function mergeAdjacentSegments(segments: Array<EncodedDataSegment>): Arra
         let currentSegment = segments[i]!; // Get the segment at i
         const currentMode = currentSegment.encodingMode; // Get the encoding mode of the current segment
 
+        //  If current segment is not a byte segment, move restart and move to next segment
+        if (currentMode !== DATA_ENCODING_MODE.BYTE) {
+            console.log("Moving to next segment");
+            i++;
+            continue;
+        }
+
         for (let j = i + 1; j < segments.length; j++) {
             // Iterate through all the segments from i+1..length
             const nextSegment = segments[j]!; // Get the next segment
 
-            if (nextSegment.encodingMode === currentMode) {
+            if (nextSegment.encodingMode === DATA_ENCODING_MODE.BYTE) {
                 // If the next segment has the same encoding mode as the current segment, we may be able to merge them
-                if (currentMode === DATA_ENCODING_MODE.BYTE && nextSegment.encodingMode === DATA_ENCODING_MODE.BYTE) {
-                    // For byte mode, we need to also check if they are using the same char set (e.g Latin-1, UTF-8, etc)
-                    if (currentSegment.charSetAssignmentNumber !== nextSegment.charSetAssignmentNumber) {
-                        break; // Different charsets, cannot merge;
-                    }
-                }
-                // Merge the segments
-                const mergedData = currentSegment.plainTextData + nextSegment.plainTextData;
-                currentSegment = encodeWithSingleMode(mergedData, currentMode).pop()!; // encode data in currentMode
+                // if (currentMode === DATA_ENCODING_MODE.BYTE && nextSegment.encodingMode === DATA_ENCODING_MODE.BYTE) {
+                    // // For byte mode, we need to also check if they are using the same char set (e.g Latin-1, UTF-8, etc)
+                    // if (currentSegment.charSetAssignmentNumber !== nextSegment.charSetAssignmentNumber) {
+                    //     break; // Different charsets, cannot merge;
+                    // }
 
-                segments.splice(i, j - i + 1, currentSegment); // Replace segments from i to j with single merged segment
-                j = i; // Reset j to i to recheck for further adjacent segments
+                    console.log("Merging adjacent segment" + currentSegment.plainTextData + " " + nextSegment.encodingMode);
+
+
+                    // Merge the segments
+                    const mergedData: string = currentSegment.plainTextData + nextSegment.plainTextData;
+                    currentSegment = encodeWithSingleMode(mergedData, currentMode).pop()!; // encode data in currentMode
+
+                    segments.splice(i, j - i + 1, currentSegment); // Replace segments from i to j with single merged segment
+                    j = i; // Reset j to i to recheck for further adjacent segments
+                // }
             } else {
                 break; // No more adjacent segments of the same mode for segment at i
             }

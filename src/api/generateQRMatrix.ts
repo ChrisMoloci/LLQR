@@ -38,7 +38,7 @@ export function generateQRMatrix(data: string): Array<Array<number>> {
     // Throw an error if encoding failed
     if (!encodedData) throw new Error("Data encoding failed.");
 
-    console.log("Encoded Data:", encodedData);
+    console.log("Encoded Data:", structuredClone(encodedData));
 
     // -- 4. Prepare datastream and determine version (min | preferred)
     const preparedDatastream: PreparedDatastream = prepareDatastream(encodedData, qrSpecs.eccLevel, qrSpecs.useECISwitching, qrSpecs.useModeSwitching, qrSpecs.minPreferredVersion);
@@ -46,7 +46,7 @@ export function generateQRMatrix(data: string): Array<Array<number>> {
     const datastream = preparedDatastream.datastream;
 
     console.log("Prepared Data Stream:", preparedDatastream);
-    
+
     // -- 5. Generate Error Correction Codewords --
     const eccStream: Array<string> = generateECCStream(datastream, version, qrSpecs.eccLevel);
     console.log("Generated ECC Stream:", eccStream);
