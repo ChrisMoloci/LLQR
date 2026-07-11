@@ -18,5 +18,5 @@ export * from "./mode-detection/determineEncodingMode"
 export * from "./segmentation/getCharCountIndicatorLength";
 export * from "./segmentation/mergeAdjacentSegments";
 export * from "./segmentation/optimizeAdjacentAlphanumericNumericSegments";
-export * from "./segmentation/optimizeAdjacentByteSegments";
+export * from "./segmentation/optimizeByteSegment";
 export * from "./segmentation/segmentInvalidKanjiData";

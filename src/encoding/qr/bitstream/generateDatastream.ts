@@ -16,7 +16,7 @@ import {
     generateLengthIndicator,
     generateECIIndicatorAndAssignmentNumber,
     optimizeAdjacentAlphanumericNumericSegments,
-    getCharCountIndicatorLength, optimizeAdjacentByteSegments
+    getCharCountIndicatorLength, optimizeByteSegment
 } from "./..";
 
 export function generateDatastream(encodedSegments: Array<EncodedDataSegment>, version: QRVersion, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy): Array<string> {
@@ -83,7 +83,7 @@ export function generateDatastream(encodedSegments: Array<EncodedDataSegment>, v
             // TODO: Change charsetAssignmentNumber check when more encoders are added
             segment.charSetAssignmentNumber === DATA_ENCODING_CHARACTER_SET["UTF-8"]
         ) {
-            const optimizedSegments = optimizeAdjacentByteSegments(segment, version, eciSwitchingMode, eciModeAssignmentNumberState);
+            const optimizedSegments = optimizeByteSegment(segment, version, eciSwitchingMode, eciModeAssignmentNumberState);
 
             encodedSegments.splice(i, 1, ...optimizedSegments);
 

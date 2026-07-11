@@ -15,8 +15,8 @@ const calculateECICost = (encodedSegment: EncodedDataSegment, eciState: DataEnco
         4 + getECIAssignmentNumberSize(encodedSegment.charSetAssignmentNumber) : 0;
 }
 
-
-export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, version: QRVersion, eciSwitchingStrategy: ECISwitchingStrategy, eciModeAssignmentNumberState?: DataEncodingCharacterSet): Array<EncodedDataSegment> {
+// TODO: Replace with dynamic programming for even better optimization
+export function optimizeByteSegment(segment: EncodedDataSegment, version: QRVersion, eciSwitchingStrategy: ECISwitchingStrategy, eciModeAssignmentNumberState?: DataEncodingCharacterSet): Array<EncodedDataSegment> {
     if (segment.encodingMode !== DATA_ENCODING_MODE.BYTE || segment.charSetAssignmentNumber !== DATA_ENCODING_CHARACTER_SET["UTF-8"]) {
         throw new Error("optimizeAdjacentByteSegments only supports Byte Segments with a character set of UTF-8");
     }
@@ -75,10 +75,6 @@ export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, versio
             (gapEncodedData != null && gapEncodedData.encodingMode !== DATA_ENCODING_MODE.BYTE) ||
             joinedEncodedData.encodingMode !== DATA_ENCODING_MODE.BYTE
         ) {
-            console.log(prevSegment)
-            console.log(gapEncodedData);
-            console.log(inefficientEncodedData);
-            console.log(joinedEncodedData);
             throw new Error("One or more created segments were encoded with the incorrect mode :(");
         }
 
@@ -110,16 +106,16 @@ export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, versio
         const splitStreamSize = (gapEncodedData ? (gapSegmentOverhead + (gapEncodedData.encodedData.length * 8)) : 0) + (inefficientSegmentOverhead + (inefficientEncodedData.encodedData.length * 8));
         const joinedStreamSize = joinedSegmentOverhead + (joinedEncodedData.encodedData.length * 8);
 
-        console.log("---")
-        console.log(gapEncodedData)
-        console.log("Gap Segment ECI Overhead:", gapSegmentOverhead, "ECI", gapSegmentECIOverhead);
-        console.log(inefficientEncodedData)
-        console.log("Inefficient Segment Overhead:", inefficientSegmentOverhead, "ECI", inefficientSegmentECIOverhead);
-        console.log("Encoded Data:", joinedEncodedData);
-        console.log("Joined Segment ECI Overhead:", joinedSegmentOverhead, "ECI", joinedSegmentECIOverhead);
-        console.log("Split datastream size", splitStreamSize);
-        console.log("Joined datastream size:", joinedStreamSize);
-        console.log("===")
+        // console.log("---")
+        // console.log(gapEncodedData)
+        // console.log("Gap Segment ECI Overhead:", gapSegmentOverhead, "ECI", gapSegmentECIOverhead);
+        // console.log(inefficientEncodedData)
+        // console.log("Inefficient Segment Overhead:", inefficientSegmentOverhead, "ECI", inefficientSegmentECIOverhead);
+        // console.log("Encoded Data:", joinedEncodedData);
+        // console.log("Joined Segment ECI Overhead:", joinedSegmentOverhead, "ECI", joinedSegmentECIOverhead);
+        // console.log("Split datastream size", splitStreamSize);
+        // console.log("Joined datastream size:", joinedStreamSize);
+        // console.log("===")
 
         if (splitStreamSize < joinedStreamSize) {
             // Use separate segments if more efficient
@@ -175,8 +171,8 @@ export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, versio
         }
     }
 
-    console.log("Unoptimized Segments")
-    console.log(structuredClone(efficientSegments));
+    // console.log("Unoptimized Segments")
+    // console.log(structuredClone(efficientSegments));
 
     efficientSegments = mergedSegments; // Update efficient segments
 
@@ -186,4 +182,4 @@ export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, versio
     return efficientSegments;
 }
 
-export default optimizeAdjacentByteSegments;
+export default optimizeByteSegment;
