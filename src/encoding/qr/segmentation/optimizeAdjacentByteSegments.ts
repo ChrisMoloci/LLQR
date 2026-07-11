@@ -8,6 +8,7 @@ const calculateECICost = (encodedSegment: EncodedDataSegment, eciState: DataEnco
     if (encodedSegment.encodingMode !== DATA_ENCODING_MODE.BYTE) throw Error("Only byte segments can have ECI segments");
 
     return (
+        encodedSegment &&
         (eciSwitchingStrategy === ECI_SWITCHING_STRATEGY.AUTO && (eciState !== encodedSegment.charSetAssignmentNumber || eciState === -1)) ||
         eciSwitchingStrategy === ECI_SWITCHING_STRATEGY.FORCED
     ) ?
@@ -69,20 +70,24 @@ export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, versio
 
         // This is just to make TypeScript happy, since we are only using encodeBinary they will obviously be BYTE mode
         if (
-            (prevSegment != null && prevSegment?.encodingMode !== DATA_ENCODING_MODE.BYTE) ||
+            (prevSegment != null && prevSegment.encodingMode !== DATA_ENCODING_MODE.BYTE) ||
             inefficientEncodedData.encodingMode !== DATA_ENCODING_MODE.BYTE ||
-            gapEncodedData?.encodingMode !== DATA_ENCODING_MODE.BYTE ||
+            (gapEncodedData != null && gapEncodedData.encodingMode !== DATA_ENCODING_MODE.BYTE) ||
             joinedEncodedData.encodingMode !== DATA_ENCODING_MODE.BYTE
         ) {
+            console.log(prevSegment)
+            console.log(gapEncodedData);
+            console.log(inefficientEncodedData);
+            console.log(joinedEncodedData);
             throw new Error("One or more created segments were encoded with the incorrect mode :(");
         }
 
         let localECIState = eciState;
 
         // Calculate ECI costs
-        const gapSegmentECIOverhead = calculateECICost(gapEncodedData, localECIState, eciSwitchingStrategy);
+        const gapSegmentECIOverhead = gapEncodedData ? calculateECICost(gapEncodedData, localECIState, eciSwitchingStrategy) : 0;
 
-        localECIState = gapSegmentECIOverhead > 0 ? gapEncodedData.charSetAssignmentNumber : localECIState;
+        localECIState = gapSegmentECIOverhead > 0 && gapEncodedData ? gapEncodedData.charSetAssignmentNumber : localECIState;
 
         const inefficientSegmentECIOverhead = calculateECICost(inefficientEncodedData, localECIState, eciSwitchingStrategy);
 
@@ -91,7 +96,7 @@ export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, versio
         const joinedSegmentECIOverhead = calculateECICost(joinedEncodedData, eciState, eciSwitchingStrategy);
 
         // Calculate overhead using ECI cost + overhead (overhead is only applied if whatever segment is not going to be merged with the previous one)
-        const gapSegmentOverhead = (!prevSegment || gapEncodedData.charSetAssignmentNumber !== prevSegment.charSetAssignmentNumber) ?
+        const gapSegmentOverhead = (gapEncodedData && (!prevSegment || gapEncodedData.charSetAssignmentNumber !== prevSegment.charSetAssignmentNumber)) ?
             (headerOverhead + gapSegmentECIOverhead) : 0;
         const inefficientSegmentOverhead = (
             (gapEncodedData && inefficientEncodedData.charSetAssignmentNumber !== gapEncodedData.charSetAssignmentNumber) ||
@@ -102,7 +107,7 @@ export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, versio
             (headerOverhead + joinedSegmentECIOverhead) : 0;
 
         // Calculate datastream sizes
-        const splitStreamSize = (gapSegmentOverhead + (gapEncodedData.encodedData.length * 8)) + (inefficientSegmentOverhead + (inefficientEncodedData.encodedData.length * 8));
+        const splitStreamSize = (gapEncodedData ? (gapSegmentOverhead + (gapEncodedData.encodedData.length * 8)) : 0) + (inefficientSegmentOverhead + (inefficientEncodedData.encodedData.length * 8));
         const joinedStreamSize = joinedSegmentOverhead + (joinedEncodedData.encodedData.length * 8);
 
         console.log("---")
@@ -111,7 +116,7 @@ export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, versio
         console.log(inefficientEncodedData)
         console.log("Inefficient Segment Overhead:", inefficientSegmentOverhead, "ECI", inefficientSegmentECIOverhead);
         console.log("Encoded Data:", joinedEncodedData);
-        console.log("Joined Segment ECI Overhead:", joinedSegmentOverhead, "ECI", gapSegmentECIOverhead);
+        console.log("Joined Segment ECI Overhead:", joinedSegmentOverhead, "ECI", joinedSegmentECIOverhead);
         console.log("Split datastream size", splitStreamSize);
         console.log("Joined datastream size:", joinedStreamSize);
         console.log("===")
