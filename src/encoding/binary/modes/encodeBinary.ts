@@ -41,7 +41,7 @@ export function encodeBinary(data: string): EncodedDataSegment {
 }
 
 function getCharSet(plainDataChars: Array<string>): DataEncodingCharacterSet {
-    console.log("Plain data chars: ", plainDataChars);
+    // console.log("Plain data chars: ", plainDataChars);
 
     // Define compatible charsets for binary encoding (order determines priority)
     const compatibleCharsets: Array<DataEncodingCharacterSet> = [
@@ -52,7 +52,7 @@ function getCharSet(plainDataChars: Array<string>): DataEncodingCharacterSet {
     // Check each charset for compatibility
     for (const charset of compatibleCharsets) {
         if (checkCharsetCompatibility(plainDataChars, charset)) {
-            console.log(`Using character set ${(Object.keys(DATA_ENCODING_CHARACTER_SET) as Array<keyof typeof DATA_ENCODING_CHARACTER_SET>).find(key => DATA_ENCODING_CHARACTER_SET[key] === charset)} for binary encoding.`);
+            // console.log(`Using character set ${(Object.keys(DATA_ENCODING_CHARACTER_SET) as Array<keyof typeof DATA_ENCODING_CHARACTER_SET>).find(key => DATA_ENCODING_CHARACTER_SET[key] === charset)} for binary encoding.`);
             return charset; // Return the first compatible charset found
         }
     }

@@ -4,6 +4,17 @@ import getCharCountIndicatorLength from "./getCharCountIndicatorLength";
 import {DATA_ENCODING_CHARACTER_SET, DATA_ENCODING_MODE, ECI_SWITCHING_STRATEGY} from "../../../constants";
 import getECIAssignmentNumberSize from "../eci/getECIAssignmentNumberSize";
 
+const calculateECICost = (encodedSegment: EncodedDataSegment, eciState: DataEncodingCharacterSet, eciSwitchingStrategy: ECISwitchingStrategy): number => {
+    if (encodedSegment.encodingMode !== DATA_ENCODING_MODE.BYTE) throw Error("Only byte segments can have ECI segments");
+
+    return (
+        (eciSwitchingStrategy === ECI_SWITCHING_STRATEGY.AUTO && (eciState !== encodedSegment.charSetAssignmentNumber || eciState === -1)) ||
+        eciSwitchingStrategy === ECI_SWITCHING_STRATEGY.FORCED
+    ) ?
+        4 + getECIAssignmentNumberSize(encodedSegment.charSetAssignmentNumber) : 0;
+}
+
+
 export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, version: QRVersion, eciSwitchingStrategy: ECISwitchingStrategy, eciModeAssignmentNumberState?: DataEncodingCharacterSet): Array<EncodedDataSegment> {
     if (segment.encodingMode !== DATA_ENCODING_MODE.BYTE || segment.charSetAssignmentNumber !== DATA_ENCODING_CHARACTER_SET["UTF-8"]) {
         throw new Error("optimizeAdjacentByteSegments only supports Byte Segments with a character set of UTF-8");
@@ -18,10 +29,10 @@ export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, versio
     // Get all substrings greedily
     const matches = textData.matchAll(inefficientRange);
 
-    console.log("Matches:")
-    for (const match of textData.matchAll(inefficientRange)) {
-        console.log(match);
-    }
+    // console.log("Matches:")
+    // for (const match of textData.matchAll(inefficientRange)) {
+    //     console.log(match);
+    // }
 
     // Get the character count indicator length per byte segment
     const characterCountIndicatorLength = getCharCountIndicatorLength(DATA_ENCODING_MODE.BYTE, version);
@@ -33,106 +44,79 @@ export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, versio
     let efficientSegments: Array<EncodedDataSegment> = [];
 
     // ECI state passed from generateDatastream
-    let eciState = eciModeAssignmentNumberState ?? -1;
+    let eciState = eciModeAssignmentNumberState ?? -1; // -1 means unset
 
     // Represents index of data between a previous match and current
     let head = 0;
 
-    // Collect all efficient matches
     for (const match of matches) {
-        // Latin-1 Segment based on match
-        const latin1Text = match[0];
+        // Get the previous added segment
+        const prevSegment = efficientSegments[efficientSegments.length - 1];
+
+        // Get the inefficient data (from the match and encoded it)
+        const inefficientText = match[0];
+        const inefficientEncodedData = encodeBinary(inefficientText);
         const start = match.index;
-        const end = start + latin1Text.length;
-        const latin1EncodedData = encodeBinary(latin1Text);
+        const end = start + inefficientText.length;
 
-        // Gap Segment between prev match and this one
+        // Get the data between the last match and this one (the gap) and encode it
         const gapText = textData.slice(head, start);
-        const gapEncodedData= gapText.length > 0 ? encodeBinary(gapText) : null;
+        const gapEncodedData = gapText.length > 0 ? encodeBinary(gapText) : null;
 
-        // Joined Data
-        const joinedText = gapText + latin1Text;
-        const encodedJoinedText = encodeBinary(joinedText);
+        // Join both the inefficient and gap text so we can also see the size of the data combined
+        const joinedText = gapText + inefficientText;
+        const joinedEncodedData = encodeBinary(joinedText);
 
-        const previousSegments = efficientSegments[efficientSegments.length - 1];
-
+        // This is just to make TypeScript happy, since we are only using encodeBinary they will obviously be BYTE mode
         if (
-            latin1EncodedData.encodingMode !== DATA_ENCODING_MODE.BYTE ||
+            (prevSegment != null && prevSegment?.encodingMode !== DATA_ENCODING_MODE.BYTE) ||
+            inefficientEncodedData.encodingMode !== DATA_ENCODING_MODE.BYTE ||
             gapEncodedData?.encodingMode !== DATA_ENCODING_MODE.BYTE ||
-            encodedJoinedText.encodingMode !== DATA_ENCODING_MODE.BYTE
+            joinedEncodedData.encodingMode !== DATA_ENCODING_MODE.BYTE
         ) {
             throw new Error("One or more created segments were encoded with the incorrect mode :(");
         }
 
         let localECIState = eciState;
 
-        // Calculate ECI overhead
-        const gapECIOverhead = (
-            (
-                gapEncodedData &&
-                (eciSwitchingStrategy === ECI_SWITCHING_STRATEGY.AUTO && (localECIState !== gapEncodedData.charSetAssignmentNumber || localECIState === -1)) ||
-                eciSwitchingStrategy === ECI_SWITCHING_STRATEGY.FORCED
-            )
-        ) ? 4 + getECIAssignmentNumberSize(gapEncodedData.charSetAssignmentNumber) : 0;
+        // Calculate ECI costs
+        const gapSegmentECIOverhead = calculateECICost(gapEncodedData, localECIState, eciSwitchingStrategy);
 
+        localECIState = gapSegmentECIOverhead > 0 ? gapEncodedData.charSetAssignmentNumber : localECIState;
 
-        // If gapEncodedData exists, set localECI state to gapEncoedData charset
-        localECIState = (gapEncodedData && gapEncodedData.encodingMode === DATA_ENCODING_MODE.BYTE) ? gapEncodedData.charSetAssignmentNumber : localECIState;
+        const inefficientSegmentECIOverhead = calculateECICost(inefficientEncodedData, localECIState, eciSwitchingStrategy);
 
-        const latin1ECIOverhead =
-            (
-                (eciSwitchingStrategy === ECI_SWITCHING_STRATEGY.AUTO && (localECIState !== latin1EncodedData.charSetAssignmentNumber || localECIState === -1)) ||
-                eciSwitchingStrategy === ECI_SWITCHING_STRATEGY.FORCED
-            ) ? 4 + getECIAssignmentNumberSize(latin1EncodedData.charSetAssignmentNumber) : 0;
+        localECIState = inefficientSegmentECIOverhead > 0 ? inefficientEncodedData.charSetAssignmentNumber : localECIState;
 
-        // If latin1ECIOverhead > 0, ECI state has changed, make sure to reflect that
-        localECIState = (latin1ECIOverhead > 0 && latin1EncodedData.encodingMode === DATA_ENCODING_MODE.BYTE) ? latin1EncodedData.charSetAssignmentNumber : localECIState;
+        const joinedSegmentECIOverhead = calculateECICost(joinedEncodedData, eciState, eciSwitchingStrategy);
 
-        // Use separate ECIOverhead as this would not reflect ECI switching for UTF-8 + Latin-1
-        const joinedECIOverhead =
-            (
-                (eciSwitchingStrategy === ECI_SWITCHING_STRATEGY.AUTO && (eciState !== encodedJoinedText.charSetAssignmentNumber || eciState === -1)) ||
-                eciSwitchingStrategy === ECI_SWITCHING_STRATEGY.FORCED
-            )
-                ? 4 + getECIAssignmentNumberSize(encodedJoinedText.charSetAssignmentNumber) : 0;
-
-        // Calculate total overhead for segments
-
-        // gapEncodedData overhead should only cost if previous 2 segments were not merged, if prev segment is UTF-8, this segment will be merged with that one unless previous segment is from before main segment
-        const gapOverhead = (gapEncodedData && gapEncodedData.encodingMode === DATA_ENCODING_MODE.BYTE && (eciState !== gapEncodedData.charSetAssignmentNumber || efficientSegments.length === 0)) ?
-            headerOverhead + gapECIOverhead : 0;
-        console.log("UTF-8 Overhead: " + gapOverhead)
-
-        // Due to how matchAll behaves, UTF-8 section could encode to latin-1, as these segments will later be merged, this should cost nothing if they are the same charset
-        const latin1Overhead = (
-            (
-                latin1EncodedData.encodingMode === DATA_ENCODING_MODE.BYTE &&
-                gapEncodedData.charSetAssignmentNumber !== latin1EncodedData.charSetAssignmentNumber
-            ) ||
-                (
-                    !gapEncodedData &&
-                    (eciState !== latin1EncodedData.charSetAssignmentNumber || efficientSegments.length === 0)
-                )
+        // Calculate overhead using ECI cost + overhead (overhead is only applied if whatever segment is not going to be merged with the previous one)
+        const gapSegmentOverhead = (!prevSegment || gapEncodedData.charSetAssignmentNumber !== prevSegment.charSetAssignmentNumber) ?
+            (headerOverhead + gapSegmentECIOverhead) : 0;
+        const inefficientSegmentOverhead = (
+            (gapEncodedData && inefficientEncodedData.charSetAssignmentNumber !== gapEncodedData.charSetAssignmentNumber) ||
+            (!gapEncodedData && (!prevSegment || inefficientEncodedData.charSetAssignmentNumber !== prevSegment.charSetAssignmentNumber))
         ) ?
-            headerOverhead + latin1ECIOverhead : 0;
-        console.log("Latin-1 Overhead: " + latin1Overhead)
+            (headerOverhead + inefficientSegmentECIOverhead) : 0;
+        const joinedSegmentOverhead = (!prevSegment || joinedEncodedData.charSetAssignmentNumber !== prevSegment.charSetAssignmentNumber) ?
+            (headerOverhead + joinedSegmentECIOverhead) : 0;
 
-        // Joined overhead should only cost if previous 2 segments were not merged into a UTF-8 segment, if this happens, this segment will be merged with the previous
-        const joinedOverhead = (eciState !== encodedJoinedText.charSetAssignmentNumber || efficientSegments.length === 0) ? (headerOverhead + joinedECIOverhead) : 0;
-        console.log("Joined Overhead: " + joinedOverhead)
+        // Calculate datastream sizes
+        const splitStreamSize = (gapSegmentOverhead + (gapEncodedData.encodedData.length * 8)) + (inefficientSegmentOverhead + (inefficientEncodedData.encodedData.length * 8));
+        const joinedStreamSize = joinedSegmentOverhead + (joinedEncodedData.encodedData.length * 8);
 
-        // Calculate bitstream sizes for split segments or joined segments
-        const separatedStreamSize = (gapEncodedData ? gapOverhead + gapEncodedData.encodedData.length * 8 : 0) + latin1Overhead + (latin1EncodedData.encodedData.length * 8);
-        const joinedStreamSize = joinedOverhead + (encodedJoinedText.encodedData.length * 8);
-
-        console.log("Latin-1 Segment on its own: " + latin1Text + " Size: " + (latin1Overhead + (latin1EncodedData.encodedData.length * 8)));
-        console.log(latin1EncodedData)
-        console.log("UTF-8 Segment on its own: " + gapText + " Size: " + (gapEncodedData ? gapOverhead + gapEncodedData.encodedData.length * 8 : 0));
+        console.log("---")
         console.log(gapEncodedData)
-        console.log("Joined: " + joinedText + " Size: " + joinedStreamSize);
-        console.log(encodedJoinedText)
+        console.log("Gap Segment ECI Overhead:", gapSegmentOverhead, "ECI", gapSegmentECIOverhead);
+        console.log(inefficientEncodedData)
+        console.log("Inefficient Segment Overhead:", inefficientSegmentOverhead, "ECI", inefficientSegmentECIOverhead);
+        console.log("Encoded Data:", joinedEncodedData);
+        console.log("Joined Segment ECI Overhead:", joinedSegmentOverhead, "ECI", gapSegmentECIOverhead);
+        console.log("Split datastream size", splitStreamSize);
+        console.log("Joined datastream size:", joinedStreamSize);
+        console.log("===")
 
-        if (separatedStreamSize < joinedStreamSize) {
+        if (splitStreamSize < joinedStreamSize) {
             // Use separate segments if more efficient
 
             // Since we are using 2 segments, we update ECI state to local state
@@ -142,14 +126,14 @@ export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, versio
                 // Only push gapEncodedData if it exists.
                 efficientSegments.push(gapEncodedData);
             }
-            efficientSegments.push(latin1EncodedData); // Also push the latin-1 segment
+            efficientSegments.push(inefficientEncodedData); // Also push the latin-1 segment
         } else {
             // Use joined segments if more efficient
 
-            // Set ECIState to UTF-8
-            eciState = encodedJoinedText.charSetAssignmentNumber;
+            // Set ECIState to whatever joinedEncodedData is set to
+            eciState = joinedEncodedData.charSetAssignmentNumber;
 
-            efficientSegments.push(encodedJoinedText); // Push the joined segment
+            efficientSegments.push(joinedEncodedData); // Push the joined segment
         }
 
         // Sets the head to the end of the latin-1 segment to help parse the text between this segment and the next
@@ -185,6 +169,9 @@ export function optimizeAdjacentByteSegments(segment: EncodedDataSegment, versio
             mergedSegments.push(segment);
         }
     }
+
+    console.log("Unoptimized Segments")
+    console.log(structuredClone(efficientSegments));
 
     efficientSegments = mergedSegments; // Update efficient segments
 

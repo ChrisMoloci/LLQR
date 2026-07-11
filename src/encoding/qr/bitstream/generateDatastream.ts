@@ -75,10 +75,10 @@ export function generateDatastream(encodedSegments: Array<EncodedDataSegment>, v
             console.log("Updated encoded segments after optimization:", encodedSegments);
         }
 
-        // -- 2. Consolidate cross compatible segments (byte) if possible --
+        // -- 2. Consolidate cross compatible segments (byte) if possible and mode switching is not disabled --
         if (
             remainingOptimizedByteSegmentsCount === 0 &&
-            modeSwitchingMode === MODE_SWITCHING_STRATEGY.AUTO &&
+            modeSwitchingMode !== MODE_SWITCHING_STRATEGY.DISABLED &&
             segment.encodingMode === DATA_ENCODING_MODE.BYTE &&
             // TODO: Change charsetAssignmentNumber check when more encoders are added
             segment.charSetAssignmentNumber === DATA_ENCODING_CHARACTER_SET["UTF-8"]
