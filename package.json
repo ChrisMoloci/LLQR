@@ -1,5 +1,5 @@
 {
-  "name": "llqr",
+  "name": "@chrismoloci/llqr",
   "version": "0.1.0",
   "description": "Highly customizable and easy to use QR Code generator.",
   "author": {
