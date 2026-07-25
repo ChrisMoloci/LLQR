@@ -130,7 +130,7 @@ describe("defineConfig", () => {
 
         // Full qr config with null image argument
         it('should define a full qr config and keep the default image config', () => {
-            defineConfig(qrConfig, null)
+            defineConfig(qrConfig)
 
             expect(getCurrentConfig()).toEqual({
                 qrConfig: structuredClone(qrConfig),
@@ -150,7 +150,7 @@ describe("defineConfig", () => {
 
         // Partial qr config with null image argument
         it('should define a partial qr config and keep the default image config', () => {
-            defineConfig(partialQRConfig, null)
+            defineConfig(partialQRConfig)
 
             expect(getCurrentConfig()).toEqual({
                 qrConfig: {...structuredClone(DEFAULT_QR_SPECS), ...structuredClone(partialQRConfig)},
@@ -167,7 +167,7 @@ describe("defineConfig", () => {
 
         // Full image config with default image config
         it('should define a full image config and keep the default qr config', () => {
-            defineConfig(null, imageConfig);
+            defineConfig(imageConfig);
 
             expect(getCurrentConfig()).toEqual({
                 qrConfig: {...structuredClone(DEFAULT_QR_SPECS)},
@@ -177,7 +177,7 @@ describe("defineConfig", () => {
 
         // Partial image config with default image config
         it('should define a partial image config and keep the default qr config', () => {
-            defineConfig(null, partialImageConfig);
+            defineConfig(partialImageConfig);
 
             expect(getCurrentConfig()).toEqual({
                 qrConfig: {...structuredClone(DEFAULT_QR_SPECS)},

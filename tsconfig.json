@@ -7,10 +7,10 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "moduleResolution": "node16", 
-    "module": "node16",
-    "target": "es2017",
-    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
+    "target": "es2020",
+//    "forceConsistentCasingInFileNames": true,
     // "target": "esnext",
     // "types": [],
     // For nodejs:
