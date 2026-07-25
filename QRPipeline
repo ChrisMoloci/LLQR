@@ -1,0 +1,39 @@
+-- 1. Setting config (optional) --
+
+-- 2. Function gets the config --
+
+-- 2. Encode the data (binary)
+    Path 1: Encode with single best-suited mode
+
+    Path 2: Encode with mode switching
+
+-- 3. Prepare the datastream
+    For Each Possible version
+        1: Prepare the datastream
+            A. Optimize data for version
+            B. Create a final bitstream with all headers
+            C. Check if the size of bitstream can fit inside current version
+            if: size fits
+                Use version
+                Stop looping
+            else:
+                Loop around again
+
+        2: If a preferred version was provided the min version <= preferred version:
+            Prepare datastream for that version and return the version + datastream
+
+-- 4. Generate ECC data --
+      1: Restructure the datastream with padding
+      2: Convert the binary strings into integers
+      3: Create groups and blocks for data
+      4: Pad ECC 0s to each block in each group
+      5: Compute ECC for each block in each group
+      6: Interleave all data from all blocks in all groups back
+      7: Convert integers back to strings
+      8: Return final ECC stream as array of byte strings
+
+-- 5. Generate Matrix --
+
+-- 6. Create image canvas from Matrix --
+
+-- 7. Generate Image File --

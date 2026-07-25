@@ -1,0 +1,14 @@
+import {generateImageFromQRMatrix, generateQRMatrix} from "./index";
+
+export function generateFullQR(data: string, size: number = 512): HTMLImageElement {
+    // -- 1. Generate the QR Matrix --
+    const qrMatrix = generateQRMatrix(data);
+
+    // -- 2. Generate An Image from the Matrix --
+    const image: HTMLImageElement = generateImageFromQRMatrix(qrMatrix, size);
+
+    // -- 3. Return the Image --
+    return image;
+}
+
+export default generateFullQR;

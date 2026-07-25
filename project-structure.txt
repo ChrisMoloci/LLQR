@@ -1,0 +1,150 @@
+src/
+├── api/
+├── matrix/
+│   ├── encoding/
+│   ├── ecc/
+│   ├── generation/
+│   ├── masking/
+│   ├── patterns/
+│   ├── versioning/
+│   └── format-info/
+├── image/
+│   ├── canvas/
+│   ├── modules/
+│   └── renderers/s
+├── types/
+├── enums/
+├── datasets/
+├── constants/
+├── config/
+└── index.ts
+
+src/
+├── index.ts
+│
+├── api/
+│   ├── generateFullQR.ts
+│   ├── generateQRMatrix.ts
+│   ├── generateImageFromQRMatrix.ts
+│   └── index.ts
+│
+├── encoding/
+│   ├── modes/
+│   │   ├── encodeNumeric.ts
+│   │   ├── encodeAlphanumeric.ts
+│   │   ├── encodeByte.ts
+│   │   └── encodeKanji.ts
+│   │
+│   ├── charsets/
+│   │   ├── utf8.ts
+│   │   ├── iso8859-1.ts
+│   │   ├── shiftJis.ts
+│   │   └── index.ts
+│   │
+│   ├── segmentation/
+│   │   ├── determineEncodingMode.ts
+│   │   ├── mergeAdjacentSegments.ts
+│   │   ├── optimizeAdjacentAlphanumericNumericSegments.ts
+│   │   └── segmentInvalidKanjiData.ts
+│   │
+│   ├── eci/
+│   │   ├── generateECIIndicatorAndAssignmentNumber.ts
+│   │   ├── getECIAssignmentNumberSize.ts
+│   │   └── index.ts
+│   │
+│   ├── encodeWithSingleMode.ts
+│   ├── encodeWithModeSwitching.ts
+│   ├── prepareDatastream.ts
+│   └── index.ts
+│
+├── ecc/
+│   ├── computeECC.ts
+│   ├── generateECCStream.ts
+│   ├── groupDataAndBlocks.ts
+│   ├── interleaveData.ts
+│   ├── normalizeDataStream.ts
+│   ├── padECCZeroBytesToBlocks.ts
+│   ├── gf256.ts
+│   └── index.ts
+│
+├── matrix/
+│   ├── generateMatrix.ts
+│   ├── initializeMatrices.ts
+│   ├── addFinderPatterns.ts
+│   ├── addAlignmentPatterns.ts
+│   ├── addTimingPatterns.ts
+│   ├── addDarkModule.ts
+│   ├── addDataToMatrix.ts
+│   ├── addFormatInformationToMatrix.ts
+│   ├── addVersionInformation.ts
+│   ├── reserveFormatInformation.ts
+│   └── index.ts
+│
+├── masking/
+│   ├── maskingFunctions.ts
+│   ├── maskAllMatrices.ts
+│   ├── determineOptimalMaskPattern.ts
+│   ├── determinePenaltyScore.ts
+│   └── index.ts
+│
+├── renderers/
+│   ├── canvas/
+│   │   ├── generateImageCanvasFromMatrix.ts
+│   │   ├── drawCircleModule.ts
+│   │   ├── drawRoundedModule.ts
+│   │   ├── drawSquareModule.ts
+│   │   └── index.ts
+│   │
+│   ├── qr-elements/
+│   │   ├── computeAlignmentPatternLocations.ts
+│   │   ├── computeFinderPatternLocations.ts
+│   │   ├── renderAlignmentPatterns.ts
+│   │   ├── renderFinderPatterns.ts
+│   │   ├── renderDatastream.ts
+│   │   └── isReserved.ts
+│   │
+│   └── index.ts
+│
+├── versioning/
+│   ├── determineMinQRVersion.ts
+│   ├── computeTheoreticalSizeOfDataForVersion.ts
+│   ├── generateLengthIndicator.ts
+│   ├── getBitLength.ts
+│   ├── getCharCountIndicatorLength.ts
+│   └── index.ts
+│
+├── datasets/
+│   ├── alignmentPatternLocations.ts
+│   ├── qrDataCapacityBits.ts
+│   ├── qrEncodingCharCounts.ts
+│   ├── unicodeToShiftJis.ts
+│   └── index.ts
+│
+├── types/
+│   ├── EncodedDataSegment.ts
+│   ├── PlainTextDataSegment.ts
+│   ├── QRConfigs.ts
+│   ├── QRSpecs.ts
+│   ├── ImageSpecs.ts
+│   ├── MaskedQRMatrix.ts
+│   ├── QRMatrixCanvas.ts
+│   └── index.ts
+│
+├── enums/
+│   ├── DataEncodingMode.ts
+│   ├── DataEncodingCharacterSet.ts
+│   ├── EccLevelCode.ts
+│   ├── MaskPatternCode.ts
+│   ├── ModeSwitchingStrategy.ts
+│   ├── EciSwitchingStrategy.ts
+│   ├── QrElementShape.ts
+│   ├── QrVersion.ts
+│   └── index.ts
+│
+├── constants/
+│   ├── colors.ts
+│   ├── modes.ts
+│   └── index.ts
+│
+└── config/
+    └── defineConfig.ts

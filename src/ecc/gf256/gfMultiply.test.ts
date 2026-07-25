@@ -1,0 +1,62 @@
+import {describe, expect, it} from "vitest";
+import {gfMultiply} from "./..";
+
+describe("gfMultiply", () => {
+    // Positive tests
+    it.each([
+        [1, 1, 1],
+        [1, 2, 2],
+        [2, 2, 4],
+        [2, 128, 29],
+        [5, 20, 68],
+        [25, 7, 79],
+        [32, 91, 175],
+        [87, 131, 49],
+        [123, 45, 174],
+        [200, 199, 210],
+        [255, 255, 226],
+    ])("should multiply %i and %i in GF(256)", (a, b, expected) => {
+        expect(gfMultiply(a, b)).toBe(expected);
+    });
+
+    // 0 Tests
+    it.each([
+        [0, 0],
+        [0, 1],
+        [1, 0],
+        [0, 255],
+        [255, 0],
+    ])("should return 0 when multiplying %i and %i", (a, b) => {
+        expect(gfMultiply(a, b)).toBe(0);
+    });
+
+    // 1 Tests
+    it.each([1, 2, 7, 25, 64, 128, 255])("should return the same value when multiplying %i by 1", value => {
+        expect(gfMultiply(value, 1)).toBe(value);
+        expect(gfMultiply(1, value)).toBe(value);
+    });
+
+    // Commutative check
+    it.each([
+        [2, 3],
+        [5, 20],
+        [25, 7],
+        [87, 131],
+        [200, 199],
+        [255, 128],
+    ])("should be commutative for %i and %i", (a, b) => {
+        expect(gfMultiply(a, b)).toBe(gfMultiply(b, a));
+    });
+
+    // Edge cases (below or above GF256 Range, invalid chars)
+    it.each([
+        [-1, 5],
+        [5, -1],
+        [256, 5],
+        [5, 256],
+        [Number.NaN, 5],
+        [5, Number.NaN],
+    ])("should throw when given invalid GF(256) values %s and %s", (a, b) => {
+        expect(() => gfMultiply(a, b)).toThrow("GF Multiplication error");
+    });
+});

@@ -1,7 +1,20 @@
 {
-  "name": "@chrismoloci/qr-lib",
-  "version": "0.0.1",
-  "description": "One of the most customizable QR Code Generators",
+  "name": "llqr",
+  "version": "0.1.0",
+  "description": "Highly customizable and easy to use QR Code generator.",
+  "author": {
+    "name": "Christian Moloci",
+    "url": "https://christianmoloci.com/"
+  },
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsup --watch --sourcemap --format cjs,esm --dts",
+    "build": "tsup --format cjs,esm --dts",
+    "test": "vitest run",
+    "test:browser": "vitest --config=vitest.browser.config.ts run",
+    "test:watch": "vitest",
+    "test:browser:watch": "vitest --config=vitest.browser.config.ts"
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -9,16 +22,48 @@
     ".": {
       "require": "./dist/index.cjs",
       "import": "./dist/index.mjs"
+    },
+    "./types": {
+      "require": "./dist/types.cjs",
+      "import": "./dist/types.mjs"
+    },
+    "./constants": {
+      "require": "./dist/constants.cjs",
+      "import": "./dist/constants.mjs"
+    },
+    "./api": {
+      "require": "./dist/api.cjs",
+      "import": "./dist/api.mjs"
+    },
+    "./datasets": {
+      "require": "./dist/datasets.cjs",
+      "import": "./dist/datasets.mjs"
     }
   },
-  "scripts": {
-    "dev": "tsup --watch --sourcemap --format cjs,esm --dts",
-    "build": "tsup --format cjs,esm --dts"
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChrisMoloci/llqr"
   },
-  "author": "chrismoloci",
-  "license": "MIT",
+  "keywords": [
+    "qr",
+    "qrcode",
+    "typescript",
+    "barcode",
+    "canvas"
+  ],
   "dependencies": {
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.10",
+    "@vitest/browser-playwright": "^4.0.17",
+    "@vitest/ui": "^4.0.17",
+    "vitest": "^4.0.17"
   }
 }

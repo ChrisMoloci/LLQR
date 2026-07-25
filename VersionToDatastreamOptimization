@@ -1,0 +1,25 @@
+-- 1. Encode The Data --
+    Path 1:
+        Data is encode into a single mode
+
+    Path 2:
+        Data is encoded with mode switching
+        Mode switching does not consider optimizations at this phase
+        Optimizations are version dependant
+
+-- 2. Prepare the data into a single --
+    Step 1: Prepare the datastream version by version
+    - Optimize the data for said version
+        if: said Data fits in said version
+            Return that version as the minimum version and stop searching
+        if: said data does not fit in said version
+            Try encoding preparing the datastream for the next possible version
+
+
+==================
+||     Misc     ||
+==================
+
+-- A. Optimization --
+    - Optimize Numeric/Alphanumeric Segments
+    - Optimize Latin-1/UTF-8 Segments

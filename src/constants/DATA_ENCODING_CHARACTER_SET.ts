@@ -1,0 +1,46 @@
+export const DATA_ENCODING_CHARACTER_SET = {
+    // Key = character set
+    // Value = ECI assignment number
+
+    // Unicode
+    "UTF-8": 26,
+    "UTF-16BE": 25, // !NOT IMPLEMENTED YET
+    "UTF-32BE": 33, // !NOT IMPLEMENTED YET
+
+    // ISO/IEC 8859 series (Latin and others)
+    "ISO-8859-1": 3, // Latin-1
+    "ISO-8859-2": 4, // !NOT IMPLEMENTED YET
+    "ISO-8859-3": 5, // !NOT IMPLEMENTED YET
+    "ISO-8859-4": 6, // !NOT IMPLEMENTED YET
+    "ISO-8859-5": 7, // !NOT IMPLEMENTED YET
+    "ISO-8859-6": 8, // !NOT IMPLEMENTED YET
+    "ISO-8859-7": 9, // !NOT IMPLEMENTED YET
+    "ISO-8859-8": 10, // !NOT IMPLEMENTED YET
+    "ISO-8859-9": 11, // !NOT IMPLEMENTED YET
+    "ISO-8859-10": 12, // !NOT IMPLEMENTED YET
+    "ISO-8859-11": 13, // !NOT IMPLEMENTED YET
+    "ISO-8859-13": 15, // !NOT IMPLEMENTED YET
+    "ISO-8859-14": 16, // !NOT IMPLEMENTED YET
+    "ISO-8859-15": 17, // !NOT IMPLEMENTED YET
+    "ISO-8859-16": 18, // !NOT IMPLEMENTED YET
+
+    // East Asian
+    "Shift-JIS": 20, // !NOT IMPLEMENTED YET
+    "EUC-JP": 21, // !NOT IMPLEMENTED YET
+    "GB2312": 22, // !NOT IMPLEMENTED YET
+    "EUC-KR": 30, // !NOT IMPLEMENTED YET
+    "Big5": 28, // !NOT IMPLEMENTED YET
+    "GB18030": 29, // !NOT IMPLEMENTED YET
+
+    // Legacy Encodings
+    "US-ASCII": 1, // !NOT IMPLEMENTED YET
+    "IBM 437": 2, // !NOT IMPLEMENTED YET
+    "Windows-1250": 34, // !NOT IMPLEMENTED YET
+    "Windows-1251": 35, // !NOT IMPLEMENTED YET
+    "Windows-1252": 36, // !NOT IMPLEMENTED YET
+    "Windows-1256": 38, // !NOT IMPLEMENTED YET
+
+    // Special
+    "JIS X 0208": 23, // !NOT IMPLEMENTED YET
+    "JIS X 0212": 24, // !NOT IMPLEMENTED YET
+}
