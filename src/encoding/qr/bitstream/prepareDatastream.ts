@@ -12,7 +12,13 @@ import {
 import {generateDatastream} from "../.";
 import {qrDataCapacities} from "../../../datasets";
 
-export function prepareDatastream(encodedData: Array<EncodedDataSegment>, eccLevel: ECCLevel, eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED, modeSwitchingMode: ModeSwitchingStrategy, preferredVersion?: QRVersion): PreparedDatastream {
+export function prepareDatastream(
+    encodedData: Array<EncodedDataSegment>,
+    eccLevel: ECCLevel,
+    eciSwitchingMode: ECISwitchingStrategy = ECI_SWITCHING_STRATEGY.DISABLED,
+    modeSwitchingMode: ModeSwitchingStrategy,
+    preferredVersion?: QRVersion
+): PreparedDatastream {
     let bestVersion: QRVersion | null = null; // Stores best version found through iterations (eventuall the best version)
     let datastream: Array<string> = []; // Initial datastream
 
@@ -22,8 +28,7 @@ export function prepareDatastream(encodedData: Array<EncodedDataSegment>, eccLev
 
     // Loop through all QR versions from 1 to 40
     for (let version: QRVersion = QR_VERSION.V1; version <= QR_VERSION.V40; version++) {
-        // Create a copy of encodedData so it can be mutated without affecting the original data
-        // const workingEncodedData = [...encodedData];
+        // Create a copy of encodedData so it can be mutated without affecting the original data        // const workingEncodedData = [...encodedData];
         const workingEncodedData = structuredClone(encodedData);
 
         // -- 1. Create a datastream for this version --

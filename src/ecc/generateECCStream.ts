@@ -67,7 +67,7 @@ export function generateECCStream(encodedData: Array<string>, qrVersion: QRVersi
     const finalDataStream: Array<string> = interleavedDataStream.map(byte => byte.toString(2).padStart(8, '0'));
     console.log("Final Data and ECC Stream as binary strings:", finalDataStream);
 
-    // -- 7. Return ECC Stream as array of strings --
+    // -- 8. Return ECC Stream as array of strings --
     return finalDataStream;
 }
 

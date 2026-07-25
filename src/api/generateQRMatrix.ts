@@ -12,8 +12,13 @@ import prepareDatastream from "../encoding/qr/bitstream/prepareDatastream";
 import {generateECCStream} from "../ecc";
 import {generateMatrix} from "../matrix";
 
+/**
+ *
+ * @param data string for the data to be encoded
+ * @returns Array<Array<number>
+ */
 export function generateQRMatrix(data: string): Array<Array<number>> {
-    // -- 1. Get Current QR Configurations --
+    // -- 1. Get Current QR Configuration --
     const qrSpecs: QRSpecs = getCurrentConfig().qrConfig;
     console.log("Generating QR Code with specs:", qrSpecs);
 
@@ -24,14 +29,20 @@ export function generateQRMatrix(data: string): Array<Array<number>> {
     // Will hold the encoded data segments
     let encodedData: Array<EncodedDataSegment> | null = null;
 
-    // -- 3. Encode Data to Binary as EncodedSegmentDraft --
-    if (qrSpecs.useModeSwitching === MODE_SWITCHING_STRATEGY.DISABLED || qrSpecs.forceByteEncoding) {
-        // Encode using a single mode
+    // -- 3. Encode Data to Binary as an array of EncodedDataSegment objects --
+    if (
+        qrSpecs.useModeSwitching === MODE_SWITCHING_STRATEGY.DISABLED ||
+        qrSpecs.forceByteEncoding
+    ) {
+        // Encode using a single mode (stores a single EncodedDataSegment in the array)
         console.log("Encoding data using single mode:", mode);
         encodedData = encodeWithSingleMode(data, mode);
-    } else if (qrSpecs.useModeSwitching === MODE_SWITCHING_STRATEGY.AUTO || qrSpecs.useModeSwitching === MODE_SWITCHING_STRATEGY.FORCED) {
+    } else if (
+        qrSpecs.useModeSwitching === MODE_SWITCHING_STRATEGY.AUTO ||
+        qrSpecs.useModeSwitching === MODE_SWITCHING_STRATEGY.FORCED
+    ) {
+        // Encode using mode switching (creates segments as necessary)
         console.log("Encoding data using mode switching:", qrSpecs.useModeSwitching);
-        // Encode using mode switching
         encodedData = encodeWithModeSwitching(data, qrSpecs.useModeSwitching);
     }
     
