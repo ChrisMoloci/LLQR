@@ -1,7 +1,7 @@
-import { defineConfig } from 'vitest/config'
-import { playwright } from '@vitest/browser-playwright'
+const { defineConfig } = require('vitest/config')
+const { playwright } = require('@vitest/browser-playwright')
 
-export default defineConfig({
+module.exports = defineConfig({
   test: {
     environment: "node",
     globals: true, // optional: lets you use describe/it/expect without imports

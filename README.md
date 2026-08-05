@@ -5,7 +5,7 @@ Generator available via npm.
 
 To begin, start by installing LLQR into you're project:
 ~~~
-npm i @ChrisMoloci/llqr
+npm i @chrismoloci/llqr
 ~~~
 
 ## 1. Configuration
