@@ -1,5 +1,4 @@
-import {EncodedDataSegment} from "../../../types";
-import {DataEncodingCharacterSet} from "../../../types/constantTypes";
+import {EncodedDataSegment, DataEncodingCharacterSet} from "../../../types";
 import {DATA_ENCODING_CHARACTER_SET, DATA_ENCODING_MODE} from "../../../constants";
 import BINARY_ENCODER_FUNCTION_MAPPINGS from "../charsets/binaryEncoderFunctionMappings";
 

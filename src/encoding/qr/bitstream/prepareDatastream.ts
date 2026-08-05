@@ -32,7 +32,7 @@ export function prepareDatastream(
         const workingEncodedData = structuredClone(encodedData);
 
         // -- 1. Create a datastream for this version --
-        datastream = generateDatastream(workingEncodedData, version as QRVersion, eciSwitchingMode, modeSwitchingMode);;
+        datastream = generateDatastream(workingEncodedData, version as QRVersion, eciSwitchingMode, modeSwitchingMode);
 
         // -- 2. Take the datastream for this version and check if it fits in the QR Code --
 
