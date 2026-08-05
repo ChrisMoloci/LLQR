@@ -62,8 +62,8 @@
   },
   "devDependencies": {
     "@types/node": "^25.0.10",
-    "@vitest/browser-playwright": "^4.0.17",
-    "@vitest/ui": "^4.0.17",
-    "vitest": "^4.0.17"
+    "@vitest/browser-playwright": "^4.1.10",
+    "@vitest/ui": "^4.1.10",
+    "vitest": "^4.1.10"
   }
 }
