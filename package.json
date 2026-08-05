@@ -1,6 +1,6 @@
 {
   "name": "@chrismoloci/llqr",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Highly customizable and easy to use QR Code generator.",
   "author": {
     "name": "Christian Moloci",
