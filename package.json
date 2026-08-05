@@ -1,6 +1,6 @@
 {
   "name": "@chrismoloci/llqr",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Highly customizable and easy to use QR Code generator.",
   "author": {
     "name": "Christian Moloci",
@@ -8,8 +8,8 @@
   },
   "license": "MIT",
   "scripts": {
-    "dev": "tsup --watch --sourcemap --format cjs,esm --dts",
-    "build": "tsup --format cjs,esm --dts",
+    "dev": "tsdown --watch --sourcemap --format cjs,esm --dts",
+    "build": "tsdown --format cjs,esm --dts",
     "test": "vitest run",
     "test:browser": "vitest --config=vitest.browser.config.ts run",
     "test:watch": "vitest",
@@ -57,7 +57,7 @@
     "canvas"
   ],
   "dependencies": {
-    "tsup": "^8.5.1",
+    "tsdown": "^0.21.10",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
